@@ -65,7 +65,9 @@ you selected : County map
 * https://public.tableau.com/views/S07StuP58/Dashboard1
 * https://public.tableau.com/views/COVID-19CasesandDeathsinthePhilippines_15866705872710/Home
 * https://public.tableau.com/views/MKTScoredeisolamentosocial/VisoGeral
+* https://results.mo.go/t/COVID19/views/Demographics/Public-Demographics
 
 ## Tableau viz not working
 
 * https://public.tableau.com/views/CMI-2_0/CMI
+* https://tableau.ons.org.br/t/ONS_Publico/views/DemandaMxima/HistricoDemandaMxima
