@@ -20,9 +20,7 @@ class TableauDashboard:
 
     def getWorksheetNames(self):
         if self.cmdResponse:
-            presModel = self._originalData["vqlCmdResponse"]["layoutStatus"][
-                "applicationPresModel"
-            ]
+            presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
             return [
                 t["worksheet"]
                 for t in tableauscraper.utils.listWorksheetCmdResponse(presModel)
@@ -52,9 +50,7 @@ class TableauDashboard:
 
     def getDropdownInputs(self):
         if self.cmdResponse:
-            presModel = self._originalData["vqlCmdResponse"]["layoutStatus"][
-                "applicationPresModel"
-            ]
+            presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
             return [
                 t["fieldCaption"]
                 for t in tableauscraper.utils.getParameterControlVqlResponse(presModel)
@@ -69,9 +65,7 @@ class TableauDashboard:
 
     def getDropdownValues(self, inputName):
         if self.cmdResponse:
-            presModel = self._originalData["vqlCmdResponse"]["layoutStatus"][
-                "applicationPresModel"
-            ]
+            presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
             values = [
                 t["formattedValues"]
                 for t in tableauscraper.utils.getParameterControlVqlResponse(presModel)
@@ -91,9 +85,7 @@ class TableauDashboard:
     def setDropdown(self, inputName, value):
         parameterNames = []
         if self.cmdResponse:
-            presModel = self._originalData["vqlCmdResponse"]["layoutStatus"][
-                "applicationPresModel"
-            ]
+            presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
             parameterNames = [
                 t["parameterName"]
                 for t in tableauscraper.utils.getParameterControlVqlResponse(presModel)

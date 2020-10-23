@@ -69,7 +69,7 @@ def getCmdResponse(TS, data, logger):
                 cmdResponse=True,
             )
         )
-    return TableauDashboard(scraper=TS, originalData=data, originalInfo={}, data=output)
+    return TableauDashboard(scraper=TS, originalData=data, originalInfo={}, data=output, cmdResponse=True)
 
 
 def getWorksheetsCmdResponse(TS, data):

@@ -272,6 +272,7 @@ vqlCmdResponse = {
                                                         "dataType": "cstring",
                                                         "paneIndices": [0],
                                                         "columnIndices": [0],
+                                                        "isAutoSelect": True
                                                     },
                                                     {
                                                         "fieldCaption": "[FIELD2]",
@@ -328,6 +329,105 @@ vqlCmdResponse = {
                         "1": {
                             "dataColumns": [
                                 {"dataType": "cstring", "dataValues": ["7", "8", "9"]}
+                            ]
+                        },
+                    }
+                },
+            }
+        }
+    }
+}
+
+vqlCmdResponseDictionaryEmpty = {
+    "vqlCmdResponse": {
+        "layoutStatus": {
+            "applicationPresModel": {
+                "workbookPresModel": {
+                    "dashboardPresModel": {
+                        "zones": {
+                            "0": {
+                                "worksheet": "[WORKSHEET1]",
+                                "presModelHolder": {
+                                    "visual": {
+                                        "vizData": {
+                                            "paneColumnsData": {
+                                                "paneColumnsList": [
+                                                    {
+                                                        "vizPaneColumns": [
+                                                            {
+                                                                "valueIndices": [],
+                                                                "aliasIndices": [],
+                                                            },
+                                                            {
+                                                                "valueIndices": [],
+                                                                "aliasIndices": [],
+                                                            },
+                                                        ]
+                                                    }
+                                                ],
+                                                "vizDataColumns": [
+                                                    {
+                                                        "fieldCaption": "[FIELD1]",
+                                                        "dataType": "cstring",
+                                                        "paneIndices": [0],
+                                                        "columnIndices": [0],
+                                                        "isAutoSelect": True
+                                                    },
+                                                    {
+                                                        "fieldCaption": "[FIELD2]",
+                                                        "dataType": "cstring",
+                                                        "paneIndices": [0],
+                                                        "columnIndices": [1],
+                                                    },
+                                                ],
+                                            }
+                                        }
+                                    },
+                                    "parameterControl": {
+                                        "fieldCaption": "[INPUT_NAME1]",
+                                        "parameterName": "[Parameters].[Parameter 1]",
+                                        "formattedValues": [
+                                            "select1",
+                                            "select2",
+                                            "select3",
+                                        ],
+                                    },
+                                },
+                            },
+                            "1": {
+                                "worksheet": "[WORKSHEET2]",
+                                "presModelHolder": {
+                                    "visual": {
+                                        "vizData": {},
+                                    },
+                                    "parameterControl": {
+                                        "fieldCaption": "[INPUT_NAME2]",
+                                        "parameterName": "[Parameters].[Parameter 1]",
+                                        "formattedValues": [
+                                            "select4",
+                                            "select5",
+                                            "select6",
+                                        ],
+                                    },
+                                },
+                            },
+                        }
+                    }
+                },
+                "dataDictionary": {
+                    "dataSegments": {
+                        "0": {
+                            "dataColumns": [
+                                {
+                                    "dataType": "cstring",
+                                    "dataValues": [],
+                                },
+                                {"dataType": "real", "dataValues": []},
+                            ]
+                        },
+                        "1": {
+                            "dataColumns": [
+                                {"dataType": "cstring", "dataValues": []}
                             ]
                         },
                     }

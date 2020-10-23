@@ -78,12 +78,8 @@ def getIndicesInfo(data, worksheet, noSelectFilter=True):
     return [
         {
             "fieldCaption": t.get("fieldCaption", ""),
-            "valueIndices": columnsData["paneColumnsList"][t["paneIndices"][0]][
-                "vizPaneColumns"
-            ][t["columnIndices"][0]]["valueIndices"],
-            "aliasIndices": columnsData["paneColumnsList"][t["paneIndices"][0]][
-                "vizPaneColumns"
-            ][t["columnIndices"][0]]["aliasIndices"],
+            "valueIndices": columnsData["paneColumnsList"][t["paneIndices"][0]]["vizPaneColumns"][t["columnIndices"][0]]["valueIndices"],
+            "aliasIndices": columnsData["paneColumnsList"][t["paneIndices"][0]]["vizPaneColumns"][t["columnIndices"][0]]["aliasIndices"],
             "dataType": t.get("dataType"),
             "paneIndices": t["paneIndices"][0],
             "columnIndices": t["columnIndices"][0],
@@ -92,6 +88,32 @@ def getIndicesInfo(data, worksheet, noSelectFilter=True):
         if t.get("fieldCaption") and (noSelectFilter or (t.get("isAutoSelect") == True))
     ]
 
+def getIndicesInfoVqlResponse(presModel, worksheet, noSelectFilter=True):
+    zonesWithWorksheet = listWorksheetCmdResponse(presModel)
+
+    selectedZones = [t for t in zonesWithWorksheet if t["worksheet"] == worksheet]
+    if len(selectedZones) == 0:
+        return []
+    selectedZone = selectedZones[0]
+
+    details = selectedZone["presModelHolder"]["visual"]["vizData"]
+
+    if "paneColumnsData" not in details:
+        return []
+    columnsData = details["paneColumnsData"]
+
+    return [
+        {
+            "fieldCaption": t.get("fieldCaption", ""),
+            "valueIndices": columnsData["paneColumnsList"][t["paneIndices"][0]]["vizPaneColumns"][t["columnIndices"][0]]["valueIndices"],
+            "aliasIndices": columnsData["paneColumnsList"][t["paneIndices"][0]]["vizPaneColumns"][t["columnIndices"][0]]["aliasIndices"],
+            "dataType": t.get("dataType"),
+            "paneIndices": t["paneIndices"][0],
+            "columnIndices": t["columnIndices"][0],
+        }
+        for t in columnsData["vizDataColumns"]
+        if t.get("fieldCaption") and (noSelectFilter or (t.get("isAutoSelect") == True))
+    ]
 
 def getDataFull(data):
     dataSegments = data["secondaryInfo"]["presModelMap"]["dataDictionary"][
@@ -132,6 +154,22 @@ def getData(data, dataFull, indicesInfo):
                 ]
     return frameData
 
+def getDataCmdResponse(dataFull, indicesInfo):
+    cstring = dataFull["cstring"]
+    frameData = {}
+    for index in indicesInfo:
+        if index["dataType"] in dataFull:
+            t = dataFull[index["dataType"]]
+            if len(index["valueIndices"]) > 0:
+                frameData[f'{index["fieldCaption"]}-value'] = [
+                    onDataValue(it, t, cstring) for it in index["valueIndices"]
+                ]
+            if len(index["aliasIndices"]) > 0:
+                frameData[f'{index["fieldCaption"]}-alias'] = [
+                    onDataValue(it, t, cstring) for it in index["aliasIndices"]
+                ]
+
+    return frameData
 
 def getDataFullCmdResponse(presModel):
     dataSegments = presModel["dataDictionary"]["dataSegments"]
@@ -172,12 +210,8 @@ def getWorksheetCmdResponse(selectedZone, dataFull):
     result = [
         {
             "fieldCaption": t.get("fieldCaption", ""),
-            "valueIndices": columnsData["paneColumnsList"][t["paneIndices"][0]][
-                "vizPaneColumns"
-            ][t["columnIndices"][0]]["valueIndices"],
-            "aliasIndices": columnsData["paneColumnsList"][t["paneIndices"][0]][
-                "vizPaneColumns"
-            ][t["columnIndices"][0]]["aliasIndices"],
+            "valueIndices": columnsData["paneColumnsList"][t["paneIndices"][0]]["vizPaneColumns"][t["columnIndices"][0]]["valueIndices"],
+            "aliasIndices": columnsData["paneColumnsList"][t["paneIndices"][0]]["vizPaneColumns"][t["columnIndices"][0]]["aliasIndices"],
             "dataType": t.get("dataType"),
             "paneIndices": t["paneIndices"][0],
             "columnIndices": t["columnIndices"][0],

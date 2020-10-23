@@ -12,7 +12,7 @@ from tests.python.test_common import tableauVizHtmlResponse as tableauVizHtmlRes
 from tests.python.test_common import tableauDataResponse as tableauDataResponse
 from tests.python.test_common import fakeUri as fakeUri
 from tests.python.test_common import emptyValues as emptyValues
-
+from tests.python.test_common import vqlCmdResponseDictionaryEmpty as vqlCmdResponseDictionaryEmpty
 
 def test_TableauWorksheet(mocker: MockerFixture) -> None:
     ts = TS()
@@ -67,6 +67,41 @@ def test_TableauWorksheet(mocker: MockerFixture) -> None:
     tableauDataFrameGroup = tableauDataFrame.select("XXXX", "2")
     assert type(tableauDataFrameGroup) is TableauDashboard
     assert len(tableauDataFrameGroup.worksheets) == 0
+
+
+    #### VQL CMD RESPONSE ####
+    tableauDataFrame = dashboard.getWorksheet(ts, data, info, "[WORKSHEET1]")
+    tableauDataFrame = tableauDataFrame.select("[FIELD1]", "2").getWorksheet("[WORKSHEET1]")
+    assert type(tableauDataFrame) is TableauWorksheet
+    assert tableauDataFrame.cmdResponse
+
+    columns = tableauDataFrame.getColumns()
+    assert type(columns) is list
+    assert columns == ["[FIELD1]", "[FIELD2]"]
+
+    selectableColumns = tableauDataFrame.getSelectableColumns()
+    assert type(selectableColumns) is list
+    assert selectableColumns == ["[FIELD1]"]
+
+    values = tableauDataFrame.getValues("[FIELD1]")
+    assert type(values) is list
+    assert values == ["2", "3", "4", "5"]
+
+    # column name doesn't exist
+    values = tableauDataFrame.getValues("XXX")
+    assert type(values) is list
+    assert values == []
+
+    # no values
+
+    mocker.patch("tableauscraper.api.select", return_value=vqlCmdResponseDictionaryEmpty)
+    tableauDataFrame = dashboard.getWorksheet(ts, data, info, "[WORKSHEET1]")
+    tableauDataFrame = tableauDataFrame.select("[FIELD1]", "2").getWorksheet("[WORKSHEET1]")
+    values = tableauDataFrame.getValues("[FIELD1]")
+    assert type(values) is list
+    assert values == []
+    ####
+
 
 
 def test_TableauDashboard_getDropdownInputs(mocker: MockerFixture) -> None:

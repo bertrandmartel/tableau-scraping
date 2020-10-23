@@ -11,6 +11,9 @@ from tests.python.test_common import dataWithoutMapPresModel as WithoutMapPresMo
 from tests.python.test_common import dataWithoutMapPres2 as WithoutMapPres2
 from tests.python.test_common import vqlCmdResponse as vqlCmdResponse
 from tests.python.test_common import noWorksheet as noWorksheet
+from tests.python.test_common import (
+    vqlCmdResponseEmptyValues as vqlCmdResponseEmptyValues,
+)
 import logging
 
 
@@ -191,3 +194,52 @@ def test_getParameterControlVqlResponse():
         "[INPUT_NAME1]",
         "[INPUT_NAME2]",
     ]
+
+
+def test_getDataCmdResponse():
+    presModel = vqlCmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
+    dataFull = utils.getDataFullCmdResponse(presModel)
+    indicesInfo = utils.getIndicesInfoVqlResponse(presModel, "[WORKSHEET1]")
+    frameData = utils.getDataCmdResponse(dataFull, indicesInfo)
+    assert len(frameData.keys()) == 2
+    assert "[FIELD1]-value" in frameData
+    assert "[FIELD2]-alias" in frameData
+    assert len(frameData["[FIELD1]-value"]) == 4
+    assert len(frameData["[FIELD2]-alias"]) == 4
+    assert frameData["[FIELD1]-value"] == ["2", "3", "4", "5"]
+    assert frameData["[FIELD2]-alias"] == ["6", "7", "8", "9"]
+
+
+def test_getIndicesInfoVqlResponse():
+    presModel = vqlCmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
+    indicesInfo = utils.getIndicesInfoVqlResponse(presModel, "[WORKSHEET1]")
+    assert len(indicesInfo) == 2
+    assert "fieldCaption" in indicesInfo[0]
+    assert "valueIndices" in indicesInfo[0]
+    assert "aliasIndices" in indicesInfo[0]
+    assert "dataType" in indicesInfo[0]
+    assert "paneIndices" in indicesInfo[0]
+    assert "columnIndices" in indicesInfo[0]
+    assert len(indicesInfo[0]["valueIndices"]) == 4
+    assert len(indicesInfo[0]["aliasIndices"]) == 0
+    assert len(indicesInfo[1]["valueIndices"]) == 0
+    assert len(indicesInfo[1]["aliasIndices"]) == 4
+    assert indicesInfo[0]["fieldCaption"] == "[FIELD1]"
+    assert indicesInfo[1]["fieldCaption"] == "[FIELD2]"
+
+    # check noSelectFilter parameter
+    indicesInfo = utils.getIndicesInfoVqlResponse(
+        presModel, "[WORKSHEET1]", noSelectFilter=False
+    )
+    assert len(indicesInfo) == 1
+
+    # worksheet not found
+    indicesInfo = utils.getIndicesInfoVqlResponse(presModel, "XXXXX")
+    assert len(indicesInfo) == 0
+
+    ## empty data
+    presModel = vqlCmdResponseEmptyValues["vqlCmdResponse"]["layoutStatus"][
+        "applicationPresModel"
+    ]
+    indicesInfo = utils.getIndicesInfoVqlResponse(presModel, "[WORKSHEET1]")
+    assert len(indicesInfo) == 0

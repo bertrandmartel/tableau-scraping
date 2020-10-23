@@ -42,39 +42,77 @@ class TableauWorksheet:
             )
 
     def getColumns(self) -> List[str]:
-        return [
-            t["fieldCaption"]
-            for t in tableauscraper.utils.getIndicesInfo(
-                self._originalData, self.name, noSelectFilter=True
-            )
-        ]
+        if self.cmdResponse:
+            presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
+            return [
+                t["fieldCaption"]
+                for t in tableauscraper.utils.getIndicesInfoVqlResponse(
+                    presModel, self.name, noSelectFilter=True
+                )
+            ]
+        else:
+            return [
+                t["fieldCaption"]
+                for t in tableauscraper.utils.getIndicesInfo(
+                    self._originalData, self.name, noSelectFilter=True
+                )
+            ]
 
     def getSelectableColumns(self) -> List[str]:
-        return [
-            t["fieldCaption"]
-            for t in tableauscraper.utils.getIndicesInfo(
-                self._originalData, self.name, noSelectFilter=False
-            )
-        ]
+        if self.cmdResponse:
+            presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
+            return [
+                t["fieldCaption"]
+                for t in tableauscraper.utils.getIndicesInfoVqlResponse(
+                    presModel, self.name, noSelectFilter=False
+                )
+            ]
+        else:
+            return [
+                t["fieldCaption"]
+                for t in tableauscraper.utils.getIndicesInfo(
+                    self._originalData, self.name, noSelectFilter=False
+                )
+            ]
 
     def getValues(self, column) -> List[str]:
-        columnObj = [
-            t
-            for t in tableauscraper.utils.getIndicesInfo(
-                self._originalData, self.name, noSelectFilter=True
+        if self.cmdResponse:
+            presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
+            columnObj = [
+                t
+                for t in tableauscraper.utils.getIndicesInfoVqlResponse(
+                    presModel, self.name, noSelectFilter=True
+                )
+                if t["fieldCaption"] == column
+            ]
+            if len(columnObj) == 0:
+                return []
+            frameData = tableauscraper.utils.getDataCmdResponse(
+                self._data_dictionnary, [columnObj[0]]
             )
-            if t["fieldCaption"] == column
-        ]
-        if len(columnObj) == 0:
-            return []
-        frameData = tableauscraper.utils.getData(
-            self._originalData, self._data_dictionnary, [columnObj[0]]
-        )
-        frameDataKeys = list(frameData.keys())
+            frameDataKeys = list(frameData.keys())
 
-        if len(frameDataKeys) == 0:
-            return []
-        return frameData[frameDataKeys[0]]
+            if len(frameDataKeys) == 0:
+                return []
+            return frameData[frameDataKeys[0]]
+        else:
+            columnObj = [
+                t
+                for t in tableauscraper.utils.getIndicesInfo(
+                    self._originalData, self.name, noSelectFilter=True
+                )
+                if t["fieldCaption"] == column
+            ]
+            if len(columnObj) == 0:
+                return []
+            frameData = tableauscraper.utils.getData(
+                self._originalData, self._data_dictionnary, [columnObj[0]]
+            )
+            frameDataKeys = list(frameData.keys())
+
+            if len(frameDataKeys) == 0:
+                return []
+            return frameData[frameDataKeys[0]]
 
     def select(self, column, value):
         values = self.getValues(column)
