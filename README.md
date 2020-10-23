@@ -1,73 +1,146 @@
-# Tableau scraping scripts
+# Tableau Scraper
 
-R and Python scripts to scrape [Tableau viz](https://www.tableau.com/solutions/gallery) into dataframe
+Python library to scrape data from [Tableau viz](https://public.tableau.com/fr-fr/gallery)
 
-You just need to update tableau host and path in the files, the script will :
+R library is under development but a script is available to get the worksheets, see [this](#R)
 
-* get the session token
-* get the data
-* extract the list of worksheet available and prompt user to choose one
-* parse the complex json datamodel to get the data
-* put the data into a dataframe
+## Python
 
-See [my stackoverflow posts about this topic](https://stackoverflow.com/search?q=user%3A2614364+%5Btableau-api%5D)
+### Install
 
-## Usage
-
-### Python
-
-```python
-python tableau.py
+```
+pip install tableau-scraper
 ```
 
-### R
+### Usage
+
+* Get worksheets data
+
+```python
+from tableauscraper import TableauScraper as TS
+
+url = "https://public.tableau.com/views/PlayerStats-Top5Leagues20192020/OnePlayerSummary"
+
+ts = TS()
+ts.loads(url)
+dashboard = ts.getDashboard()
+
+for t in dashboard.worksheets:
+	#show worksheet name
+	print(f"WORKSHEET NAME : {t.name}")
+	#show dataframe for this worksheet
+	print(t.data)
+```
+
+* select a selectable item 
+
+```python
+from tableauscraper import TableauScraper as TS
+
+url = "https://public.tableau.com/views/PlayerStats-Top5Leagues20192020/OnePlayerSummary"
+
+ts = TS()
+ts.loads(url)
+
+#show selectable columns
+columns = ts.getWorksheet("ATT MID CREATIVE COMP").getSelectableColumns()
+print(columns)
+
+#show values by column name
+values = ts.getWorksheet("ATT MID CREATIVE COMP").getValues("ATTR(Player)")
+print(values)
+
+#select that value
+dashboard = ts.getWorksheet("ATT MID CREATIVE COMP").select("ATTR(Player)", "Vinicius Júnior")
+
+#display worksheets 
+for t in dashboard.worksheets:
+	print(t.data)
+```
+
+* select item in a dropdown
+
+```python
+from tableauscraper import TableauScraper as TS
+
+url = "https://public.tableau.com/views/PlayerStats-Top5Leagues20192020/OnePlayerSummary"
+
+ts = TS()
+ts.loads(url)
+dashboard = ts.getDashboard()
+
+#show dropdown input name
+inputNames = dashboard.getDropdownInputs()
+print(inputNames)
+
+#show dropdown values for a given input name
+values = dashboard.getDropdownValues("P.League 2")
+print(values)
+
+#select that value
+dashboard = dashboard.setDropdown("P.League 2", "Ligue 1")
+
+#display worksheets 
+for t in dashboard.worksheets:
+	print(t.data)
+```
+
+### Important Note
+
+In `ts.loads(url)` you must input the Tableau URL which can be different from the one you're looking at in the browser. Open the network tab under Chrome Development tools and look for URL with those query params : `:embed=y` and `:showVizHome=no`. Before the session query which looks like `315165BFBC204028B80CD3FB73880452-0:0` in the network tabs
+
+In the following screenshot, the first request is the corret URL. The last request is the session query :
+
+![network tabs](https://user-images.githubusercontent.com/5183022/96939027-2e716780-14cc-11eb-8712-5f6292af8bef.png)
+
+### Testing Python script
+
+To discover all worksheets, selectable columns and dropdowns, run `prompt.py` script under `scripts` directory :
+
+
+```bash
+git clone git@github.com:bertrandmartel/tableau-scraping.git
+cd tableau-scraping/scripts
+
+#get worksheets data
+python3 prompt.py -get dashboard -url "https://public.tableau.com/views/COVID-19inMissouri/COVID-19inMissouri"
+
+#select a selectable item
+python3 prompt.py -get select -url "https://public.tableau.com/views/MKTScoredeisolamentosocial/VisoGeral"
+
+#select an item in dropdown
+python3 tableau.py -get dropdown -url "https://public.tableau.com/views/COVID-19DailyDashboard_15960160643010/Casesbyneighbourhood"
+```
+
+### Settings
+
+`TableauScraper` class has the following optional parameters : 
+
+| Parameters      |  default value     |  description |
+|-----------------|--------------------|--------------|
+| logLevel        |logging.INFO |   log level |
+| delayMs         |  500        |  minimum delay in millis between actions (select/dropdown request) |
+
+## R
+
+under `R` directory :
 
 ```R
 Rscript tableau.R
 ```
 
-## Output
+R library is under development
 
-```
-~/tableau-scraping$ python3 tableau.py 
-[0] + PCR by age
-[1] County map
-[2] Death by age
-[3] Death eth
-[4] Death race
-[5] PCR+ eth
-[6] PCR+ race
-[7] Testing Report Update Date
-[8] test date by age
-select worksheet by index: 1
-you selected : County map
-    Latitude (generated)-value Latitude (generated)-alias Longitude (generated)-value Longitude (generated)-alias    County-value    County-alias Only KC and Joplin-value Only KC and Joplin-alias
-0                      37.2725                     37.273                    -92.4725                     -92.473          WRIGHT          WRIGHT              KANSAS CITY              KANSAS CITY
-1                      40.4778                     40.478                    -94.4318                     -94.432           WORTH           WORTH                   JOPLIN                   JOPLIN
-2                      37.2756                     37.276                    -92.8844                     -92.884         WEBSTER         WEBSTER                        0                        0
-3                      37.1184                     37.118                    -90.5006                     -90.501           WAYNE           WAYNE                        0                        0
-4                      37.9701                     37.970                     -90.868                     -90.868      WASHINGTON      WASHINGTON                        0                        0
-5                      38.7692                     38.769                    -91.1898                     -91.190          WARREN          WARREN                        0                        0
-6                      37.8515                     37.852                    -94.3425                     -94.343          VERNON          VERNON                        0                        0
-7                      37.3295                     37.330                    -91.9496                     -91.950           TEXAS           TEXAS                        0                        0
-8                      36.6632                     36.663                    -93.0397                     -93.040           TANEY           TANEY                        0                        0
-9                      40.2195                     40.220                    -93.1111                     -93.111        SULLIVAN        SULLIVAN                        0                        0
-10                     36.7415                     36.742                    -93.4417                     -93.442           STONE           STONE                        0                        0
-11                     36.8776                     36.878                    -89.9732                     -89.973        STODDARD        STODDARD                        0                        0
-12                     37.8995                     37.900                    -90.1973                     -90.197   STE GENEVIEVE   STE GENEVIEVE                        0                        0
-13                     38.6529                     38
-```
+## How it works
 
-## Tableau viz working
+Tableau dashboard is rendered get its data from an internal API. In order to get the data, you must get the initial tableau URL which is called with the query parameter `:embed=y` and `:showVizHome=no` (checkout networks logs)
 
-* https://public.tableau.com/views/COVID-19inMissouri/COVID-19inMissouri
-* https://public.tableau.com/views/UVACOVIDTracker/Summary
-* https://public.tableau.com/views/S07StuP58/Dashboard1
-* https://public.tableau.com/views/COVID-19CasesandDeathsinthePhilippines_15866705872710/Home
-* https://public.tableau.com/views/MKTScoredeisolamentosocial/VisoGeral
-* https://results.mo.go/t/COVID19/views/Demographics/Public-Demographics
+In the html body, you have a `textarea` tag with id `tsConfigContainer` with a JSON configuration. The `session_id` field and root path `vizql_root` makes possible to build the session uri : 
 
-## Tableau viz not working
+    POST https://public.tableau.com/ROOT_PATH/bootstrapSession/sessions/SESSION_ID
 
-* https://public.tableau.com/views/CMI-2_0/CMI
-* https://tableau.ons.org.br/t/ONS_Publico/views/DemandaMxima/HistricoDemandaMxima
+The result is 2 json objects. One of them contains the data. The JSON object is complex since it dissociates the value indices from the column indices and from the worksheets.
+
+## Stackoverflow Questions
+
+See [those stackoverflow posts about this topic](https://stackoverflow.com/search?q=user%3A2614364+%5Btableau-api%5D)

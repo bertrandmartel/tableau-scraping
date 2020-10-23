@@ -1,0 +1,9 @@
+https://public.tableau.com/views/COVID-19inMissouri/COVID-19inMissouri
+https://public.tableau.com/views/UVACOVIDTracker/Summary
+https://public.tableau.com/views/S07StuP58/Dashboard1
+https://public.tableau.com/views/COVID-19CasesandDeathsinthePhilippines_15866705872710/Home
+https://public.tableau.com/views/MKTScoredeisolamentosocial/VisoGeral
+https://results.mo.go/t/COVID19/views/Demographics/Public-Demographics
+https://public.tableau.com/views/COVID-19DailyDashboard_15960160643010/Casesbyneighbourhood
+https://public.tableau.com/views/Likelytovotebymail/VBMdashboard
+https://public.tableau.com/views/PlayerStats-Top5Leagues20192020/OnePlayerSummary
