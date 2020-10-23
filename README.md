@@ -1,5 +1,9 @@
 # Tableau Scraper
 
+[![CI](https://github.com/bertrandmartel/tableau-scraping/workflows/CI/badge.svg)](https://github.com/bertrandmartel/tableau-scraping/actions)
+[![codecov](https://codecov.io/gh/bertrandmartel/tableau-scraping/branch/master/graph/badge.svg?token=F4R3NZF796)](https://codecov.io/gh/bertrandmartel/tableau-scraping)
+[![License](http://img.shields.io/:license-mit-blue.svg)](LICENSE.md)
+
 Python library to scrape data from [Tableau viz](https://public.tableau.com/fr-fr/gallery)
 
 R library is under development but a script is available to get the worksheets, see [this](#R)
