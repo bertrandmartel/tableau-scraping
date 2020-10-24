@@ -6,9 +6,14 @@ from tests.python.test_common import fakeUri as fakeUri
 from tests.python.test_common import data as data
 from tests.python.test_common import info as info
 from tests.python.test_common import vqlCmdResponse as vqlCmdResponse
+from tests.python.test_common import tableauPlaceHolderData as tableauPlaceHolderData
+from tests.python.test_common import tableauSessionResponse as tableauSessionResponse
+from tests.python.test_common import tableauPlaceHolderDataWithTicket as tableauPlaceHolderDataWithTicket
+from tests.python.test_common import tableauPlaceHolderDataEmpty as tableauPlaceHolderDataEmpty
 from tableauscraper import TableauScraper as TS
 from tableauscraper.TableauDashboard import TableauDashboard
 from tableauscraper.TableauWorksheet import TableauWorksheet
+
 
 
 def test_TableauScraper_loads(mocker: MockerFixture) -> None:
@@ -23,6 +28,49 @@ def test_TableauScraper_loads(mocker: MockerFixture) -> None:
     assert "sheetId" in ts.__dict__["tableauData"]
     assert ts.__dict__["data"] == data
     assert ts.__dict__["info"] == info
+
+def test_TableauScraper_loadsWithPlaceholder(mocker: MockerFixture) -> None:
+    mocker.patch(
+        "tableauscraper.api.getTableauViz", return_value=tableauPlaceHolderData
+    )
+    mocker.patch(
+        "tableauscraper.api.getTableauVizForSession", return_value=tableauVizHtmlResponse
+    )
+    mocker.patch("tableauscraper.api.getTableauData", return_value=tableauDataResponse)
+    ts = TS()
+    ts.loads(fakeUri)
+    assert "vizql_root" in ts.__dict__["tableauData"]
+    assert "sessionid" in ts.__dict__["tableauData"]
+    assert "sheetId" in ts.__dict__["tableauData"]
+    assert ts.__dict__["data"] == data
+    assert ts.__dict__["info"] == info
+
+def test_TableauScraper_loadsWithPlaceholderWithTicket(mocker: MockerFixture) -> None:
+    mocker.patch(
+        "tableauscraper.api.getTableauViz", return_value=tableauPlaceHolderDataWithTicket
+    )
+    mocker.patch(
+        "tableauscraper.api.getTableauVizForSession", return_value=tableauVizHtmlResponse
+    )
+    mocker.patch("tableauscraper.api.getTableauData", return_value=tableauDataResponse)
+    mocker.patch("tableauscraper.api.getSessionUrl", return_value=tableauSessionResponse)
+    ts = TS()
+    ts.loads(fakeUri)
+    assert "vizql_root" in ts.__dict__["tableauData"]
+    assert "sessionid" in ts.__dict__["tableauData"]
+    assert "sheetId" in ts.__dict__["tableauData"]
+    assert ts.__dict__["data"] == data
+    assert ts.__dict__["info"] == info
+
+def test_TableauScraper_loadsWithPlaceholderEmpty(mocker: MockerFixture) -> None:
+    mocker.patch(
+        "tableauscraper.api.getTableauViz", return_value=tableauPlaceHolderDataEmpty
+    )
+    ts = TS()
+    ts.loads(fakeUri)
+    assert ts.__dict__["tableauData"] == {}
+    assert ts.__dict__["data"] == {}
+    assert ts.__dict__["info"] == {}
 
 
 def test_TableauScraper_listWorksheetNames(mocker: MockerFixture) -> None:

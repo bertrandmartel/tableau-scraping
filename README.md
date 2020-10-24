@@ -90,14 +90,6 @@ for t in dashboard.worksheets:
 	print(t.data)
 ```
 
-### Important Note
-
-In `ts.loads(url)` you must input the Tableau URL which can be different from the one you're looking at in the browser. Open the network tab under Chrome Development tools and look for URL with those query params : `:embed=y` and `:showVizHome=no`. Before the session query which looks like `315165BFBC204028B80CD3FB73880452-0:0` in the network tabs
-
-In the following screenshot, the first request is the corret URL. The last request is the session query :
-
-![network tabs](https://user-images.githubusercontent.com/5183022/96939027-2e716780-14cc-11eb-8712-5f6292af8bef.png)
-
 ### Testing Python script
 
 To discover all worksheets, selectable columns and dropdowns, run `prompt.py` script under `scripts` directory :
@@ -135,16 +127,6 @@ Rscript tableau.R
 ```
 
 R library is under development
-
-## How it works
-
-Tableau dashboard is rendered get its data from an internal API. In order to get the data, you must get the initial tableau URL which is called with the query parameter `:embed=y` and `:showVizHome=no` (checkout networks logs)
-
-In the html body, you have a `textarea` tag with id `tsConfigContainer` with a JSON configuration. The `session_id` field and root path `vizql_root` makes possible to build the session uri : 
-
-    POST https://public.tableau.com/ROOT_PATH/bootstrapSession/sessions/SESSION_ID
-
-The result is 2 json objects. One of them contains the data. The JSON object is complex since it dissociates the value indices from the column indices and from the worksheets.
 
 ## Stackoverflow Questions
 

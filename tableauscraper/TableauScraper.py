@@ -1,4 +1,4 @@
-from urllib.parse import urlparse
+from urllib.parse import urlparse, unquote
 from bs4 import BeautifulSoup
 import json
 import re
@@ -23,6 +23,7 @@ class TableauScraper:
     logger = logging.getLogger("tableauScraper")
     delayMs = 500  # delay between actions (select/dropdown)
     lastActionTime = 0
+    session = None
 
     def __init__(self, logLevel=logging.INFO, delayMs=500):
         ch = logging.StreamHandler()
@@ -33,10 +34,33 @@ class TableauScraper:
         self.logger.addHandler(ch)
         self.logger.setLevel(logLevel)
         self.delayMs = delayMs
+        self.tableauData = {}
+        self.data = {}
+        self.info = {}
 
     def loads(self, url):
-        r = api.getTableauViz(url)
+        api.setSession(self)
+        r = api.getTableauViz(self.session, url)
         soup = BeautifulSoup(r, "html.parser")
+
+        tableauPlaceHolder = soup.find("div", {"class": "tableauPlaceholder"})
+        if tableauPlaceHolder is not None:
+            params = dict([
+                (t.get("name",""),unquote(t.get("value","")))
+                for t in tableauPlaceHolder.findAll("param")
+            ])
+            if ("host_url" not in params) or ("site_root" not in params) or ("name" not in params):
+                self.logger.info("no params found in placeholder")
+                return
+
+            if "ticket" in params:
+                # get xsrf cookie
+                sessionUrl = f'{params["host_url"]}trusted/{params["ticket"]}{params["site_root"]}/views/{params["name"]}'
+                api.getSessionUrl(self.session, sessionUrl)
+
+            url = f'{params["host_url"][:-1]}{params["site_root"]}/views/{params["name"]}'
+            r = api.getTableauVizForSession(self.session, url)
+            soup = BeautifulSoup(r, "html.parser")
 
         self.tableauData = json.loads(
             soup.find("textarea", {"id": "tsConfigContainer"}).text

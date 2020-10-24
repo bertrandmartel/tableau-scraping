@@ -497,3 +497,36 @@ tableauDataResponse = """
 )
 
 fakeUri = "https://public.tableau.com/example"
+
+tableauSessionResponse= """
+<html>
+</html>
+"""
+
+tableauPlaceHolderData = """
+<html>
+    <div class="tableauPlaceholder">
+        <param name="host_url" value="example.com"/>
+        <param name="site_root" value="/site/root"/>
+        <param name="name" value="/someurl"/>
+    </div>
+</html>
+"""
+
+tableauPlaceHolderDataWithTicket = """
+<html>
+    <div class="tableauPlaceholder">
+        <param name="host_url" value="example.com"/>
+        <param name="site_root" value="/site/root"/>
+        <param name="name" value="/someurl"/>
+        <param name="ticket" value="XXXXXXXXXXXXX"/>
+    </div>
+</html>
+"""
+
+tableauPlaceHolderDataEmpty = """
+<html>
+    <div class="tableauPlaceholder">
+    </div>
+</html>
+"""

@@ -1,6 +1,7 @@
 import pytest
 
 from tests.python.test_common import tableauVizHtmlResponse as tableauVizHtmlResponse
+from tests.python.test_common import tableauSessionResponse as tableauSessionResponse
 from tests.python.test_common import tableauDataResponse as tableauDataResponse
 from tests.python.test_common import vqlCmdResponse as vqlCmdResponse
 from tableauscraper import TableauScraper as TS
@@ -9,21 +10,34 @@ from tableauscraper import api
 import json
 from tests.python.test_common import fakeUri as fakeUri
 import time
+import requests
 
 def test_getTableauViz(httpserver):
+    s = requests.Session()
     httpserver.serve_content(tableauVizHtmlResponse)
-    result = api.getTableauViz(httpserver.url)
+    result = api.getTableauViz(s, httpserver.url)
     assert result == tableauVizHtmlResponse
 
+def test_getTableauVizForSession(httpserver):
+    s = requests.Session()
+    httpserver.serve_content(tableauVizHtmlResponse)
+    result = api.getTableauVizForSession(s, httpserver.url)
+    assert result == tableauVizHtmlResponse
+
+def test_getSessionUrl(httpserver):
+    s = requests.Session()
+    httpserver.serve_content(tableauSessionResponse)
+    result = api.getSessionUrl(s, httpserver.url)
+    assert result == tableauSessionResponse
 
 def test_getTableauData(httpserver, mocker: MockerFixture):
     ts = TS()
+    ts.session = requests.Session()
     httpserver.serve_content(tableauDataResponse)
     ts.host = httpserver.url + "/"
     ts.tableauData = {"vizql_root": "", "sessionid":"","sheetId":""}
     result = api.getTableauData(ts)
     assert result == tableauDataResponse
-
 
 def test_select(httpserver, mocker: MockerFixture):
     mocker.patch(

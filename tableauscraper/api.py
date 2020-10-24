@@ -1,17 +1,26 @@
 import json
-import requests
 import time
+import requests
 
+def setSession(scraper):
+    scraper.session = requests.Session()
 
-def getTableauViz(url):
-    r = requests.get(url, params={":embed": "y", ":showVizHome": "no"})
+def getTableauVizForSession(session, url):
+    r = session.get(url, params={":embed": "y", ":showVizHome": "no"})
     return r.text
 
+def getTableauViz(session, url):
+    r = session.get(url, params={":embed": "y", ":showVizHome": "no"})
+    return r.text
+
+def getSessionUrl(session, url):
+    r = session.get(url)
+    return r.text
 
 def getTableauData(scraper):
     dataUrl = f'{scraper.host}{scraper.tableauData["vizql_root"]}/bootstrapSession/sessions/{scraper.tableauData["sessionid"]}'
 
-    r = requests.post(
+    r = scraper.session.post(
         dataUrl,
         data={
             "sheet_id": scraper.tableauData["sheetId"],
@@ -29,7 +38,7 @@ def select(scraper, worksheetName, selection):
         "selection": json.dumps({"objectIds": selection, "selectionType": "tuples"}),
         "selectOptions": "select-options-simple",
     }
-    r = requests.post(
+    r = scraper.session.post(
         f'{scraper.host}{scraper.tableauData["vizql_root"]}/sessions/{scraper.tableauData["sessionid"]}/commands/tabdoc/select',
         data=payload,
     )
@@ -43,7 +52,7 @@ def setParameterValue(scraper, parameterName, value):
         ("valueString", (None, value)),
         ("useUsLocale", (None, "false")),
     )
-    r = requests.post(
+    r = scraper.session.post(
         f'{scraper.host}{scraper.tableauData["vizql_root"]}/sessions/{scraper.tableauData["sessionid"]}/commands/tabdoc/set-parameter-value',
         files=payload,
     )
