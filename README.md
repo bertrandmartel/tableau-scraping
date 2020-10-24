@@ -13,7 +13,7 @@ R library is under development but a script is available to get the worksheets, 
 
 ### Install
 
-```
+```bash
 pip install TableauScraper
 ```
 
@@ -36,6 +36,8 @@ for t in dashboard.worksheets:
 	#show dataframe for this worksheet
 	print(t.data)
 ```
+
+[Try this on repl.it](https://repl.it/@bertrandmartel/TableauGetWorksheets)
 
 * select a selectable item 
 
@@ -63,6 +65,8 @@ for t in dashboard.worksheets:
 	print(t.data)
 ```
 
+[Try this on repl.it](https://repl.it/@bertrandmartel/TableauSelectItem)
+
 * select item in a dropdown
 
 ```python
@@ -89,6 +93,8 @@ dashboard = dashboard.setDropdown("P.League 2", "Ligue 1")
 for t in dashboard.worksheets:
 	print(t.data)
 ```
+
+[Try this on repl.it](https://repl.it/@bertrandmartel/TableauDropdown)
 
 ### Testing Python script
 
