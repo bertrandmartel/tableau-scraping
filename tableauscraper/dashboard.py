@@ -18,9 +18,12 @@ def get(TS, data, info, logger):
 
 
 def getWorksheet(TS, data, info, worksheet) -> TableauWorksheet:
-    indicesInfo = utils.getIndicesInfo(data, worksheet)
-    dataFull = utils.getDataFull(data)
-    frameData = utils.getData(data, dataFull, indicesInfo)
+
+    presModelMap = data["secondaryInfo"]["presModelMap"]
+
+    indicesInfo = utils.getIndicesInfo(presModelMap, worksheet)
+    dataFull = utils.getDataFull(presModelMap)
+    frameData = utils.getData(dataFull, indicesInfo)
 
     df = pd.DataFrame.from_dict(frameData, orient="index").fillna(0).T
 
@@ -34,7 +37,16 @@ def getWorksheet(TS, data, info, worksheet) -> TableauWorksheet:
 
 
 def getWorksheets(TS, data, info) -> TableauDashboard:
-    worksheets = utils.listWorksheet(data)
+
+    presModelMapVizData = utils.getPresModelVizData(data)
+    presModelMapVizInfo = utils.getPresModelVizInfo(info)
+    if presModelMapVizData is not None:
+        worksheets = utils.listWorksheet(presModelMapVizData)
+    elif presModelMapVizInfo is not None:
+        worksheets = utils.listWorksheetInfo(presModelMapVizInfo)
+    else:
+        worksheets = []
+        
     output = []
     for worksheet in worksheets:
         df = getWorksheet(TS, data, info, worksheet)

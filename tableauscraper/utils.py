@@ -17,55 +17,75 @@ def selectWorksheet(data, logger, single=False):
         raise Exception("you must select one worksheet")
     return worksheets
 
+def getPresModelVizData(data):
+    if ("secondaryInfo" in data) and ("presModelMap" in data["secondaryInfo"]) and ("vizData" in data["secondaryInfo"]["presModelMap"]):
+        return data["secondaryInfo"]["presModelMap"]
+    return None
 
-def listWorksheet(data):
-    if "secondaryInfo" not in data:
-        raise (KeyError("secondaryInfo field is missing"))
+def getPresModelVizInfo(info):
+    if ("worldUpdate" in info) and ("applicationPresModel" in info["worldUpdate"]) and ("workbookPresModel" in info["worldUpdate"]["applicationPresModel"]):
+        return info["worldUpdate"]["applicationPresModel"]
+    return None
 
-    if "presModelMap" not in data["secondaryInfo"]:
-        raise (KeyError('secondaryInfo["presModelMap"] field is missing'))
+def listWorksheetInfo(presModel):
+    zones = presModel["workbookPresModel"]["dashboardPresModel"]["zones"]
+    return [
+        zones[z]["worksheet"]
+        for z in list(zones)
+        if ("worksheet" in zones[z])
+        and ("presModelHolder" in zones[z])
+        and ("visual" in zones[z]["presModelHolder"])
+        and ("vizData" in zones[z]["presModelHolder"]["visual"])
+    ]
 
-    if "vizData" not in data["secondaryInfo"]["presModelMap"]:
-        raise (KeyError('secondaryInfo["presModelMap"]["vizData"] field is missing'))
+def listWorksheet(presModelMap):
+#    if "secondaryInfo" not in data:
+#        raise (KeyError("secondaryInfo field is missing"))
+#
+#    if "presModelMap" not in data["secondaryInfo"]:
+#        raise (KeyError('secondaryInfo["presModelMap"] field is missing'))
+#
+#    if "vizData" not in data["secondaryInfo"]["presModelMap"]:
+#        raise (KeyError('secondaryInfo["presModelMap"]["vizData"] field is missing'))
 
-    if "presModelHolder" not in data["secondaryInfo"]["presModelMap"]["vizData"]:
+    if "presModelHolder" not in presModelMap["vizData"]:
         raise (
             KeyError(
-                'secondaryInfo["presModelMap"]["vizData"]["presModelHolder"] field is missing'
+                'presModelMap["vizData"]["presModelHolder"] field is missing'
             )
         )
 
     if (
         "genPresModelMapPresModel"
-        not in data["secondaryInfo"]["presModelMap"]["vizData"]["presModelHolder"]
+        not in presModelMap["vizData"]["presModelHolder"]
     ):
         raise (
             KeyError(
-                'data["secondaryInfo"]["presModelMap"]["vizData"]["presModelHolder"]["genPresModelMapPresModel"] field is missing'
+                'presModelMap["vizData"]["presModelHolder"]["genPresModelMapPresModel"] field is missing'
             )
         )
 
     if (
         "presModelMap"
-        not in data["secondaryInfo"]["presModelMap"]["vizData"]["presModelHolder"][
+        not in presModelMap["vizData"]["presModelHolder"][
             "genPresModelMapPresModel"
         ]
     ):
         raise (
             KeyError(
-                'data["secondaryInfo"]["presModelMap"]["vizData"]["presModelHolder"]["genPresModelMapPresModel"]["presModelMap"] field is missing'
+                'presModelMap["vizData"]["presModelHolder"]["genPresModelMapPresModel"]["presModelMap"] field is missing'
             )
         )
 
     return list(
-        data["secondaryInfo"]["presModelMap"]["vizData"]["presModelHolder"][
+        presModelMap["vizData"]["presModelHolder"][
             "genPresModelMapPresModel"
         ]["presModelMap"].keys()
     )
 
 
-def getIndicesInfo(data, worksheet, noSelectFilter=True):
-    genVizDataPresModel = data["secondaryInfo"]["presModelMap"]["vizData"][
+def getIndicesInfo(presModelMap, worksheet, noSelectFilter=True):
+    genVizDataPresModel = presModelMap["vizData"][
         "presModelHolder"
     ]["genPresModelMapPresModel"]["presModelMap"][worksheet]["presModelHolder"][
         "genVizDataPresModel"
@@ -115,8 +135,8 @@ def getIndicesInfoVqlResponse(presModel, worksheet, noSelectFilter=True):
         if t.get("fieldCaption") and (noSelectFilter or (t.get("isAutoSelect") == True))
     ]
 
-def getDataFull(data):
-    dataSegments = data["secondaryInfo"]["presModelMap"]["dataDictionary"][
+def getDataFull(presModelMap):
+    dataSegments = presModelMap["dataDictionary"][
         "presModelHolder"
     ]["genDataDictionaryPresModel"]["dataSegments"]
     dataSegmentscp = copy.deepcopy(dataSegments)
@@ -137,7 +157,7 @@ def onDataValue(it, value, cstring):
     return value[it] if (it >= 0) else cstring[abs(it) - 1]
 
 
-def getData(data, dataFull, indicesInfo):
+def getData(dataFull, indicesInfo):
     cstring = dataFull["cstring"]
 
     frameData = {}
