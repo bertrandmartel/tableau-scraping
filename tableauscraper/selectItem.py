@@ -7,7 +7,6 @@ from tableauscraper.TableauDashboard import TableauDashboard
 
 
 def get(TS, data, info, logger):
-    output = []
     worksheets = utils.selectWorksheet(data, logger, single=True)
     if len(worksheets) == 0:
         return TableauDashboard(
@@ -15,7 +14,8 @@ def get(TS, data, info, logger):
         )
     selectedWorksheet = worksheets[0]
 
-    result = utils.getIndicesInfo(data, selectedWorksheet, noSelectFilter=False)
+    presModel = utils.getPresModelVizData(data)
+    result = utils.getIndicesInfo(presModel, selectedWorksheet, noSelectFilter=False)
 
     for idx, t in enumerate(result):
         logger.info(f"[{idx}] {t['fieldCaption']}")
@@ -27,8 +27,8 @@ def get(TS, data, info, logger):
     field = result[int(selected)]
     logger.info(f"you have selected {field['fieldCaption']}")
 
-    dataFull = utils.getDataFull(data)
-    frameData = utils.getData(data, dataFull, [field])
+    dataFull = utils.getDataFull(presModel)
+    frameData = utils.getData(dataFull, [field])
     frameDataKeys = list(frameData.keys())
 
     if len(frameDataKeys) == 0:

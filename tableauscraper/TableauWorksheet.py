@@ -1,6 +1,7 @@
 import pandas as pd
 import tableauscraper
 from typing import List
+from tableauscraper import utils
 
 
 class TableauWorksheet:
@@ -37,9 +38,9 @@ class TableauWorksheet:
                 presModel
             )
         else:
+            presModel = tableauscraper.utils.getPresModelVizData(self._originalData)
             self._data_dictionnary = tableauscraper.utils.getDataFull(
-                self._originalData
-            )
+                presModel)
 
     def getColumns(self) -> List[str]:
         if self.cmdResponse:
@@ -51,10 +52,11 @@ class TableauWorksheet:
                 )
             ]
         else:
+            presModel = tableauscraper.utils.getPresModelVizData(self._originalData)
             return [
                 t["fieldCaption"]
                 for t in tableauscraper.utils.getIndicesInfo(
-                    self._originalData, self.name, noSelectFilter=True
+                    presModel, self.name, noSelectFilter=True
                 )
             ]
 
@@ -68,10 +70,11 @@ class TableauWorksheet:
                 )
             ]
         else:
+            presModel = tableauscraper.utils.getPresModelVizData(self._originalData)
             return [
                 t["fieldCaption"]
                 for t in tableauscraper.utils.getIndicesInfo(
-                    self._originalData, self.name, noSelectFilter=False
+                    presModel, self.name, noSelectFilter=False
                 )
             ]
 
@@ -96,17 +99,18 @@ class TableauWorksheet:
                 return []
             return frameData[frameDataKeys[0]]
         else:
+            presModel = tableauscraper.utils.getPresModelVizData(self._originalData)
             columnObj = [
                 t
                 for t in tableauscraper.utils.getIndicesInfo(
-                    self._originalData, self.name, noSelectFilter=True
+                    presModel, self.name, noSelectFilter=True
                 )
                 if t["fieldCaption"] == column
             ]
             if len(columnObj) == 0:
                 return []
             frameData = tableauscraper.utils.getData(
-                self._originalData, self._data_dictionnary, [columnObj[0]]
+                self._data_dictionnary, [columnObj[0]]
             )
             frameDataKeys = list(frameData.keys())
 
@@ -118,7 +122,8 @@ class TableauWorksheet:
         values = self.getValues(column)
         try:
             index = values.index(value)
-            r = tableauscraper.api.select(self._scraper, self.name, [index + 1])
+            r = tableauscraper.api.select(
+                self._scraper, self.name, [index + 1])
             return tableauscraper.dashboard.getWorksheetsCmdResponse(self._scraper, r)
         except ValueError:
             return tableauscraper.TableauDashboard(

@@ -3,7 +3,8 @@ import copy
 
 
 def selectWorksheet(data, logger, single=False):
-    worksheets = listWorksheet(data)
+    presModelmap = getPresModelVizData(data)
+    worksheets = listWorksheet(presModelmap)
     if len(worksheets) == 0:
         return []
     for idx, ws in enumerate(worksheets):
@@ -20,7 +21,8 @@ def selectWorksheet(data, logger, single=False):
 def getPresModelVizData(data):
     if ("secondaryInfo" in data) and ("presModelMap" in data["secondaryInfo"]) and ("vizData" in data["secondaryInfo"]["presModelMap"]):
         return data["secondaryInfo"]["presModelMap"]
-    return None
+    else:
+        return None
 
 def getPresModelVizInfo(info):
     if ("worldUpdate" in info) and ("applicationPresModel" in info["worldUpdate"]) and ("workbookPresModel" in info["worldUpdate"]["applicationPresModel"]):

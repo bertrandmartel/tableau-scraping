@@ -73,14 +73,14 @@ def test_TableauScraper_loadsWithPlaceholderEmpty(mocker: MockerFixture) -> None
     assert ts.__dict__["info"] == {}
 
 
-def test_TableauScraper_listWorksheetNames(mocker: MockerFixture) -> None:
-    mocker.patch(
-        "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
-    )
-    mocker.patch("tableauscraper.api.getTableauData", return_value=tableauDataResponse)
-    ts = TS()
-    ts.loads(fakeUri)
-    assert ts.listWorksheetNames() == ["[WORKSHEET1]", "[WORKSHEET2]"]
+# def test_TableauScraper_listWorksheetNames(mocker: MockerFixture) -> None:
+#     mocker.patch(
+#         "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
+#     )
+#     mocker.patch("tableauscraper.api.getTableauData", return_value=tableauDataResponse)
+#     ts = TS()
+#     ts.loads(fakeUri)
+#     assert ts.listWorksheetNames() == ["[WORKSHEET1]", "[WORKSHEET2]"]
 
 
 def test_TableauScraper_getWorksheets(mocker: MockerFixture) -> None:

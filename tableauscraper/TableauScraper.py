@@ -76,8 +76,8 @@ class TableauScraper:
         self.data = json.loads(dataReg.group(2))
         self.dashboard = self.info["sheetName"]
 
-    def listWorksheetNames(self):
-        return utils.listWorksheet(self.data)
+    # def listWorksheetNames(self):
+    #     return dashboard.getWorksheetNames(self)
 
     def getDashboard(self) -> TableauDashboard:
         return dashboard.getWorksheets(self, self.data, self.info)

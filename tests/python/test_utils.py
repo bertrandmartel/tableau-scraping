@@ -18,7 +18,8 @@ import logging
 
 
 def test_listWorksheet():
-    worksheets = utils.listWorksheet(data)
+    presModel = utils.getPresModelVizData(data)
+    worksheets = utils.listWorksheet(presModel)
     assert len(worksheets) == 2
     assert worksheets[0] == "[WORKSHEET1]"
     assert worksheets[1] == "[WORKSHEET2]"
@@ -57,7 +58,8 @@ def test_selectWorksheet(monkeypatch):
 
 
 def test_getIndicesInfo():
-    indicesInfo = utils.getIndicesInfo(data, "[WORKSHEET1]")
+    presModel = utils.getPresModelVizData(data)
+    indicesInfo = utils.getIndicesInfo(presModel, "[WORKSHEET1]")
     assert len(indicesInfo) == 2
     assert "fieldCaption" in indicesInfo[0]
     assert "valueIndices" in indicesInfo[0]
@@ -73,12 +75,13 @@ def test_getIndicesInfo():
     assert indicesInfo[1]["fieldCaption"] == "[FIELD2]"
 
     # check noSelectFilter parameter
-    indicesInfo = utils.getIndicesInfo(data, "[WORKSHEET1]", noSelectFilter=False)
+    indicesInfo = utils.getIndicesInfo(presModel, "[WORKSHEET1]", noSelectFilter=False)
     assert len(indicesInfo) == 1
 
 
 def test_getDataFull():
-    dataFull = utils.getDataFull(data)
+    presModel = utils.getPresModelVizData(data)
+    dataFull = utils.getDataFull(presModel)
     # check the extended list is not modified
     assert (
         len(
@@ -113,9 +116,10 @@ def test_onDataValue():
 
 
 def test_getData():
-    dataFull = utils.getDataFull(data)
-    indicesInfo = utils.getIndicesInfo(data, "[WORKSHEET1]")
-    frameData = utils.getData(data, dataFull, indicesInfo)
+    presModel = utils.getPresModelVizData(data)
+    dataFull = utils.getDataFull(presModel)
+    indicesInfo = utils.getIndicesInfo(presModel, "[WORKSHEET1]")
+    frameData = utils.getData(dataFull, indicesInfo)
     assert len(frameData.keys()) == 2
     assert "[FIELD1]-value" in frameData
     assert "[FIELD2]-alias" in frameData

@@ -26,7 +26,8 @@ class TableauDashboard:
                 for t in tableauscraper.utils.listWorksheetCmdResponse(presModel)
             ]
         else:
-            return tableauscraper.utils.listWorksheet(self._originalData)
+            presModel = tableauscraper.utils.getPresModelVizData(self._originalData)
+            return tableauscraper.utils.listWorksheet(presModel)
 
     def getWorksheets(self):
         if self.cmdResponse:
