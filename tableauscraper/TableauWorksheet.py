@@ -2,6 +2,7 @@ import pandas as pd
 import tableauscraper
 from typing import List
 from tableauscraper import utils
+import copy
 
 
 class TableauWorksheet:
@@ -22,6 +23,7 @@ class TableauWorksheet:
         originalInfo,
         worksheetName,
         dataFrame,
+        dataFull,
         cmdResponse=False,
     ):
         self._scraper = scraper
@@ -30,17 +32,28 @@ class TableauWorksheet:
         self._originalData = originalData
         self._originalInfo = originalInfo
         self.cmdResponse = cmdResponse
-        if self.cmdResponse:
-            presModel = self._originalData["vqlCmdResponse"]["layoutStatus"][
-                "applicationPresModel"
-            ]
-            self._data_dictionnary = tableauscraper.utils.getDataFullCmdResponse(
-                presModel
-            )
-        else:
-            presModel = tableauscraper.utils.getPresModelVizData(self._originalData)
-            self._data_dictionnary = tableauscraper.utils.getDataFull(
-                presModel)
+        self._data_dictionnary = dataFull
+        # if self.cmdResponse:
+        #     presModel = self._originalData["vqlCmdResponse"]["layoutStatus"][
+        #         "applicationPresModel"
+        #     ]
+        #     self._data_dictionnary = tableauscraper.utils.getDataFullCmdResponse(
+        #         presModel, self._scraper.dataSegments
+        #     )
+        # else:
+        #     presModel = tableauscraper.utils.getPresModelVizData(
+        #         self._originalData)
+        #     self._data_dictionnary = tableauscraper.utils.getDataFull(
+        #         presModel, self._scraper.dataSegments)
+
+    def updateFullData(self, cmdResponse):
+        presModel = cmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
+        dataSegments = presModel["dataDictionary"]["dataSegments"]
+        dataSegmentscp = copy.deepcopy(dataSegments)
+        keys = list(dataSegmentscp.keys())
+        for key in keys:
+            if key not in self._scraper.dataSegments:
+                self._scraper.dataSegments[key] = dataSegmentscp[key]
 
     def getColumns(self) -> List[str]:
         if self.cmdResponse:
@@ -52,7 +65,8 @@ class TableauWorksheet:
                 )
             ]
         else:
-            presModel = tableauscraper.utils.getPresModelVizData(self._originalData)
+            presModel = tableauscraper.utils.getPresModelVizData(
+                self._originalData)
             return [
                 t["fieldCaption"]
                 for t in tableauscraper.utils.getIndicesInfo(
@@ -70,7 +84,8 @@ class TableauWorksheet:
                 )
             ]
         else:
-            presModel = tableauscraper.utils.getPresModelVizData(self._originalData)
+            presModel = tableauscraper.utils.getPresModelVizData(
+                self._originalData)
             return [
                 t["fieldCaption"]
                 for t in tableauscraper.utils.getIndicesInfo(
@@ -99,7 +114,8 @@ class TableauWorksheet:
                 return []
             return frameData[frameDataKeys[0]]
         else:
-            presModel = tableauscraper.utils.getPresModelVizData(self._originalData)
+            presModel = tableauscraper.utils.getPresModelVizData(
+                self._originalData)
             columnObj = [
                 t
                 for t in tableauscraper.utils.getIndicesInfo(
@@ -124,6 +140,7 @@ class TableauWorksheet:
             index = values.index(value)
             r = tableauscraper.api.select(
                 self._scraper, self.name, [index + 1])
+            self.updateFullData(r)
             return tableauscraper.dashboard.getWorksheetsCmdResponse(self._scraper, r)
         except ValueError:
             return tableauscraper.TableauDashboard(

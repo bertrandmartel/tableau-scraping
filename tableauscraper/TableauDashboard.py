@@ -1,6 +1,7 @@
 from typing import List
 from tableauscraper.TableauWorksheet import TableauWorksheet
 import tableauscraper
+import copy
 
 
 class TableauDashboard:
@@ -18,6 +19,15 @@ class TableauDashboard:
         self._originalData = originalData
         self._originalInfo = originalInfo
 
+    def updateFullData(self, cmdResponse):
+        presModel = cmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
+        dataSegments = presModel["dataDictionary"]["dataSegments"]
+        dataSegmentscp = copy.deepcopy(dataSegments)
+        keys = list(dataSegmentscp.keys())
+        for key in keys:
+            if key not in self._scraper.dataSegments:
+                self._scraper.dataSegments[key] = dataSegmentscp[key]
+
     def getWorksheetNames(self):
         if self.cmdResponse:
             presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
@@ -26,7 +36,8 @@ class TableauDashboard:
                 for t in tableauscraper.utils.listWorksheetCmdResponse(presModel)
             ]
         else:
-            presModel = tableauscraper.utils.getPresModelVizData(self._originalData)
+            presModel = tableauscraper.utils.getPresModelVizData(
+                self._originalData)
             return tableauscraper.utils.listWorksheet(presModel)
 
     def getWorksheets(self):
@@ -112,4 +123,5 @@ class TableauDashboard:
         r = tableauscraper.api.setParameterValue(
             self._scraper, parameterNames[0], value
         )
+        self.updateFullData(r)
         return tableauscraper.dashboard.getWorksheetsCmdResponse(self._scraper, r)

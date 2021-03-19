@@ -18,16 +18,19 @@ def selectWorksheet(data, logger, single=False):
         raise Exception("you must select one worksheet")
     return worksheets
 
+
 def getPresModelVizData(data):
     if ("secondaryInfo" in data) and ("presModelMap" in data["secondaryInfo"]) and ("vizData" in data["secondaryInfo"]["presModelMap"]):
         return data["secondaryInfo"]["presModelMap"]
     else:
         return None
 
+
 def getPresModelVizInfo(info):
     if ("worldUpdate" in info) and ("applicationPresModel" in info["worldUpdate"]) and ("workbookPresModel" in info["worldUpdate"]["applicationPresModel"]):
         return info["worldUpdate"]["applicationPresModel"]
     return None
+
 
 def listWorksheetInfo(presModel):
     zones = presModel["workbookPresModel"]["dashboardPresModel"]["zones"]
@@ -40,15 +43,16 @@ def listWorksheetInfo(presModel):
         and ("vizData" in zones[z]["presModelHolder"]["visual"])
     ]
 
+
 def listWorksheet(presModelMap):
-#    if "secondaryInfo" not in data:
-#        raise (KeyError("secondaryInfo field is missing"))
-#
-#    if "presModelMap" not in data["secondaryInfo"]:
-#        raise (KeyError('secondaryInfo["presModelMap"] field is missing'))
-#
-#    if "vizData" not in data["secondaryInfo"]["presModelMap"]:
-#        raise (KeyError('secondaryInfo["presModelMap"]["vizData"] field is missing'))
+    #    if "secondaryInfo" not in data:
+    #        raise (KeyError("secondaryInfo field is missing"))
+    #
+    #    if "presModelMap" not in data["secondaryInfo"]:
+    #        raise (KeyError('secondaryInfo["presModelMap"] field is missing'))
+    #
+    #    if "vizData" not in data["secondaryInfo"]["presModelMap"]:
+    #        raise (KeyError('secondaryInfo["presModelMap"]["vizData"] field is missing'))
 
     if "presModelHolder" not in presModelMap["vizData"]:
         raise (
@@ -110,10 +114,12 @@ def getIndicesInfo(presModelMap, worksheet, noSelectFilter=True):
         if t.get("fieldCaption") and (noSelectFilter or (t.get("isAutoSelect") == True))
     ]
 
+
 def getIndicesInfoVqlResponse(presModel, worksheet, noSelectFilter=True):
     zonesWithWorksheet = listWorksheetCmdResponse(presModel)
 
-    selectedZones = [t for t in zonesWithWorksheet if t["worksheet"] == worksheet]
+    selectedZones = [
+        t for t in zonesWithWorksheet if t["worksheet"] == worksheet]
     if len(selectedZones) == 0:
         return []
     selectedZone = selectedZones[0]
@@ -137,14 +143,18 @@ def getIndicesInfoVqlResponse(presModel, worksheet, noSelectFilter=True):
         if t.get("fieldCaption") and (noSelectFilter or (t.get("isAutoSelect") == True))
     ]
 
-def getDataFull(presModelMap):
-    dataSegments = presModelMap["dataDictionary"][
-        "presModelHolder"
-    ]["genDataDictionaryPresModel"]["dataSegments"]
+
+def getDataFull(presModelMap, originSegments):
+    dataSegments = presModelMap["dataDictionary"]["presModelHolder"]["genDataDictionaryPresModel"]["dataSegments"]
     dataSegmentscp = copy.deepcopy(dataSegments)
+    originSegmentscp = copy.deepcopy(originSegments)
     dataColumns = []
+    for d in list(originSegmentscp):
+        dataColumns.extend(originSegmentscp[d]["dataColumns"])
+
     for d in list(dataSegmentscp):
-        dataColumns.extend(dataSegmentscp[d]["dataColumns"])
+        if d not in originSegments:
+            dataColumns.extend(dataSegmentscp[d]["dataColumns"])
 
     dataFull = {}
     for t in dataColumns:
@@ -176,6 +186,7 @@ def getData(dataFull, indicesInfo):
                 ]
     return frameData
 
+
 def getDataCmdResponse(dataFull, indicesInfo):
     cstring = dataFull["cstring"]
     frameData = {}
@@ -193,12 +204,18 @@ def getDataCmdResponse(dataFull, indicesInfo):
 
     return frameData
 
-def getDataFullCmdResponse(presModel):
+
+def getDataFullCmdResponse(presModel, originSegments):
     dataSegments = presModel["dataDictionary"]["dataSegments"]
     dataSegmentscp = copy.deepcopy(dataSegments)
+    originSegmentscp = copy.deepcopy(originSegments)
     dataColumns = []
+    for d in list(originSegmentscp):
+        dataColumns.extend(originSegmentscp[d]["dataColumns"])
+
     for d in list(dataSegmentscp):
-        dataColumns.extend(dataSegmentscp[d]["dataColumns"])
+        if d not in originSegments:
+            dataColumns.extend(dataSegmentscp[d]["dataColumns"])
 
     dataFull = {}
     for t in dataColumns:

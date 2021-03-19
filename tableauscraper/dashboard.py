@@ -22,17 +22,19 @@ def getWorksheet(TS, data, info, worksheet) -> TableauWorksheet:
     presModelMap = data["secondaryInfo"]["presModelMap"]
 
     indicesInfo = utils.getIndicesInfo(presModelMap, worksheet)
-    dataFull = utils.getDataFull(presModelMap)
+    dataFull = utils.getDataFull(presModelMap, TS.dataSegments)
     frameData = utils.getData(dataFull, indicesInfo)
 
     df = pd.DataFrame.from_dict(frameData, orient="index").fillna(0).T
 
+    presModel = utils.getPresModelVizData(data)
     return TableauWorksheet(
         scraper=TS,
         originalData=data,
         originalInfo=info,
         worksheetName=worksheet,
-        dataFrame=df,
+        dataFull=utils.getDataFull(presModel, TS.dataSegments),
+        dataFrame=df
     )
 
 
@@ -46,7 +48,7 @@ def getWorksheets(TS, data, info) -> TableauDashboard:
         worksheets = utils.listWorksheetInfo(presModelMapVizInfo)
     else:
         worksheets = []
-        
+
     output = []
     for worksheet in worksheets:
         df = getWorksheet(TS, data, info, worksheet)
@@ -61,7 +63,7 @@ def getCmdResponse(TS, data, logger):
     presModel = data["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
 
     zonesWithWorksheet = utils.selectWorksheetCmdResponse(presModel, logger)
-    dataFull = utils.getDataFullCmdResponse(presModel)
+    dataFull = utils.getDataFullCmdResponse(presModel, TS.dataSegments)
     output = []
     for selectedZone in zonesWithWorksheet:
         frameData = utils.getWorksheetCmdResponse(selectedZone, dataFull)
@@ -78,6 +80,8 @@ def getCmdResponse(TS, data, logger):
                 originalInfo={},
                 worksheetName=selectedZone["worksheet"],
                 dataFrame=df,
+                dataFull=utils.getDataFullCmdResponse(
+                    presModel, TS.dataSegments),
                 cmdResponse=True,
             )
         )
@@ -87,7 +91,7 @@ def getCmdResponse(TS, data, logger):
 def getWorksheetsCmdResponse(TS, data):
     presModel = data["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
     zonesWithWorksheet = utils.listWorksheetCmdResponse(presModel)
-    dataFull = utils.getDataFullCmdResponse(presModel)
+    dataFull = utils.getDataFullCmdResponse(presModel, TS.dataSegments)
     output = []
     for selectedZone in zonesWithWorksheet:
         frameData = utils.getWorksheetCmdResponse(selectedZone, dataFull)
@@ -104,6 +108,8 @@ def getWorksheetsCmdResponse(TS, data):
                 originalInfo={},
                 worksheetName=selectedZone["worksheet"],
                 dataFrame=df,
+                dataFull=utils.getDataFullCmdResponse(
+                    presModel, TS.dataSegments),
                 cmdResponse=True,
             )
         )
@@ -126,12 +132,14 @@ def getWorksheetCmdResponse(TS, data, worksheetName):
             originalInfo={},
             worksheetName=worksheetName,
             dataFrame=pd.DataFrame(),
+            dataFull=utils.getDataFullCmdResponse(
+                presModel, TS.dataSegments),
             cmdResponse=True,
         )
 
     selectedZone = zonesWithWorksheet[0]
 
-    dataFull = utils.getDataFullCmdResponse(presModel)
+    dataFull = utils.getDataFullCmdResponse(presModel, TS.dataSegments)
     frameData = utils.getWorksheetCmdResponse(selectedZone, dataFull)
 
     if frameData is None:
@@ -141,6 +149,8 @@ def getWorksheetCmdResponse(TS, data, worksheetName):
             originalInfo={},
             worksheetName=worksheetName,
             dataFrame=pd.DataFrame(),
+            dataFull=utils.getDataFullCmdResponse(
+                presModel, TS.dataSegments),
             cmdResponse=True,
         )
 
@@ -152,5 +162,7 @@ def getWorksheetCmdResponse(TS, data, worksheetName):
         originalInfo={},
         worksheetName=selectedZone["worksheet"],
         dataFrame=df,
+        dataFull=utils.getDataFullCmdResponse(
+            presModel, TS.dataSegments),
         cmdResponse=True,
     )

@@ -20,6 +20,7 @@ class TableauScraper:
     data = {}
     dashboard: str = ""
     tableauData = {}
+    dataSegments = {}
     logger = logging.getLogger("tableauScraper")
     delayMs = 500  # delay between actions (select/dropdown)
     lastActionTime = 0
@@ -46,7 +47,7 @@ class TableauScraper:
         tableauPlaceHolder = soup.find("div", {"class": "tableauPlaceholder"})
         if tableauPlaceHolder is not None:
             params = dict([
-                (t.get("name",""),unquote(t.get("value","")))
+                (t.get("name", ""), unquote(t.get("value", "")))
                 for t in tableauPlaceHolder.findAll("param")
             ])
             if ("host_url" not in params) or ("site_root" not in params) or ("name" not in params):
@@ -74,6 +75,10 @@ class TableauScraper:
         dataReg = re.search(r"\d+;({.*})\d+;({.*})", r, re.MULTILINE)
         self.info = json.loads(dataReg.group(1))
         self.data = json.loads(dataReg.group(2))
+
+        presModelMap = self.data["secondaryInfo"]["presModelMap"]
+        self.dataSegments = presModelMap["dataDictionary"]["presModelHolder"]["genDataDictionaryPresModel"]["dataSegments"]
+
         self.dashboard = self.info["sheetName"]
 
     # def listWorksheetNames(self):

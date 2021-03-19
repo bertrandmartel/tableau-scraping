@@ -15,7 +15,8 @@ def get(TS, data, info, logger):
     selectedWorksheet = worksheets[0]
 
     presModel = utils.getPresModelVizData(data)
-    result = utils.getIndicesInfo(presModel, selectedWorksheet, noSelectFilter=False)
+    result = utils.getIndicesInfo(
+        presModel, selectedWorksheet, noSelectFilter=False)
 
     for idx, t in enumerate(result):
         logger.info(f"[{idx}] {t['fieldCaption']}")
@@ -27,7 +28,7 @@ def get(TS, data, info, logger):
     field = result[int(selected)]
     logger.info(f"you have selected {field['fieldCaption']}")
 
-    dataFull = utils.getDataFull(presModel)
+    dataFull = utils.getDataFull(presModel, TS.dataSegments)
     frameData = utils.getData(dataFull, [field])
     frameDataKeys = list(frameData.keys())
 

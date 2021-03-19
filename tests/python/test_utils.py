@@ -75,13 +75,14 @@ def test_getIndicesInfo():
     assert indicesInfo[1]["fieldCaption"] == "[FIELD2]"
 
     # check noSelectFilter parameter
-    indicesInfo = utils.getIndicesInfo(presModel, "[WORKSHEET1]", noSelectFilter=False)
+    indicesInfo = utils.getIndicesInfo(
+        presModel, "[WORKSHEET1]", noSelectFilter=False)
     assert len(indicesInfo) == 1
 
 
 def test_getDataFull():
     presModel = utils.getPresModelVizData(data)
-    dataFull = utils.getDataFull(presModel)
+    dataFull = utils.getDataFull(presModel, {})
     # check the extended list is not modified
     assert (
         len(
@@ -109,15 +110,17 @@ def test_getDataFull():
 
 
 def test_onDataValue():
-    newVal = utils.onDataValue(1, [1, 2, 3, 4, 5], ["string1", "string2", "string3"])
+    newVal = utils.onDataValue(
+        1, [1, 2, 3, 4, 5], ["string1", "string2", "string3"])
     assert newVal == 2
-    newVal = utils.onDataValue(-1, [1, 2, 3, 4, 5], ["string1", "string2", "string3"])
+    newVal = utils.onDataValue(-1, [1, 2, 3, 4, 5],
+                               ["string1", "string2", "string3"])
     assert newVal == "string1"
 
 
 def test_getData():
     presModel = utils.getPresModelVizData(data)
-    dataFull = utils.getDataFull(presModel)
+    dataFull = utils.getDataFull(presModel, {})
     indicesInfo = utils.getIndicesInfo(presModel, "[WORKSHEET1]")
     frameData = utils.getData(dataFull, indicesInfo)
     assert len(frameData.keys()) == 2
@@ -131,7 +134,7 @@ def test_getData():
 
 def test_getDataFullCmdResponse():
     presModel = vqlCmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
-    dataFull = utils.getDataFullCmdResponse(presModel)
+    dataFull = utils.getDataFullCmdResponse(presModel, {})
     assert len(dataFull.keys()) == 2
     assert "cstring" in dataFull
     assert "real" in dataFull
@@ -146,12 +149,13 @@ def test_listWorksheetCmdResponse():
     worksheetList = utils.listWorksheetCmdResponse(presModel)
     assert type(worksheetList) is list
     assert len(worksheetList) == 2
-    assert [t["worksheet"] for t in worksheetList] == ["[WORKSHEET1]", "[WORKSHEET2]"]
+    assert [t["worksheet"]
+            for t in worksheetList] == ["[WORKSHEET1]", "[WORKSHEET2]"]
 
 
 def test_getWorksheetCmdResponse():
     presModel = vqlCmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
-    dataFull = utils.getDataFullCmdResponse(presModel)
+    dataFull = utils.getDataFullCmdResponse(presModel, {})
     worksheet = utils.listWorksheetCmdResponse(presModel)[0]
     frameData = utils.getWorksheetCmdResponse(worksheet, dataFull)
     assert len(frameData.keys()) == 2
@@ -172,7 +176,8 @@ def test_selectWorksheetCmdResponse(monkeypatch):
     worksheetList = utils.selectWorksheetCmdResponse(presModel, logger)
     assert type(worksheetList) is list
     assert len(worksheetList) == 2
-    assert [t["worksheet"] for t in worksheetList] == ["[WORKSHEET1]", "[WORKSHEET2]"]
+    assert [t["worksheet"]
+            for t in worksheetList] == ["[WORKSHEET1]", "[WORKSHEET2]"]
 
     # one worksheet
     monkeypatch.setattr("builtins.input", lambda _: "0")
@@ -202,7 +207,7 @@ def test_getParameterControlVqlResponse():
 
 def test_getDataCmdResponse():
     presModel = vqlCmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
-    dataFull = utils.getDataFullCmdResponse(presModel)
+    dataFull = utils.getDataFullCmdResponse(presModel, {})
     indicesInfo = utils.getIndicesInfoVqlResponse(presModel, "[WORKSHEET1]")
     frameData = utils.getDataCmdResponse(dataFull, indicesInfo)
     assert len(frameData.keys()) == 2
@@ -241,7 +246,7 @@ def test_getIndicesInfoVqlResponse():
     indicesInfo = utils.getIndicesInfoVqlResponse(presModel, "XXXXX")
     assert len(indicesInfo) == 0
 
-    ## empty data
+    # empty data
     presModel = vqlCmdResponseEmptyValues["vqlCmdResponse"]["layoutStatus"][
         "applicationPresModel"
     ]
