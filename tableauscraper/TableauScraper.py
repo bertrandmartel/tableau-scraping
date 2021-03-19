@@ -45,6 +45,7 @@ class TableauScraper:
         soup = BeautifulSoup(r, "html.parser")
 
         tableauPlaceHolder = soup.find("div", {"class": "tableauPlaceholder"})
+
         if tableauPlaceHolder is not None:
             params = dict([
                 (t.get("name", ""), unquote(t.get("value", "")))
@@ -68,10 +69,9 @@ class TableauScraper:
         )
 
         uri = urlparse(url)
-        self.host = "{uri.scheme}://{uri.netloc}/".format(uri=uri)
+        self.host = "{uri.scheme}://{uri.netloc}".format(uri=uri)
 
         r = api.getTableauData(self)
-
         dataReg = re.search(r"\d+;({.*})\d+;({.*})", r, re.MULTILINE)
         self.info = json.loads(dataReg.group(1))
         self.data = json.loads(dataReg.group(2))
