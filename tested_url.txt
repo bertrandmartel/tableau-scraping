@@ -15,3 +15,4 @@ https://idph.illinois.gov/OpioidDataDashboard/
 https://public.tableau.com/views/Colorado_COVID19_Data/CO_Home
 https://public.tableau.com/views/NewspapersByCountyCalifornia/Newspaperbycounty
 https://public.tableau.com/views/OregonCOVID-19CasesbyZIPCode-SummaryTable/CasesbyZIPCodeSummaryTable
+https://tableau.ons.org.br/t/ONS_Publico/views/DemandaMxima/HistricoDemandaMxima
