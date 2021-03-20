@@ -7,3 +7,10 @@ https://results.mo.go/t/COVID19/views/Demographics/Public-Demographics
 https://public.tableau.com/views/COVID-19DailyDashboard_15960160643010/Casesbyneighbourhood
 https://public.tableau.com/views/Likelytovotebymail/VBMdashboard
 https://public.tableau.com/views/PlayerStats-Top5Leagues20192020/OnePlayerSummary
+https://bi.wisconsin.gov/t/DHS/views/VaccinesAdministeredtoWIResidents/VaccinatedWisconsin-County
+https://public.tableau.com/views/NCDHHS_COVID-19_Dashboard_Vaccinations/Summary
+https://tableau.azdhs.gov/views/VaccineDashboard/Vaccineadministrationdata
+https://covid19tracker.health.ny.gov/views/NYS-COVID19-Tracker/NYSDOHCOVID-19Tracker-Fatalities
+https://idph.illinois.gov/OpioidDataDashboard/
+https://public.tableau.com/views/Colorado_COVID19_Data/CO_Home
+https://public.tableau.com/views/NewspapersByCountyCalifornia/Newspaperbycounty
