@@ -134,12 +134,44 @@ class TableauWorksheet:
                 return []
             return frameData[frameDataKeys[0]]
 
+    def getTupleIds(self, column) -> List[int]:
+        if self.cmdResponse:
+            presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
+            columnObj = [
+                t
+                for t in tableauscraper.utils.getIndicesInfoVqlResponse(
+                    presModel, self.name, noSelectFilter=True, noFieldCaption=True
+                )
+                if t["fn"] == "[system:visual].[tuple_id]"
+            ]
+            if len(columnObj) == 0:
+                return []
+
+            return columnObj[0]["tupleIds"]
+        else:
+            presModel = tableauscraper.utils.getPresModelVizData(
+                self._originalData)
+            columnObj = [
+                t
+                for t in tableauscraper.utils.getIndicesInfo(
+                    presModel, self.name, noSelectFilter=True, noFieldCaption=True
+                )
+                if t["fn"] == "[system:visual].[tuple_id]"
+            ]
+            if len(columnObj) == 0:
+                return []
+            return columnObj[0]["tupleIds"]
+
     def select(self, column, value):
         values = self.getValues(column)
+        tupleIds = self.getTupleIds(column)
         try:
             index = values.index(value)
-            r = tableauscraper.api.select(
-                self._scraper, self.name, [index + 1])
+            if len(tupleIds) > index:
+                index = tupleIds[index]
+            else:
+                index = index + 1
+            r = tableauscraper.api.select(self._scraper, self.name, [index])
             self.updateFullData(r)
             return tableauscraper.dashboard.getWorksheetsCmdResponse(self._scraper, r)
         except ValueError:
