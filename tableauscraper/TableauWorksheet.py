@@ -52,7 +52,7 @@ class TableauWorksheet:
         dataSegmentscp = copy.deepcopy(dataSegments)
         keys = list(dataSegmentscp.keys())
         for key in keys:
-            if key not in self._scraper.dataSegments:
+            if dataSegmentscp[key] is not None:
                 self._scraper.dataSegments[key] = dataSegmentscp[key]
 
     def getColumns(self) -> List[str]:
