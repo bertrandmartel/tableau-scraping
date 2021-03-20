@@ -12,38 +12,47 @@ from tests.python.test_common import fakeUri as fakeUri
 import time
 import requests
 
+
 def test_getTableauViz(httpserver):
+    ts = TS()
     s = requests.Session()
     httpserver.serve_content(tableauVizHtmlResponse)
-    result = api.getTableauViz(s, httpserver.url)
+    result = api.getTableauViz(ts, s, httpserver.url)
     assert result == tableauVizHtmlResponse
+
 
 def test_getTableauVizForSession(httpserver):
+    ts = TS()
     s = requests.Session()
     httpserver.serve_content(tableauVizHtmlResponse)
-    result = api.getTableauVizForSession(s, httpserver.url)
+    result = api.getTableauVizForSession(ts, s, httpserver.url)
     assert result == tableauVizHtmlResponse
 
+
 def test_getSessionUrl(httpserver):
+    ts = TS()
     s = requests.Session()
     httpserver.serve_content(tableauSessionResponse)
-    result = api.getSessionUrl(s, httpserver.url)
+    result = api.getSessionUrl(ts, s, httpserver.url)
     assert result == tableauSessionResponse
+
 
 def test_getTableauData(httpserver, mocker: MockerFixture):
     ts = TS()
     ts.session = requests.Session()
     httpserver.serve_content(tableauDataResponse)
     ts.host = httpserver.url + "/"
-    ts.tableauData = {"vizql_root": "", "sessionid":"","sheetId":""}
+    ts.tableauData = {"vizql_root": "", "sessionid": "", "sheetId": ""}
     result = api.getTableauData(ts)
     assert result == tableauDataResponse
+
 
 def test_select(httpserver, mocker: MockerFixture):
     mocker.patch(
         "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
     )
-    mocker.patch("tableauscraper.api.getTableauData", return_value=tableauDataResponse)
+    mocker.patch("tableauscraper.api.getTableauData",
+                 return_value=tableauDataResponse)
     ts = TS()
     ts.loads(fakeUri)
     httpserver.serve_content(json.dumps(vqlCmdResponse))
@@ -56,13 +65,15 @@ def test_setParameterValue(httpserver, mocker: MockerFixture):
     mocker.patch(
         "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
     )
-    mocker.patch("tableauscraper.api.getTableauData", return_value=tableauDataResponse)
+    mocker.patch("tableauscraper.api.getTableauData",
+                 return_value=tableauDataResponse)
     ts = TS()
     ts.loads(fakeUri)
     httpserver.serve_content(json.dumps(vqlCmdResponse))
     ts.host = httpserver.url + "/"
     result = api.setParameterValue(scraper=ts, parameterName="", value="test")
     assert result == vqlCmdResponse
+
 
 def test_delayExcution():
     ts = TS()

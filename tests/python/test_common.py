@@ -39,6 +39,7 @@ data = {
                                                 {
                                                     "vizPaneColumns": [
                                                         {
+                                                            "tupleIds": [],
                                                             "valueIndices": [
                                                                 1,
                                                                 2,
@@ -48,6 +49,7 @@ data = {
                                                             "aliasIndices": [],
                                                         },
                                                         {
+                                                            "tupleIds": [],
                                                             "valueIndices": [],
                                                             "aliasIndices": [
                                                                 -6,
@@ -95,7 +97,8 @@ data = {
                                         "dataType": "cstring",
                                         "dataValues": ["1", "2", "3", "4", "5", "6"],
                                     },
-                                    {"dataType": "real", "dataValues": [1, 2, 3, 4, 5]},
+                                    {"dataType": "real",
+                                        "dataValues": [1, 2, 3, 4, 5]},
                                 ]
                             },
                             "1": {
@@ -129,10 +132,12 @@ emptyValues = {
                                                 {
                                                     "vizPaneColumns": [
                                                         {
+                                                            "tupleIds": [],
                                                             "valueIndices": [],
                                                             "aliasIndices": [],
                                                         },
                                                         {
+                                                            "tupleIds": [],
                                                             "valueIndices": [],
                                                             "aliasIndices": [],
                                                         },
@@ -214,12 +219,14 @@ vqlCmdResponseEmptyValues = {
                                     "dataType": "cstring",
                                     "dataValues": ["1", "2", "3", "4", "5", "6"],
                                 },
-                                {"dataType": "real", "dataValues": [1, 2, 3, 4, 5]},
+                                {"dataType": "real",
+                                    "dataValues": [1, 2, 3, 4, 5]},
                             ]
                         },
                         "1": {
                             "dataColumns": [
-                                {"dataType": "cstring", "dataValues": ["7", "8", "9"]}
+                                {"dataType": "cstring",
+                                    "dataValues": ["7", "8", "9"]}
                             ]
                         },
                     }
@@ -246,6 +253,7 @@ vqlCmdResponse = {
                                                     {
                                                         "vizPaneColumns": [
                                                             {
+                                                                "tupleIds": [],
                                                                 "valueIndices": [
                                                                     1,
                                                                     2,
@@ -255,6 +263,7 @@ vqlCmdResponse = {
                                                                 "aliasIndices": [],
                                                             },
                                                             {
+                                                                "tupleIds": [],
                                                                 "valueIndices": [],
                                                                 "aliasIndices": [
                                                                     -6,
@@ -323,12 +332,14 @@ vqlCmdResponse = {
                                     "dataType": "cstring",
                                     "dataValues": ["1", "2", "3", "4", "5", "6"],
                                 },
-                                {"dataType": "real", "dataValues": [1, 2, 3, 4, 5]},
+                                {"dataType": "real",
+                                    "dataValues": [1, 2, 3, 4, 5]},
                             ]
                         },
                         "1": {
                             "dataColumns": [
-                                {"dataType": "cstring", "dataValues": ["7", "8", "9"]}
+                                {"dataType": "cstring",
+                                    "dataValues": ["7", "8", "9"]}
                             ]
                         },
                     }
@@ -355,10 +366,12 @@ vqlCmdResponseDictionaryEmpty = {
                                                     {
                                                         "vizPaneColumns": [
                                                             {
+                                                                "tupleIds": [],
                                                                 "valueIndices": [],
                                                                 "aliasIndices": [],
                                                             },
                                                             {
+                                                                "tupleIds": [],
                                                                 "valueIndices": [],
                                                                 "aliasIndices": [],
                                                             },
@@ -498,7 +511,7 @@ tableauDataResponse = """
 
 fakeUri = "https://public.tableau.com/example"
 
-tableauSessionResponse= """
+tableauSessionResponse = """
 <html>
 </html>
 """
