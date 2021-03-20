@@ -106,6 +106,7 @@ for t in dashboard.worksheets:
 - https://replit.com/@bertrandmartel/TableauCovidNCDHHS
 - https://replit.com/@bertrandmartel/TableauCovidWisconsin
 - https://replit.com/@bertrandmartel/TableauScrapeNewspaper
+- https://replit.com/@bertrandmartel/TableauStoryPoints
 
 ### Testing Python script
 
