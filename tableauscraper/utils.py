@@ -44,16 +44,62 @@ def listWorksheetInfo(presModel):
     ]
 
 
-def listWorksheet(presModelMap):
-    #    if "secondaryInfo" not in data:
-    #        raise (KeyError("secondaryInfo field is missing"))
-    #
-    #    if "presModelMap" not in data["secondaryInfo"]:
-    #        raise (KeyError('secondaryInfo["presModelMap"] field is missing'))
-    #
-    #    if "vizData" not in data["secondaryInfo"]["presModelMap"]:
-    #        raise (KeyError('secondaryInfo["presModelMap"]["vizData"] field is missing'))
+# def listStoryPoints(presModelMap):
+#     if "presModelHolder" not in presModelMap["vizData"]:
+#         raise (
+#             KeyError(
+#                 'presModelMap["vizData"]["presModelHolder"] field is missing'
+#             )
+#         )
 
+#     if (
+#         "genPresModelMapPresModel"
+#         not in presModelMap["vizData"]["presModelHolder"]
+#     ):
+#         raise (
+#             KeyError(
+#                 'presModelMap["vizData"]["presModelHolder"]["genPresModelMapPresModel"] field is missing'
+#             )
+#         )
+
+#     if (
+#         "presModelMap"
+#         not in presModelMap["vizData"]["presModelHolder"][
+#             "genPresModelMapPresModel"
+#         ]
+#     ):
+#         raise (
+#             KeyError(
+#                 'presModelMap["vizData"]["presModelHolder"]["genPresModelMapPresModel"]["presModelMap"] field is missing'
+#             )
+#         )
+
+#     return list(
+#         presModelMap["vizData"]["presModelHolder"][
+#             "genPresModelMapPresModel"
+#         ]["presModelMap"].keys()
+#     )
+
+
+# def listStoryPointsInfo(presModel):
+#     zones = presModel["workbookPresModel"]["dashboardPresModel"]["zones"]
+#     storypoints = [
+#         zones[z]["presModelHolder"]["flipboard"]["storyPoints"]
+#         for z in list(zones)
+#         if ("presModelHolder" in zones[z])
+#         and ("flipboard" in zones[z]["presModelHolder"])
+#         and ("storyPoints" in zones[z]["presModelHolder"]["flipboard"])
+#     ]
+#     print(storypoints)
+#     zones = [
+
+#         for z in list(t.keys())
+#         for t in storypoints
+#     ]
+#     return zones
+
+
+def listWorksheet(presModelMap):
     if "presModelHolder" not in presModelMap["vizData"]:
         raise (
             KeyError(
@@ -90,7 +136,7 @@ def listWorksheet(presModelMap):
     )
 
 
-def getIndicesInfo(presModelMap, worksheet, noSelectFilter=True):
+def getIndicesInfo(presModelMap, worksheet, noSelectFilter=True, noFieldCaption=False):
     genVizDataPresModel = presModelMap["vizData"][
         "presModelHolder"
     ]["genPresModelMapPresModel"]["presModelMap"][worksheet]["presModelHolder"][
@@ -104,18 +150,20 @@ def getIndicesInfo(presModelMap, worksheet, noSelectFilter=True):
     return [
         {
             "fieldCaption": t.get("fieldCaption", ""),
+            "tupleIds": columnsData["paneColumnsList"][t["paneIndices"][0]]["vizPaneColumns"][t["columnIndices"][0]]["tupleIds"],
             "valueIndices": columnsData["paneColumnsList"][t["paneIndices"][0]]["vizPaneColumns"][t["columnIndices"][0]]["valueIndices"],
             "aliasIndices": columnsData["paneColumnsList"][t["paneIndices"][0]]["vizPaneColumns"][t["columnIndices"][0]]["aliasIndices"],
             "dataType": t.get("dataType"),
             "paneIndices": t["paneIndices"][0],
             "columnIndices": t["columnIndices"][0],
+            "fn": t.get("fn", "")
         }
         for t in columnsData["vizDataColumns"]
-        if t.get("fieldCaption") and (noSelectFilter or (t.get("isAutoSelect") == True))
+        if (t.get("fieldCaption") or noFieldCaption) and (noSelectFilter or (t.get("isAutoSelect") == True))
     ]
 
 
-def getIndicesInfoVqlResponse(presModel, worksheet, noSelectFilter=True):
+def getIndicesInfoVqlResponse(presModel, worksheet, noSelectFilter=True, noFieldCaption=False):
     zonesWithWorksheet = listWorksheetCmdResponse(presModel)
 
     selectedZones = [
@@ -133,14 +181,16 @@ def getIndicesInfoVqlResponse(presModel, worksheet, noSelectFilter=True):
     return [
         {
             "fieldCaption": t.get("fieldCaption", ""),
+            "tupleIds": columnsData["paneColumnsList"][t["paneIndices"][0]]["vizPaneColumns"][t["columnIndices"][0]]["tupleIds"],
             "valueIndices": columnsData["paneColumnsList"][t["paneIndices"][0]]["vizPaneColumns"][t["columnIndices"][0]]["valueIndices"],
             "aliasIndices": columnsData["paneColumnsList"][t["paneIndices"][0]]["vizPaneColumns"][t["columnIndices"][0]]["aliasIndices"],
-            "dataType": t.get("dataType"),
+            "dataType": t.get("dataType", ""),
             "paneIndices": t["paneIndices"][0],
             "columnIndices": t["columnIndices"][0],
+            "fn": t.get("fn", "")
         }
         for t in columnsData["vizDataColumns"]
-        if t.get("fieldCaption") and (noSelectFilter or (t.get("isAutoSelect") == True))
+        if (t.get("fieldCaption") or noFieldCaption) and (noSelectFilter or (t.get("isAutoSelect") == True))
     ]
 
 

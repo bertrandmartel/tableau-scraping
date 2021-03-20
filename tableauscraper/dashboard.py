@@ -49,6 +49,14 @@ def getWorksheets(TS, data, info) -> TableauDashboard:
     else:
         worksheets = []
 
+    # if presModelMapVizData is not None:
+    #     storyPoints = utils.listStoryPoints(presModelMapVizData)
+    # elif presModelMapVizInfo is not None:
+    #     storyPoints = utils.listStoryPointsInfo(presModelMapVizInfo)
+    # else:
+    #     storyPoints = []
+    # print(storyPoints)
+
     output = []
     for worksheet in worksheets:
         df = getWorksheet(TS, data, info, worksheet)
