@@ -25,8 +25,9 @@ class TableauScraper:
     delayMs = 500  # delay between actions (select/dropdown)
     lastActionTime = 0
     session = None
+    verify = True
 
-    def __init__(self, logLevel=logging.INFO, delayMs=500):
+    def __init__(self, logLevel=logging.INFO, delayMs=500, verify=True):
         ch = logging.StreamHandler()
         formatter = logging.Formatter(
             "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -38,10 +39,11 @@ class TableauScraper:
         self.tableauData = {}
         self.data = {}
         self.info = {}
+        self.verify = verify
 
     def loads(self, url):
         api.setSession(self)
-        r = api.getTableauViz(self.session, url)
+        r = api.getTableauViz(self, self.session, url)
         soup = BeautifulSoup(r, "html.parser")
 
         tableauPlaceHolder = soup.find("div", {"class": "tableauPlaceholder"})
@@ -58,10 +60,10 @@ class TableauScraper:
             if "ticket" in params:
                 # get xsrf cookie
                 sessionUrl = f'{params["host_url"]}trusted/{params["ticket"]}{params["site_root"]}/views/{params["name"]}'
-                api.getSessionUrl(self.session, sessionUrl)
+                api.getSessionUrl(self, self.session, sessionUrl)
 
             url = f'{params["host_url"][:-1]}{params["site_root"]}/views/{params["name"]}'
-            r = api.getTableauVizForSession(self.session, url)
+            r = api.getTableauVizForSession(self, self.session, url)
             soup = BeautifulSoup(r, "html.parser")
 
         self.tableauData = json.loads(
