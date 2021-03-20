@@ -79,18 +79,23 @@ class TableauWorksheet:
             presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
             return [
                 t["fieldCaption"]
-                for t in tableauscraper.utils.getIndicesInfoVqlResponse(
-                    presModel, self.name, noSelectFilter=False
-                )
+                for t in tableauscraper.utils.getIndicesInfoVqlResponse(presModel, self.name, noSelectFilter=False)
             ]
         else:
             presModel = tableauscraper.utils.getPresModelVizData(
                 self._originalData)
+            if presModel is None:
+                presModel = tableauscraper.utils.getPresModelVizInfo(
+                    self._originalInfo)
+                indicesInfo = tableauscraper.utils.getIndicesInfoStoryPoint(
+                    presModel, self.name, noSelectFilter=False)
+            else:
+                indicesInfo = tableauscraper.utils.getIndicesInfo(
+                    presModel, self.name, noSelectFilter=False)
+
             return [
                 t["fieldCaption"]
-                for t in tableauscraper.utils.getIndicesInfo(
-                    presModel, self.name, noSelectFilter=False
-                )
+                for t in indicesInfo
             ]
 
     def getValues(self, column) -> List[str]:
@@ -116,11 +121,18 @@ class TableauWorksheet:
         else:
             presModel = tableauscraper.utils.getPresModelVizData(
                 self._originalData)
+            if presModel is None:
+                presModel = tableauscraper.utils.getPresModelVizInfo(
+                    self._originalInfo)
+                indicesInfo = tableauscraper.utils.getIndicesInfoStoryPoint(
+                    presModel, self.name, noSelectFilter=True)
+            else:
+                indicesInfo = tableauscraper.utils.getIndicesInfo(
+                    presModel, self.name, noSelectFilter=True)
+
             columnObj = [
                 t
-                for t in tableauscraper.utils.getIndicesInfo(
-                    presModel, self.name, noSelectFilter=True
-                )
+                for t in indicesInfo
                 if t["fieldCaption"] == column
             ]
             if len(columnObj) == 0:

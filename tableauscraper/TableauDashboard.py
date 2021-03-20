@@ -25,20 +25,11 @@ class TableauDashboard:
         dataSegmentscp = copy.deepcopy(dataSegments)
         keys = list(dataSegmentscp.keys())
         for key in keys:
-            if key not in self._scraper.dataSegments:
+            if dataSegmentscp[key] is not None:
                 self._scraper.dataSegments[key] = dataSegmentscp[key]
 
     def getWorksheetNames(self):
-        if self.cmdResponse:
-            presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
-            return [
-                t["worksheet"]
-                for t in tableauscraper.utils.listWorksheetCmdResponse(presModel)
-            ]
-        else:
-            presModel = tableauscraper.utils.getPresModelVizData(
-                self._originalData)
-            return tableauscraper.utils.listWorksheet(presModel)
+        return tableauscraper.utils.getWorksheetNames(self)
 
     def getWorksheets(self):
         if self.cmdResponse:
@@ -70,9 +61,7 @@ class TableauDashboard:
         else:
             return [
                 t["fieldCaption"]
-                for t in tableauscraper.utils.getParameterControlInput(
-                    self._originalInfo
-                )
+                for t in tableauscraper.utils.getParameterControlInput(self._originalInfo)
             ]
 
     def getDropdownValues(self, inputName):
@@ -87,9 +76,7 @@ class TableauDashboard:
         else:
             values = [
                 t["formattedValues"]
-                for t in tableauscraper.utils.getParameterControlInput(
-                    self._originalInfo
-                )
+                for t in tableauscraper.utils.getParameterControlInput(self._originalInfo)
                 if t["fieldCaption"] == inputName
             ]
             return [] if len(values) == 0 else values[0]
@@ -106,9 +93,7 @@ class TableauDashboard:
         else:
             parameterNames = [
                 t["parameterName"]
-                for t in tableauscraper.utils.getParameterControlInput(
-                    self._originalInfo
-                )
+                for t in tableauscraper.utils.getParameterControlInput(self._originalInfo)
                 if t["fieldCaption"] == inputName
             ]
         if len(parameterNames) == 0:

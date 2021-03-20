@@ -19,21 +19,28 @@ def get(TS, data, info, logger):
 
 def getWorksheet(TS, data, info, worksheet) -> TableauWorksheet:
 
-    presModelMap = data["secondaryInfo"]["presModelMap"]
+    presModelMap = utils.getPresModelVizData(data)
+    if presModelMap is None:
+        presModelMap = utils.getPresModelVizInfo(info)
+        indicesInfo = utils.getIndicesInfoStoryPoint(presModelMap, worksheet)
 
-    indicesInfo = utils.getIndicesInfo(presModelMap, worksheet)
-    dataFull = utils.getDataFull(presModelMap, TS.dataSegments)
+        if "dataDictionary" not in presModelMap:
+            presModelMap = utils.getPresModelVizDataWithoutViz(data)
+
+        dataFull = utils.getDataFull(presModelMap, TS.dataSegments)
+    else:
+        indicesInfo = utils.getIndicesInfo(presModelMap, worksheet)
+        dataFull = utils.getDataFull(presModelMap, TS.dataSegments)
+
     frameData = utils.getData(dataFull, indicesInfo)
-
     df = pd.DataFrame.from_dict(frameData, orient="index").fillna(0).T
 
-    presModel = utils.getPresModelVizData(data)
     return TableauWorksheet(
         scraper=TS,
         originalData=data,
         originalInfo=info,
         worksheetName=worksheet,
-        dataFull=utils.getDataFull(presModel, TS.dataSegments),
+        dataFull=dataFull,
         dataFrame=df
     )
 
@@ -46,16 +53,10 @@ def getWorksheets(TS, data, info) -> TableauDashboard:
         worksheets = utils.listWorksheet(presModelMapVizData)
     elif presModelMapVizInfo is not None:
         worksheets = utils.listWorksheetInfo(presModelMapVizInfo)
+        if len(worksheets) == 0:
+            worksheets = utils.listStoryPointsInfo(presModelMapVizInfo)
     else:
         worksheets = []
-
-    # if presModelMapVizData is not None:
-    #     storyPoints = utils.listStoryPoints(presModelMapVizData)
-    # elif presModelMapVizInfo is not None:
-    #     storyPoints = utils.listStoryPointsInfo(presModelMapVizInfo)
-    # else:
-    #     storyPoints = []
-    # print(storyPoints)
 
     output = []
     for worksheet in worksheets:
@@ -99,6 +100,8 @@ def getCmdResponse(TS, data, logger):
 def getWorksheetsCmdResponse(TS, data):
     presModel = data["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
     zonesWithWorksheet = utils.listWorksheetCmdResponse(presModel)
+    if len(zonesWithWorksheet) == 0:
+        zonesWithWorksheet = utils.listStoryPointsCmdResponse(presModel)
     dataFull = utils.getDataFullCmdResponse(presModel, TS.dataSegments)
     output = []
     for selectedZone in zonesWithWorksheet:
@@ -133,6 +136,12 @@ def getWorksheetCmdResponse(TS, data, worksheetName):
         for t in utils.listWorksheetCmdResponse(presModel)
         if t["worksheet"] == worksheetName
     ]
+    if len(zonesWithWorksheet) == 0:
+        zonesWithWorksheet = [
+            t
+            for t in utils.listWorksheetStoryPoint(presModel)
+            if t["worksheet"] == worksheetName
+        ]
     if len(zonesWithWorksheet) == 0:
         return TableauWorksheet(
             scraper=TS,
