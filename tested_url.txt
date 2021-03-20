@@ -14,3 +14,4 @@ https://covid19tracker.health.ny.gov/views/NYS-COVID19-Tracker/NYSDOHCOVID-19Tra
 https://idph.illinois.gov/OpioidDataDashboard/
 https://public.tableau.com/views/Colorado_COVID19_Data/CO_Home
 https://public.tableau.com/views/NewspapersByCountyCalifornia/Newspaperbycounty
+https://public.tableau.com/views/OregonCOVID-19CasesbyZIPCode-SummaryTable/CasesbyZIPCodeSummaryTable

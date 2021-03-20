@@ -19,7 +19,7 @@ pip install TableauScraper
 
 ### Usage
 
-* Get worksheets data
+- Get worksheets data
 
 ```python
 from tableauscraper import TableauScraper as TS
@@ -39,7 +39,7 @@ for t in dashboard.worksheets:
 
 [Try this on repl.it](https://repl.it/@bertrandmartel/TableauGetWorksheets)
 
-* select a selectable item 
+- select a selectable item
 
 ```python
 from tableauscraper import TableauScraper as TS
@@ -60,14 +60,14 @@ print(values)
 #select that value
 dashboard = ts.getWorksheet("ATT MID CREATIVE COMP").select("ATTR(Player)", "Vinicius Júnior")
 
-#display worksheets 
+#display worksheets
 for t in dashboard.worksheets:
 	print(t.data)
 ```
 
 [Try this on repl.it](https://repl.it/@bertrandmartel/TableauSelectItem)
 
-* select item in a dropdown
+- select item in a dropdown
 
 ```python
 from tableauscraper import TableauScraper as TS
@@ -89,17 +89,27 @@ print(values)
 #select that value
 dashboard = dashboard.setDropdown("P.League 2", "Ligue 1")
 
-#display worksheets 
+#display worksheets
 for t in dashboard.worksheets:
 	print(t.data)
 ```
 
 [Try this on repl.it](https://repl.it/@bertrandmartel/TableauDropdown)
 
+### Sample usecases
+
+- https://replit.com/@bertrandmartel/TableauOregonCovid
+- https://replit.com/@bertrandmartel/TableauCovidIndia
+- https://replit.com/@bertrandmartel/TableauCovidArizona
+- https://replit.com/@bertrandmartel/TableauIllinoisOpioId
+- https://replit.com/@bertrandmartel/TableauCovidNY
+- https://replit.com/@bertrandmartel/TableauCovidNCDHHS
+- https://replit.com/@bertrandmartel/TableauCovidWisconsin
+- https://replit.com/@bertrandmartel/TableauScrapeNewspaper
+
 ### Testing Python script
 
 To discover all worksheets, selectable columns and dropdowns, run `prompt.py` script under `scripts` directory :
-
 
 ```bash
 git clone git@github.com:bertrandmartel/tableau-scraping.git
@@ -117,12 +127,12 @@ python3 prompt.py -get dropdown -url "https://public.tableau.com/views/COVID-19D
 
 ### Settings
 
-`TableauScraper` class has the following optional parameters : 
+`TableauScraper` class has the following optional parameters :
 
-| Parameters      |  default value     |  description |
-|-----------------|--------------------|--------------|
-| logLevel        |logging.INFO |   log level |
-| delayMs         |  500        |  minimum delay in millis between actions (select/dropdown request) |
+| Parameters | default value | description                                                       |
+| ---------- | ------------- | ----------------------------------------------------------------- |
+| logLevel   | logging.INFO  | log level                                                         |
+| delayMs    | 500           | minimum delay in millis between actions (select/dropdown request) |
 
 ## R
 
