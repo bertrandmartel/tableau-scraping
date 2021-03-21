@@ -4,9 +4,9 @@ url = "https://public.tableau.com/views/PlayerStats-Top5Leagues20192020/OnePlaye
 
 ts = TS()
 ts.loads(url)
-dashboard = ts.getDashboard()
+workbook = ts.getWorkbook()
 
-for t in dashboard.worksheets:
+for t in workbook.worksheets:
     # show worksheet name
     print(f"WORKSHEET NAME : {t.name}")
     # show dataframe for this worksheet

@@ -5,18 +5,14 @@ url = "https://public.tableau.com/views/PlayerStats-Top5Leagues20192020/OnePlaye
 ts = TS()
 ts.loads(url)
 
-# show selectable columns
-columns = ts.getWorksheet("ATT MID CREATIVE COMP").getSelectableColumns()
-print(columns)
+ws = ts.getWorksheet("ATT MID CREATIVE COMP")
 
-# show values by column name
-values = ts.getWorksheet("ATT MID CREATIVE COMP").getValues("ATTR(Player)")
-print(values)
+# show selectable values
+selections = ws.getSelectableItems()
+print(selections)
 
 # select that value
-dashboard = ts.getWorksheet("ATT MID CREATIVE COMP").select(
-    "ATTR(Player)", "Vinicius Júnior"
-)
+dashboard = ws.select("ATTR(Player)", "Vinicius Júnior")
 
 # display worksheets
 for t in dashboard.worksheets:

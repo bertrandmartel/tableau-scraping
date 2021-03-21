@@ -10,7 +10,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     "-get",
     "--get",
-    choices=["dashboard", "dropdown", "select"],
+    choices=["workbook", "parameter", "select"],
     help="type of action",
     required=True,
 )
@@ -26,17 +26,17 @@ ts.loads(args.url)
 # with open('info.json', 'w', encoding='utf-8') as f:
 #    json.dump(ts.info, f, ensure_ascii=False, indent=4)
 
-if args.get == "dashboard":
-    dashboard = ts.promptDashboard()
-elif args.get == "dropdown":
-    dashboard = ts.promptDropdown()
+if args.get == "workbook":
+    workbook = ts.promptDashboard()
+elif args.get == "parameter":
+    workbook = ts.promptParameters()
 elif args.get == "select":
-    dashboard = ts.promptSelect()
+    workbook = ts.promptSelect()
 
 with pd.option_context(
     "display.max_rows", None, "display.max_columns", 5, "display.width", 1000
 ):
-    for idx, worksheet in enumerate(dashboard.worksheets):
+    for idx, worksheet in enumerate(workbook.worksheets):
         if idx == 0:
             print("|" + ("-" * (os.get_terminal_size().columns - 2)) + "|")
         print("|" + worksheet.name.center(os.get_terminal_size().columns - 2) + "|")
@@ -44,20 +44,20 @@ with pd.option_context(
         print(worksheet.data)
         print("")
         # selectable values
-        selectableColumns = worksheet.getSelectableColumns()
-        print(f"selectable columns for this worksheet : {len(selectableColumns)}")
-        for columnName in selectableColumns:
-            print("• " + columnName)
-            # for value in worksheet.getValues(columnName):
-            # 	print("\t•" + value)
+        selection = worksheet.getSelectableItems()
+        print(
+            f"selectable items for this worksheet : {len(selection)}")
+        for select in selection:
+            print(f'column: ${select["column"]}')
+            print(f'values: {select["values"]}')
+            print("--------------")
 
         print("")
         print("|" + ("-" * (os.get_terminal_size().columns - 2)) + "|")
 
-    # dropdown list
-    dropdownInputs = dashboard.getDropdownInputs()
-    print(f"drop down lists for this dashboard : {len(dropdownInputs)}")
-    for inputName in dropdownInputs:
-        print("• " + inputName)
-        for inputValue in dashboard.getDropdownValues(inputName):
-            print("\t• " + inputValue)
+    # parameters list
+    parameters = workbook.getParameters()
+    print(f"parameters lists for this workbook : {len(parameters)}")
+    for param in parameters:
+        print(param)
+        print(param["values"])
