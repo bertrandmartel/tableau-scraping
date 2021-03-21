@@ -54,20 +54,8 @@ class TableauDashboard:
     def getParameters(self):
         if self.cmdResponse:
             presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
-            # values = [
-            #     t["formattedValues"]
-            #     for t in tableauscraper.utils.getParameterControlVqlResponse(presModel)
-            #     if t["fieldCaption"] == inputName
-            # ]
-            # return [] if len(values) == 0 else values[0]
             return tableauscraper.utils.getParameterControlVqlResponse(presModel)
         else:
-            # values = [
-            #     t["formattedValues"]
-            #     for t in tableauscraper.utils.getParameterControlInput(self._originalInfo)
-            #     if t["fieldCaption"] == inputName
-            # ]
-            # return [] if len(values) == 0 else values[0]
             return tableauscraper.utils.getParameterControlInput(self._originalInfo)
 
     def setParameter(self, inputName, value):

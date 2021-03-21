@@ -33,18 +33,6 @@ class TableauWorksheet:
         self._originalInfo = originalInfo
         self.cmdResponse = cmdResponse
         self._data_dictionnary = dataFull
-        # if self.cmdResponse:
-        #     presModel = self._originalData["vqlCmdResponse"]["layoutStatus"][
-        #         "applicationPresModel"
-        #     ]
-        #     self._data_dictionnary = tableauscraper.utils.getDataFullCmdResponse(
-        #         presModel, self._scraper.dataSegments
-        #     )
-        # else:
-        #     presModel = tableauscraper.utils.getPresModelVizData(
-        #         self._originalData)
-        #     self._data_dictionnary = tableauscraper.utils.getDataFull(
-        #         presModel, self._scraper.dataSegments)
 
     def updateFullData(self, cmdResponse):
         presModel = cmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
