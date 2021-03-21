@@ -89,8 +89,6 @@ def getWorksheetNames(scraper):
         if presModel is None:
             presModel = getPresModelVizInfo(scraper._originalInfo)
             worksheets = listWorksheetInfo(presModel)
-            if len(worksheets) == 0:
-                return listStoryPointsInfo(presModel)
             return listStoryPointsInfo(presModel) if len(worksheets) == 0 else worksheets
         return listWorksheet(presModel)
 
@@ -143,7 +141,6 @@ def getIndicesInfo(presModelMap, worksheet, noSelectFilter=True, noFieldCaption=
         return []
 
     columnsData = genVizDataPresModel["paneColumnsData"]
-
     result = []
     for t in columnsData["vizDataColumns"]:
         if (t.get("fieldCaption") or noFieldCaption) and (noSelectFilter or (t.get("isAutoSelect") == True)):
@@ -156,7 +153,7 @@ def getIndicesInfo(presModelMap, worksheet, noSelectFilter=True, noFieldCaption=
                     "tupleIds": columnsData["paneColumnsList"][pandeIndex]["vizPaneColumns"][columnIndex]["tupleIds"],
                     "valueIndices": columnsData["paneColumnsList"][pandeIndex]["vizPaneColumns"][columnIndex]["valueIndices"],
                     "aliasIndices": columnsData["paneColumnsList"][pandeIndex]["vizPaneColumns"][columnIndex]["aliasIndices"],
-                    "dataType": t.get("dataType"),
+                    "dataType": t.get("dataType", ""),
                     "paneIndices": pandeIndex,
                     "columnIndices": columnIndex,
                     "fn": t.get("fn", "")

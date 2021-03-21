@@ -100,12 +100,15 @@ class TableauWorksheet:
                 scraper=self._scraper, originalData={}, originalInfo={}, data=[]
             )
 
-    def getSelectableColumns(self) -> List[str]:
+    def getSelectableItems(self) -> List[str]:
         if self.cmdResponse:
             presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
             return [
-                t["fieldCaption"]
-                for t in tableauscraper.utils.getIndicesInfoVqlResponse(presModel, self.name, noSelectFilter=False)
+                {
+                    "column": t["fieldCaption"],
+                    "values": next(iter([y for y in tableauscraper.utils.getDataCmdResponse(self._data_dictionnary, [t]).values()]), [])
+                }
+                for t in tableauscraper.utils.getIndicesInfoVqlResponse(presModel, self.name, noSelectFilter=True)
             ]
         else:
             presModel = tableauscraper.utils.getPresModelVizData(
@@ -114,17 +117,22 @@ class TableauWorksheet:
                 presModel = tableauscraper.utils.getPresModelVizInfo(
                     self._originalInfo)
                 indicesInfo = tableauscraper.utils.getIndicesInfoStoryPoint(
-                    presModel, self.name, noSelectFilter=False)
+                    presModel, self.name, noSelectFilter=True)
             else:
                 indicesInfo = tableauscraper.utils.getIndicesInfo(
-                    presModel, self.name, noSelectFilter=False)
-
+                    presModel, self.name, noSelectFilter=True)
             return [
-                t["fieldCaption"]
+                {
+                    "column": t["fieldCaption"],
+                    "values": next(iter([
+                        y
+                        for y in tableauscraper.utils.getData(self._data_dictionnary, [t]).values()
+                    ]), [])
+                }
                 for t in indicesInfo
             ]
 
-    def getValues(self, column) -> List[str]:
+    def getSelectableValues(self, column) -> List[str]:
         if self.cmdResponse:
             presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
             columnObj = [
@@ -172,7 +180,7 @@ class TableauWorksheet:
                 return []
             return frameData[frameDataKeys[0]]
 
-    def getTupleIds(self, column) -> List[int]:
+    def getTupleIds(self) -> List[int]:
         if self.cmdResponse:
             presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
             columnObj = [
@@ -201,8 +209,8 @@ class TableauWorksheet:
             return [t["tupleIds"] for t in columnObj]
 
     def select(self, column, value):
-        values = self.getValues(column)
-        tupleItems = self.getTupleIds(column)
+        values = self.getSelectableValues(column)
+        tupleItems = self.getTupleIds()
         try:
 
             indexedByTuple = False
