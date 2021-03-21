@@ -86,7 +86,7 @@ class TableauScraper:
     # def listWorksheetNames(self):
     #     return dashboard.getWorksheetNames(self)
 
-    def getDashboard(self) -> TableauWorkbook:
+    def getWorkbook(self) -> TableauWorkbook:
         return dashboard.getWorksheets(self, self.data, self.info)
 
     def getWorksheet(self, worksheetName) -> TableauWorksheet:
