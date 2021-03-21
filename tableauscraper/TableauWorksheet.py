@@ -74,6 +74,44 @@ class TableauWorksheet:
                 )
             ]
 
+    def getFilters(self) -> List[str]:
+        presModel = tableauscraper.utils.getPresModelVizInfo(
+            self._originalInfo)
+        return [
+            t
+            for t in tableauscraper.utils.listFilters(presModel, self.name)
+        ]
+
+    def setFilter(self, columnName, value):
+        try:
+            filter = [
+                {
+                    "globalFieldName": t["globalFieldName"],
+                    "index": t["values"].index(value)
+                }
+                for t in self.getFilters()
+                if t["column"] == columnName
+            ]
+            if len(filter) == 0:
+                self._scraper.logger.error(f"column {columnName} not found")
+                return tableauscraper.TableauDashboard(
+                    scraper=self._scraper, originalData={}, originalInfo={}, data=[]
+                )
+            r = tableauscraper.api.filter(
+                self._scraper, self.name, filter[0]["globalFieldName"], [filter[0]["index"]])
+            self.updateFullData(r)
+            return tableauscraper.dashboard.getWorksheetsCmdResponse(self._scraper, r)
+        except ValueError as e:
+            self._scraper.logger.error(str(e))
+            return tableauscraper.TableauDashboard(
+                scraper=self._scraper, originalData={}, originalInfo={}, data=[]
+            )
+        except tableauscraper.api.APIResponseException as e:
+            self._scraper.logger.error(str(e))
+            return tableauscraper.TableauDashboard(
+                scraper=self._scraper, originalData={}, originalInfo={}, data=[]
+            )
+
     def getSelectableColumns(self) -> List[str]:
         if self.cmdResponse:
             presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
@@ -192,7 +230,8 @@ class TableauWorksheet:
             r = tableauscraper.api.select(self._scraper, self.name, [index])
             self.updateFullData(r)
             return tableauscraper.dashboard.getWorksheetsCmdResponse(self._scraper, r)
-        except ValueError:
+        except ValueError as e:
+            self._scraper.logger.error(str(e))
             return tableauscraper.TableauDashboard(
                 scraper=self._scraper, originalData={}, originalInfo={}, data=[]
             )

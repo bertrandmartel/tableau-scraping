@@ -3,6 +3,14 @@ import time
 import requests
 
 
+class APIResponseException(Exception):
+    def __init__(self, message):
+        self.message = message
+
+    def __str__(self):
+        return self.message
+
+
 def setSession(scraper):
     scraper.session = requests.Session()
 
@@ -58,6 +66,31 @@ def select(scraper, worksheetName, selection):
         verify=scraper.verify
     )
     return r.json()
+
+
+def filter(scraper, worksheetName, globalFieldName, selection):
+    delayExecution(scraper)
+    payload = (
+        (
+            "visualIdPresModel", (None, json.dumps({
+                "worksheet": worksheetName,
+                "dashboard": scraper.dashboard
+            }))
+        ),
+        ("globalFieldName", (None, globalFieldName)),
+        ("membershipTarget", (None, "filter")),
+        ("filterIndices", (None, json.dumps(selection))),
+        ("filterUpdateType", (None, "filter-replace"))
+    )
+    r = scraper.session.post(
+        f'{scraper.host}{scraper.tableauData["vizql_root"]}/sessions/{scraper.tableauData["sessionid"]}/commands/tabdoc/categorical-filter-by-index',
+        files=payload,
+        verify=scraper.verify
+    )
+    try:
+        return r.json()
+    except ValueError:
+        raise APIResponseException(message=r.text)
 
 
 def setParameterValue(scraper, parameterName, value):

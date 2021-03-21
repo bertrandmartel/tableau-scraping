@@ -464,3 +464,26 @@ def getParameterControlVqlResponse(presModel):
         and ("presModelHolder" in zones[z])
         and ("parameterControl" in zones[z]["presModelHolder"])
     ]
+
+
+def listFilters(presModel, worksheetName):
+    zones = presModel["workbookPresModel"]["dashboardPresModel"]["zones"]
+    return [
+        {
+            "column": zones[z]["presModelHolder"]["quickFilterDisplay"]["quickFilter"]["categoricalFilter"]["columnFullNames"][0],
+            "values": [
+                t["label"] for t in zones[z]["presModelHolder"]["quickFilterDisplay"]["quickFilter"]["categoricalFilter"]["domainTables"]
+            ],
+            "globalFieldName": zones[z]["presModelHolder"]["quickFilterDisplay"]["quickFilter"]["categoricalFilter"]["fn"]
+        }
+        for z in list(zones)
+        if ("worksheet" in zones[z])
+        and ("presModelHolder" in zones[z])
+        and ("quickFilterDisplay" in zones[z]["presModelHolder"])
+        and ("quickFilter" in zones[z]["presModelHolder"]["quickFilterDisplay"])
+        and ("categoricalFilter" in zones[z]["presModelHolder"]["quickFilterDisplay"]["quickFilter"])
+        and ("columnFullNames" in zones[z]["presModelHolder"]["quickFilterDisplay"]["quickFilter"]["categoricalFilter"])
+        and ("domainTables" in zones[z]["presModelHolder"]["quickFilterDisplay"]["quickFilter"]["categoricalFilter"])
+        and ("fn" in zones[z]["presModelHolder"]["quickFilterDisplay"]["quickFilter"]["categoricalFilter"])
+        and zones[z]["worksheet"] == worksheetName
+    ]
