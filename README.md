@@ -144,6 +144,8 @@ print(countyWs.data)
 - https://replit.com/@bertrandmartel/TableauCovidWisconsin
 - https://replit.com/@bertrandmartel/TableauScrapeNewspaper
 - https://replit.com/@bertrandmartel/TableauStoryPoints
+- https://replit.com/@bertrandmartel/TableauCovidOhio
+- https://replit.com/@bertrandmartel/TableauCovidSouthCarolina
 
 ### Testing Python script
 
