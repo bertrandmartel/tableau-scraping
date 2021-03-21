@@ -82,7 +82,7 @@ class TableauWorksheet:
             ]
             if len(filter) == 0:
                 self._scraper.logger.error(f"column {columnName} not found")
-                return tableauscraper.TableauDashboard(
+                return tableauscraper.TableauWorkbook(
                     scraper=self._scraper, originalData={}, originalInfo={}, data=[]
                 )
             r = tableauscraper.api.filter(
@@ -91,12 +91,12 @@ class TableauWorksheet:
             return tableauscraper.dashboard.getWorksheetsCmdResponse(self._scraper, r)
         except ValueError as e:
             self._scraper.logger.error(str(e))
-            return tableauscraper.TableauDashboard(
+            return tableauscraper.TableauWorkbook(
                 scraper=self._scraper, originalData={}, originalInfo={}, data=[]
             )
         except tableauscraper.api.APIResponseException as e:
             self._scraper.logger.error(str(e))
-            return tableauscraper.TableauDashboard(
+            return tableauscraper.TableauWorkbook(
                 scraper=self._scraper, originalData={}, originalInfo={}, data=[]
             )
 
@@ -220,6 +220,6 @@ class TableauWorksheet:
             return tableauscraper.dashboard.getWorksheetsCmdResponse(self._scraper, r)
         except ValueError as e:
             self._scraper.logger.error(str(e))
-            return tableauscraper.TableauDashboard(
+            return tableauscraper.TableauWorkbook(
                 scraper=self._scraper, originalData={}, originalInfo={}, data=[]
             )

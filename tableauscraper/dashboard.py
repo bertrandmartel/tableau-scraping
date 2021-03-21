@@ -1,7 +1,7 @@
 import pandas as pd
 from tableauscraper import utils
 from tableauscraper.TableauWorksheet import TableauWorksheet
-from tableauscraper.TableauDashboard import TableauDashboard
+from tableauscraper.TableauWorkbook import TableauWorkbook
 
 
 def get(TS, data, info, logger):
@@ -12,7 +12,7 @@ def get(TS, data, info, logger):
         df = getWorksheet(TS, data, info, worksheet)
         output.append(df)
 
-    return TableauDashboard(
+    return TableauWorkbook(
         scraper=TS, originalData=data, originalInfo=info, data=output
     )
 
@@ -45,7 +45,7 @@ def getWorksheet(TS, data, info, worksheet) -> TableauWorksheet:
     )
 
 
-def getWorksheets(TS, data, info) -> TableauDashboard:
+def getWorksheets(TS, data, info) -> TableauWorkbook:
 
     presModelMapVizData = utils.getPresModelVizData(data)
     presModelMapVizInfo = utils.getPresModelVizInfo(info)
@@ -63,7 +63,7 @@ def getWorksheets(TS, data, info) -> TableauDashboard:
         df = getWorksheet(TS, data, info, worksheet)
         output.append(df)
 
-    return TableauDashboard(
+    return TableauWorkbook(
         scraper=TS, originalData=data, originalInfo=info, data=output
     )
 
@@ -94,7 +94,7 @@ def getCmdResponse(TS, data, logger):
                 cmdResponse=True,
             )
         )
-    return TableauDashboard(scraper=TS, originalData=data, originalInfo={}, data=output, cmdResponse=True)
+    return TableauWorkbook(scraper=TS, originalData=data, originalInfo={}, data=output, cmdResponse=True)
 
 
 def getWorksheetsCmdResponse(TS, data):
@@ -124,7 +124,7 @@ def getWorksheetsCmdResponse(TS, data):
                 cmdResponse=True,
             )
         )
-    return TableauDashboard(
+    return TableauWorkbook(
         scraper=TS, originalData=data, originalInfo={}, data=output, cmdResponse=True
     )
 

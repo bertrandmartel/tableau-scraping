@@ -8,7 +8,7 @@ from tableauscraper import selectItem
 from tableauscraper import utils
 from tableauscraper import api
 from tableauscraper.TableauWorksheet import TableauWorksheet
-from tableauscraper.TableauDashboard import TableauDashboard
+from tableauscraper.TableauWorkbook import TableauWorkbook
 from typing import List
 import logging
 
@@ -86,7 +86,7 @@ class TableauScraper:
     # def listWorksheetNames(self):
     #     return dashboard.getWorksheetNames(self)
 
-    def getDashboard(self) -> TableauDashboard:
+    def getDashboard(self) -> TableauWorkbook:
         return dashboard.getWorksheets(self, self.data, self.info)
 
     def getWorksheet(self, worksheetName) -> TableauWorksheet:

@@ -1,4 +1,4 @@
-__all__ = ["TableauScraper", "TableauWorksheet", "TableauDashboard"]
+__all__ = ["TableauScraper", "TableauWorksheet", "TableauWorkbook"]
 from tableauscraper.TableauScraper import TableauScraper
 from tableauscraper.TableauWorksheet import TableauWorksheet
-from tableauscraper.TableauDashboard import TableauDashboard
+from tableauscraper.TableauWorkbook import TableauWorkbook

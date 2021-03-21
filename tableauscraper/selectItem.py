@@ -3,13 +3,13 @@ from tableauscraper import api
 import json
 import requests
 from tableauscraper import dashboard
-from tableauscraper.TableauDashboard import TableauDashboard
+from tableauscraper.TableauWorkbook import TableauWorkbook
 
 
 def get(TS, data, info, logger):
     worksheets = utils.selectWorksheet(data, logger, single=True)
     if len(worksheets) == 0:
-        return TableauDashboard(
+        return TableauWorkbook(
             scraper=TS, originalData=data, originalInfo=info, data=[]
         )
     selectedWorksheet = worksheets[0]

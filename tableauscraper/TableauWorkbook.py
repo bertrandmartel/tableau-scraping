@@ -4,7 +4,7 @@ import tableauscraper
 import copy
 
 
-class TableauDashboard:
+class TableauWorkbook:
 
     worksheets: List[TableauWorksheet] = []
     cmdResponse: bool = False
@@ -75,7 +75,7 @@ class TableauDashboard:
             ]
         if len(parameterNames) == 0:
             self._scraper.logger.error(f"column {inputName} not found")
-            return TableauDashboard(
+            return TableauWorkbook(
                 scraper=self._scraper,
                 originalData=self._originalData,
                 originalInfo=self._originalInfo,
