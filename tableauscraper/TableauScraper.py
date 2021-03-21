@@ -95,7 +95,7 @@ class TableauScraper:
     def promptDashboard(self):
         return dashboard.get(self, self.data, self.info, self.logger)
 
-    def promptDropdown(self):
+    def promptParameters(self):
         return parameterControl.get(self, self.info, self.logger)
 
     def promptSelect(self):
