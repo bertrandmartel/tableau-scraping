@@ -51,52 +51,42 @@ class TableauDashboard:
                 self._scraper, self._originalData, self._originalInfo, worksheetName
             )
 
-    def getDropdownInputs(self):
+    def getParameters(self):
         if self.cmdResponse:
             presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
-            return [
-                t["fieldCaption"]
-                for t in tableauscraper.utils.getParameterControlVqlResponse(presModel)
-            ]
+            # values = [
+            #     t["formattedValues"]
+            #     for t in tableauscraper.utils.getParameterControlVqlResponse(presModel)
+            #     if t["fieldCaption"] == inputName
+            # ]
+            # return [] if len(values) == 0 else values[0]
+            return tableauscraper.utils.getParameterControlVqlResponse(presModel)
         else:
-            return [
-                t["fieldCaption"]
-                for t in tableauscraper.utils.getParameterControlInput(self._originalInfo)
-            ]
+            # values = [
+            #     t["formattedValues"]
+            #     for t in tableauscraper.utils.getParameterControlInput(self._originalInfo)
+            #     if t["fieldCaption"] == inputName
+            # ]
+            # return [] if len(values) == 0 else values[0]
+            return tableauscraper.utils.getParameterControlInput(self._originalInfo)
 
-    def getDropdownValues(self, inputName):
-        if self.cmdResponse:
-            presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
-            values = [
-                t["formattedValues"]
-                for t in tableauscraper.utils.getParameterControlVqlResponse(presModel)
-                if t["fieldCaption"] == inputName
-            ]
-            return [] if len(values) == 0 else values[0]
-        else:
-            values = [
-                t["formattedValues"]
-                for t in tableauscraper.utils.getParameterControlInput(self._originalInfo)
-                if t["fieldCaption"] == inputName
-            ]
-            return [] if len(values) == 0 else values[0]
-
-    def setDropdown(self, inputName, value):
+    def setParameter(self, inputName, value):
         parameterNames = []
         if self.cmdResponse:
             presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
             parameterNames = [
                 t["parameterName"]
                 for t in tableauscraper.utils.getParameterControlVqlResponse(presModel)
-                if t["fieldCaption"] == inputName
+                if t["column"] == inputName
             ]
         else:
             parameterNames = [
                 t["parameterName"]
                 for t in tableauscraper.utils.getParameterControlInput(self._originalInfo)
-                if t["fieldCaption"] == inputName
+                if t["column"] == inputName
             ]
         if len(parameterNames) == 0:
+            self._scraper.logger.error(f"column {inputName} not found")
             return TableauDashboard(
                 scraper=self._scraper,
                 originalData=self._originalData,

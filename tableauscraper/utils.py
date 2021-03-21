@@ -437,12 +437,20 @@ def getParameterControlInput(info):
     if len(storyPointZones) == 0:
         zones = presModel["workbookPresModel"]["dashboardPresModel"]["zones"]
         return [
-            zones[key]["presModelHolder"]["parameterControl"]
+            {
+                "column": zones[key]["presModelHolder"]["parameterControl"]["fieldCaption"],
+                "values": zones[key]["presModelHolder"]["parameterControl"]["formattedValues"],
+                "parameterName": zones[key]["presModelHolder"]["parameterControl"]["parameterName"]
+            }
             for key in list(zones)
             if "parameterControl" in zones[key]["presModelHolder"]
         ]
     return [
-        zone["presModelHolder"]["parameterControl"]
+        {
+            "column": zone["presModelHolder"]["parameterControl"]["fieldCaption"],
+            "values": zone["presModelHolder"]["parameterControl"]["formattedValues"],
+            "parameterName": zone["presModelHolder"]["parameterControl"]["parameterName"]
+        }
         for zone in storyPointZones
         if "parameterControl" in zone["presModelHolder"]
     ]
@@ -453,12 +461,20 @@ def getParameterControlVqlResponse(presModel):
     zoneStoryPoint = listWorksheetStoryPoint(presModel, hasWorksheet=False)
     if len(zoneStoryPoint) != 0:
         return [
-            z["presModelHolder"]["parameterControl"]
+            {
+                "column": z["presModelHolder"]["parameterControl"]["fieldCaption"],
+                "values": z["presModelHolder"]["parameterControl"]["formattedValues"],
+                "parameterName": z["presModelHolder"]["parameterControl"]["parameterName"]
+            }
             for z in zoneStoryPoint
             if "parameterControl" in z["presModelHolder"]
         ]
     return [
-        zones[z]["presModelHolder"]["parameterControl"]
+        {
+            "column": zones[z]["presModelHolder"]["parameterControl"]["fieldCaption"],
+            "values": zones[z]["presModelHolder"]["parameterControl"]["formattedValues"],
+            "parameterName": zones[z]["presModelHolder"]["parameterControl"]["parameterName"]
+        }
         for z in list(zones)
         if ("worksheet" in zones[z])
         and ("presModelHolder" in zones[z])
