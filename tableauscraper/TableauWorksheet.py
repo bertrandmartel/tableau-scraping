@@ -159,7 +159,7 @@ class TableauWorksheet:
             if len(columnObj) == 0:
                 return []
 
-            return columnObj[0]["tupleIds"]
+            return [t["tupleIds"] for t in columnObj]
         else:
             presModel = tableauscraper.utils.getPresModelVizData(
                 self._originalData)
@@ -172,16 +172,22 @@ class TableauWorksheet:
             ]
             if len(columnObj) == 0:
                 return []
-            return columnObj[0]["tupleIds"]
+            return [t["tupleIds"] for t in columnObj]
 
     def select(self, column, value):
         values = self.getValues(column)
-        tupleIds = self.getTupleIds(column)
+        tupleItems = self.getTupleIds(column)
         try:
-            index = values.index(value)
-            if len(tupleIds) > index:
-                index = tupleIds[index]
-            else:
+
+            indexedByTuple = False
+            for tupleItem in tupleItems:
+                if len(tupleItem) >= len(values):
+                    index = values.index(value)
+                    index = tupleItem[index]
+                    indexedByTuple = True
+                    break
+            if not indexedByTuple:
+                index = values.index(value)
                 index = index + 1
             r = tableauscraper.api.select(self._scraper, self.name, [index])
             self.updateFullData(r)

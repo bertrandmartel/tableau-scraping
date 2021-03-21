@@ -143,20 +143,25 @@ def getIndicesInfo(presModelMap, worksheet, noSelectFilter=True, noFieldCaption=
         return []
 
     columnsData = genVizDataPresModel["paneColumnsData"]
-    return [
-        {
-            "fieldCaption": t.get("fieldCaption", ""),
-            "tupleIds": columnsData["paneColumnsList"][t["paneIndices"][0]]["vizPaneColumns"][t["columnIndices"][0]]["tupleIds"],
-            "valueIndices": columnsData["paneColumnsList"][t["paneIndices"][0]]["vizPaneColumns"][t["columnIndices"][0]]["valueIndices"],
-            "aliasIndices": columnsData["paneColumnsList"][t["paneIndices"][0]]["vizPaneColumns"][t["columnIndices"][0]]["aliasIndices"],
-            "dataType": t.get("dataType"),
-            "paneIndices": t["paneIndices"][0],
-            "columnIndices": t["columnIndices"][0],
-            "fn": t.get("fn", "")
-        }
-        for t in columnsData["vizDataColumns"]
-        if (t.get("fieldCaption") or noFieldCaption) and (noSelectFilter or (t.get("isAutoSelect") == True))
-    ]
+
+    result = []
+    for t in columnsData["vizDataColumns"]:
+        if (t.get("fieldCaption") or noFieldCaption) and (noSelectFilter or (t.get("isAutoSelect") == True)):
+            indexLength = len(t["paneIndices"])
+            for index in range(indexLength):
+                pandeIndex = t["paneIndices"][index]
+                columnIndex = t["columnIndices"][index]
+                result.append({
+                    "fieldCaption": t.get("fieldCaption", ""),
+                    "tupleIds": columnsData["paneColumnsList"][pandeIndex]["vizPaneColumns"][columnIndex]["tupleIds"],
+                    "valueIndices": columnsData["paneColumnsList"][pandeIndex]["vizPaneColumns"][columnIndex]["valueIndices"],
+                    "aliasIndices": columnsData["paneColumnsList"][pandeIndex]["vizPaneColumns"][columnIndex]["aliasIndices"],
+                    "dataType": t.get("dataType"),
+                    "paneIndices": pandeIndex,
+                    "columnIndices": columnIndex,
+                    "fn": t.get("fn", "")
+                })
+    return result
 
 
 def getIndicesInfoVqlResponse(presModel, worksheet, noSelectFilter=True, noFieldCaption=False):
@@ -248,7 +253,6 @@ def onDataValue(it, value, cstring):
 
 def getData(dataFull, indicesInfo):
     cstring = dataFull["cstring"]
-
     frameData = {}
     for index in indicesInfo:
         if index["dataType"] in dataFull:
