@@ -31,8 +31,8 @@ ts.loads(url)
 workbook = ts.getWorkbook()
 
 for t in workbook.worksheets:
-	print(f"worksheet name : {t.name}") #show worksheet name
-	print(t.data) #show dataframe for this worksheet
+    print(f"worksheet name : {t.name}") #show worksheet name
+    print(t.data) #show dataframe for this worksheet
 ```
 
 [Try this on repl.it](https://repl.it/@bertrandmartel/TableauGetWorksheets)
@@ -47,8 +47,8 @@ url = "https://public.tableau.com/views/PlayerStats-Top5Leagues20192020/OnePlaye
 ts = TS()
 ts.loads(url)
 
-worksheet = ts.getWorksheet("ATT MID CREATIVE COMP")
-print(worksheet.data)
+ws = ts.getWorksheet("ATT MID CREATIVE COMP")
+print(ws.data)
 ```
 
 - select a selectable item
@@ -61,20 +61,18 @@ url = "https://public.tableau.com/views/PlayerStats-Top5Leagues20192020/OnePlaye
 ts = TS()
 ts.loads(url)
 
-#show selectable columns
-columns = ts.getWorksheet("ATT MID CREATIVE COMP").getSelectableColumns()
-print(columns)
+ws = ts.getWorksheet("ATT MID CREATIVE COMP")
 
-#show values by column name
-values = ts.getWorksheet("ATT MID CREATIVE COMP").getValues("ATTR(Player)")
-print(values)
+# show selectable values
+selections = ws.getSelectableItems()
+print(selections)
 
-#select that value
-wb = ts.getWorksheet("ATT MID CREATIVE COMP").select("ATTR(Player)", "Vinicius Júnior")
+# select that value
+dashboard = ws.select("ATTR(Player)", "Vinicius Júnior")
 
-#display worksheets
-for t in wb.worksheets:
-	print(t.data)
+# display worksheets
+for t in dashboard.worksheets:
+    print(t.data)
 ```
 
 [Try this on repl.it](https://repl.it/@bertrandmartel/TableauSelectItem)
@@ -156,13 +154,13 @@ git clone git@github.com:bertrandmartel/tableau-scraping.git
 cd tableau-scraping/scripts
 
 #get worksheets data
-python3 prompt.py -get dashboard -url "https://public.tableau.com/views/COVID-19inMissouri/COVID-19inMissouri"
+python3 prompt.py -get workbook -url "https://public.tableau.com/views/COVID-19inMissouri/COVID-19inMissouri"
 
 #select a selectable item
 python3 prompt.py -get select -url "https://public.tableau.com/views/MKTScoredeisolamentosocial/VisoGeral"
 
-#select an item in dropdown
-python3 prompt.py -get dropdown -url "https://public.tableau.com/views/COVID-19DailyDashboard_15960160643010/Casesbyneighbourhood"
+#set a parameter
+python3 prompt.py -get parameter -url "https://public.tableau.com/views/COVID-19DailyDashboard_15960160643010/Casesbyneighbourhood"
 ```
 
 ### Settings
