@@ -37,6 +37,20 @@ for t in workbook.worksheets:
 
 [Try this on repl.it](https://repl.it/@bertrandmartel/TableauGetWorksheets)
 
+- Get a specific worksheet
+
+```python
+from tableauscraper import TableauScraper as TS
+
+url = "https://public.tableau.com/views/PlayerStats-Top5Leagues20192020/OnePlayerSummary"
+
+ts = TS()
+ts.loads(url)
+
+worksheet = ts.getWorksheet("ATT MID CREATIVE COMP")
+print(worksheet.data)
+```
+
 - select a selectable item
 
 ```python
