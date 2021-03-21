@@ -11,16 +11,16 @@ from tests.python.test_common import tableauSessionResponse as tableauSessionRes
 from tests.python.test_common import tableauPlaceHolderDataWithTicket as tableauPlaceHolderDataWithTicket
 from tests.python.test_common import tableauPlaceHolderDataEmpty as tableauPlaceHolderDataEmpty
 from tableauscraper import TableauScraper as TS
-from tableauscraper.TableauDashboard import TableauDashboard
+from tableauscraper.TableauWorkbook import TableauWorkbook
 from tableauscraper.TableauWorksheet import TableauWorksheet
-
 
 
 def test_TableauScraper_loads(mocker: MockerFixture) -> None:
     mocker.patch(
         "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
     )
-    mocker.patch("tableauscraper.api.getTableauData", return_value=tableauDataResponse)
+    mocker.patch("tableauscraper.api.getTableauData",
+                 return_value=tableauDataResponse)
     ts = TS()
     ts.loads(fakeUri)
     assert "vizql_root" in ts.__dict__["tableauData"]
@@ -28,6 +28,7 @@ def test_TableauScraper_loads(mocker: MockerFixture) -> None:
     assert "sheetId" in ts.__dict__["tableauData"]
     assert ts.__dict__["data"] == data
     assert ts.__dict__["info"] == info
+
 
 def test_TableauScraper_loadsWithPlaceholder(mocker: MockerFixture) -> None:
     mocker.patch(
@@ -36,7 +37,8 @@ def test_TableauScraper_loadsWithPlaceholder(mocker: MockerFixture) -> None:
     mocker.patch(
         "tableauscraper.api.getTableauVizForSession", return_value=tableauVizHtmlResponse
     )
-    mocker.patch("tableauscraper.api.getTableauData", return_value=tableauDataResponse)
+    mocker.patch("tableauscraper.api.getTableauData",
+                 return_value=tableauDataResponse)
     ts = TS()
     ts.loads(fakeUri)
     assert "vizql_root" in ts.__dict__["tableauData"]
@@ -45,6 +47,7 @@ def test_TableauScraper_loadsWithPlaceholder(mocker: MockerFixture) -> None:
     assert ts.__dict__["data"] == data
     assert ts.__dict__["info"] == info
 
+
 def test_TableauScraper_loadsWithPlaceholderWithTicket(mocker: MockerFixture) -> None:
     mocker.patch(
         "tableauscraper.api.getTableauViz", return_value=tableauPlaceHolderDataWithTicket
@@ -52,8 +55,10 @@ def test_TableauScraper_loadsWithPlaceholderWithTicket(mocker: MockerFixture) ->
     mocker.patch(
         "tableauscraper.api.getTableauVizForSession", return_value=tableauVizHtmlResponse
     )
-    mocker.patch("tableauscraper.api.getTableauData", return_value=tableauDataResponse)
-    mocker.patch("tableauscraper.api.getSessionUrl", return_value=tableauSessionResponse)
+    mocker.patch("tableauscraper.api.getTableauData",
+                 return_value=tableauDataResponse)
+    mocker.patch("tableauscraper.api.getSessionUrl",
+                 return_value=tableauSessionResponse)
     ts = TS()
     ts.loads(fakeUri)
     assert "vizql_root" in ts.__dict__["tableauData"]
@@ -61,6 +66,7 @@ def test_TableauScraper_loadsWithPlaceholderWithTicket(mocker: MockerFixture) ->
     assert "sheetId" in ts.__dict__["tableauData"]
     assert ts.__dict__["data"] == data
     assert ts.__dict__["info"] == info
+
 
 def test_TableauScraper_loadsWithPlaceholderEmpty(mocker: MockerFixture) -> None:
     mocker.patch(
@@ -73,24 +79,15 @@ def test_TableauScraper_loadsWithPlaceholderEmpty(mocker: MockerFixture) -> None
     assert ts.__dict__["info"] == {}
 
 
-# def test_TableauScraper_listWorksheetNames(mocker: MockerFixture) -> None:
-#     mocker.patch(
-#         "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
-#     )
-#     mocker.patch("tableauscraper.api.getTableauData", return_value=tableauDataResponse)
-#     ts = TS()
-#     ts.loads(fakeUri)
-#     assert ts.listWorksheetNames() == ["[WORKSHEET1]", "[WORKSHEET2]"]
-
-
 def test_TableauScraper_getWorksheets(mocker: MockerFixture) -> None:
     mocker.patch(
         "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
     )
-    mocker.patch("tableauscraper.api.getTableauData", return_value=tableauDataResponse)
+    mocker.patch("tableauscraper.api.getTableauData",
+                 return_value=tableauDataResponse)
     ts = TS()
     ts.loads(fakeUri)
-    dashboard = ts.getDashboard()
+    dashboard = ts.getWorkbook()
     assert len(dashboard.worksheets) == 2
     assert dashboard.worksheets[0].name == "[WORKSHEET1]"
     assert dashboard.worksheets[1].name == "[WORKSHEET2]"
@@ -100,7 +97,8 @@ def test_TableauScraper_getWorksheet(mocker: MockerFixture) -> None:
     mocker.patch(
         "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
     )
-    mocker.patch("tableauscraper.api.getTableauData", return_value=tableauDataResponse)
+    mocker.patch("tableauscraper.api.getTableauData",
+                 return_value=tableauDataResponse)
     ts = TS()
     ts.loads(fakeUri)
     tableauDataFrame = ts.getWorksheet("[WORKSHEET1]")
@@ -114,12 +112,13 @@ def test_TableauScraper_promptDashboard(mocker: MockerFixture) -> None:
     mocker.patch(
         "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
     )
-    mocker.patch("tableauscraper.api.getTableauData", return_value=tableauDataResponse)
+    mocker.patch("tableauscraper.api.getTableauData",
+                 return_value=tableauDataResponse)
     ts = TS()
     ts.loads(fakeUri)
     mocker.patch("builtins.input", side_effect=[""])
     tableauDataFrameGroup = ts.promptDashboard()
-    assert type(tableauDataFrameGroup) is TableauDashboard
+    assert type(tableauDataFrameGroup) is TableauWorkbook
     assert len(tableauDataFrameGroup.worksheets) == 2
     assert tableauDataFrameGroup.worksheets[0].name == "[WORKSHEET1]"
     assert tableauDataFrameGroup.worksheets[0].data.shape[0] == 4
@@ -137,13 +136,15 @@ def test_TableauScraper_promptDropdown(mocker: MockerFixture) -> None:
     mocker.patch(
         "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
     )
-    mocker.patch("tableauscraper.api.getTableauData", return_value=tableauDataResponse)
-    mocker.patch("tableauscraper.api.setParameterValue", return_value=vqlCmdResponse)
+    mocker.patch("tableauscraper.api.getTableauData",
+                 return_value=tableauDataResponse)
+    mocker.patch("tableauscraper.api.setParameterValue",
+                 return_value=vqlCmdResponse)
     ts = TS()
     ts.loads(fakeUri)
     mocker.patch("builtins.input", side_effect=["0", "0", "0", ""])
-    tableauDataFrameGroup = ts.promptDropdown()
-    assert type(tableauDataFrameGroup) is TableauDashboard
+    tableauDataFrameGroup = ts.promptParameters()
+    assert type(tableauDataFrameGroup) is TableauWorkbook
     assert len(tableauDataFrameGroup.worksheets) == 1
     assert tableauDataFrameGroup.worksheets[0].name == "[WORKSHEET1]"
     assert tableauDataFrameGroup.worksheets[0].data.shape[0] == 4
@@ -158,13 +159,14 @@ def test_TableauScraper_promptSelect(mocker: MockerFixture) -> None:
     mocker.patch(
         "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
     )
-    mocker.patch("tableauscraper.api.getTableauData", return_value=tableauDataResponse)
+    mocker.patch("tableauscraper.api.getTableauData",
+                 return_value=tableauDataResponse)
     mocker.patch("tableauscraper.api.select", return_value=vqlCmdResponse)
     ts = TS()
     ts.loads(fakeUri)
     mocker.patch("builtins.input", side_effect=["0", "0", "0", ""])
     tableauDataFrameGroup = ts.promptSelect()
-    assert type(tableauDataFrameGroup) is TableauDashboard
+    assert type(tableauDataFrameGroup) is TableauWorkbook
     assert len(tableauDataFrameGroup.worksheets) == 1
     assert tableauDataFrameGroup.worksheets[0].name == "[WORKSHEET1]"
     assert tableauDataFrameGroup.worksheets[0].data.shape[0] == 4

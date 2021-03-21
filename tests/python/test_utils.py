@@ -190,19 +190,45 @@ def test_selectWorksheetCmdResponse(monkeypatch):
 def test_getParameterControlInput():
     parameterControlInput = utils.getParameterControlInput(info)
     assert len(parameterControlInput) == 2
-    assert [t["fieldCaption"] for t in parameterControlInput] == [
-        "[INPUT_NAME1]",
-        "[INPUT_NAME2]",
-    ]
+    assert parameterControlInput == [{
+        "column": "[INPUT_NAME1]",
+        "values": [
+            "select1",
+            "select2",
+            "select3",
+        ],
+        "parameterName": "[Parameters].[Parameter 1]"
+    }, {
+        "column": "[INPUT_NAME2]",
+        "values": [
+            "select4",
+            "select5",
+            "select6",
+        ],
+        "parameterName": "[Parameters].[Parameter 1]",
+    }]
 
 
 def test_getParameterControlVqlResponse():
     presModel = vqlCmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
     parameterControl = utils.getParameterControlVqlResponse(presModel)
-    assert [t["fieldCaption"] for t in parameterControl] == [
-        "[INPUT_NAME1]",
-        "[INPUT_NAME2]",
-    ]
+    assert parameterControl == [{
+        "column": "[INPUT_NAME1]",
+        "values": [
+            "select1",
+            "select2",
+            "select3",
+        ],
+        "parameterName": "[Parameters].[Parameter 1]"
+    }, {
+        "column": "[INPUT_NAME2]",
+        "values": [
+            "select4",
+            "select5",
+            "select6",
+        ],
+        "parameterName": "[Parameters].[Parameter 1]",
+    }]
 
 
 def test_getDataCmdResponse():

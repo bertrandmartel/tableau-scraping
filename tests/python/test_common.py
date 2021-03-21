@@ -24,6 +24,39 @@ noWorksheet = {
     }
 }
 
+dataWithoutPresModelWithDictionary = {
+    "secondaryInfo": {
+        "presModelMap": {
+            "dataDictionary": {
+                "presModelHolder": {
+                    "genDataDictionaryPresModel": {
+                        "dataSegments": {
+                            "0": {
+                                "dataColumns": [
+                                    {
+                                        "dataType": "cstring",
+                                        "dataValues": ["1", "2", "3", "4", "5", "6"],
+                                    },
+                                    {"dataType": "real",
+                                        "dataValues": [1, 2, 3, 4, 5]},
+                                ]
+                            },
+                            "1": {
+                                "dataColumns": [
+                                    {
+                                        "dataType": "cstring",
+                                        "dataValues": ["7", "8", "9"],
+                                    }
+                                ]
+                            },
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 data = {
     "secondaryInfo": {
         "presModelMap": {
@@ -74,6 +107,113 @@ data = {
                                                     "dataType": "cstring",
                                                     "paneIndices": [0],
                                                     "columnIndices": [1],
+                                                },
+                                            ],
+                                        }
+                                    }
+                                }
+                            },
+                            "[WORKSHEET2]": {
+                                "presModelHolder": {"genVizDataPresModel": {}}
+                            },
+                        }
+                    }
+                }
+            },
+            "dataDictionary": {
+                "presModelHolder": {
+                    "genDataDictionaryPresModel": {
+                        "dataSegments": {
+                            "0": {
+                                "dataColumns": [
+                                    {
+                                        "dataType": "cstring",
+                                        "dataValues": ["1", "2", "3", "4", "5", "6"],
+                                    },
+                                    {"dataType": "real",
+                                        "dataValues": [1, 2, 3, 4, 5]},
+                                ]
+                            },
+                            "1": {
+                                "dataColumns": [
+                                    {
+                                        "dataType": "cstring",
+                                        "dataValues": ["7", "8", "9"],
+                                    }
+                                ]
+                            },
+                        }
+                    }
+                }
+            },
+        }
+    }
+}
+
+dataWithTupleIds = {
+    "secondaryInfo": {
+        "presModelMap": {
+            "vizData": {
+                "presModelHolder": {
+                    "genPresModelMapPresModel": {
+                        "presModelMap": {
+                            "[WORKSHEET1]": {
+                                "presModelHolder": {
+                                    "genVizDataPresModel": {
+                                        "paneColumnsData": {
+                                            "paneColumnsList": [
+                                                {
+                                                    "vizPaneColumns": [
+                                                        {
+                                                            "tupleIds": [
+                                                                2,
+                                                                4,
+                                                                6,
+                                                                8,
+                                                            ],
+                                                            "valueIndices": [],
+                                                            "aliasIndices": [],
+                                                        }, {
+                                                            "tupleIds": [],
+                                                            "valueIndices": [
+                                                                1,
+                                                                2,
+                                                                3,
+                                                                4,
+                                                            ],
+                                                            "aliasIndices": [],
+                                                        },
+                                                        {
+                                                            "tupleIds": [],
+                                                            "valueIndices": [],
+                                                            "aliasIndices": [
+                                                                -6,
+                                                                -7,
+                                                                -8,
+                                                                -9,
+                                                            ],
+                                                        },
+                                                    ]
+                                                }
+                                            ],
+                                            "vizDataColumns": [
+                                                {
+                                                    "fn": "[system:visual].[tuple_id]",
+                                                    "paneIndices": [0],
+                                                    "columnIndices": [0],
+                                                },
+                                                {
+                                                    "fieldCaption": "[FIELD1]",
+                                                    "dataType": "cstring",
+                                                    "paneIndices": [0],
+                                                    "columnIndices": [1],
+                                                    "isAutoSelect": True,
+                                                },
+                                                {
+                                                    "fieldCaption": "[FIELD2]",
+                                                    "dataType": "cstring",
+                                                    "paneIndices": [0],
+                                                    "columnIndices": [2],
                                                 },
                                             ],
                                         }
@@ -349,6 +489,134 @@ vqlCmdResponse = {
     }
 }
 
+vqlCmdResponseWithTupleIds = {
+    "vqlCmdResponse": {
+        "layoutStatus": {
+            "applicationPresModel": {
+                "workbookPresModel": {
+                    "dashboardPresModel": {
+                        "zones": {
+                            "0": {
+                                "worksheet": "[WORKSHEET1]",
+                                "presModelHolder": {
+                                    "visual": {
+                                        "vizData": {
+                                            "paneColumnsData": {
+                                                "paneColumnsList": [
+                                                    {
+                                                        "vizPaneColumns": [
+                                                            {
+                                                                "tupleIds": [
+                                                                    2,
+                                                                    4,
+                                                                    6,
+                                                                    8,
+                                                                ],
+                                                                "valueIndices": [],
+                                                                "aliasIndices": [],
+                                                            },
+                                                            {
+                                                                "tupleIds": [],
+                                                                "valueIndices": [
+                                                                    1,
+                                                                    2,
+                                                                    3,
+                                                                    4,
+                                                                ],
+                                                                "aliasIndices": [],
+                                                            },
+                                                            {
+                                                                "tupleIds": [],
+                                                                "valueIndices": [],
+                                                                "aliasIndices": [
+                                                                    -6,
+                                                                    -7,
+                                                                    -8,
+                                                                    -9,
+                                                                ],
+                                                            },
+                                                        ]
+                                                    }
+                                                ],
+                                                "vizDataColumns": [
+                                                    {
+                                                        "fn": "[system:visual].[tuple_id]",
+                                                        "paneIndices": [0],
+                                                        "columnIndices": [0],
+                                                    },
+                                                    {
+                                                        "fieldCaption": "[FIELD1]",
+                                                        "dataType": "cstring",
+                                                        "paneIndices": [0],
+                                                        "columnIndices": [1],
+                                                        "isAutoSelect": True
+                                                    },
+                                                    {
+                                                        "fieldCaption": "[FIELD2]",
+                                                        "dataType": "cstring",
+                                                        "paneIndices": [0],
+                                                        "columnIndices": [2],
+                                                    },
+                                                ],
+                                            }
+                                        }
+                                    },
+                                    "parameterControl": {
+                                        "fieldCaption": "[INPUT_NAME1]",
+                                        "parameterName": "[Parameters].[Parameter 1]",
+                                        "formattedValues": [
+                                            "select1",
+                                            "select2",
+                                            "select3",
+                                        ],
+                                    },
+                                },
+                            },
+                            "1": {
+                                "worksheet": "[WORKSHEET2]",
+                                "presModelHolder": {
+                                    "visual": {
+                                        "vizData": {},
+                                    },
+                                    "parameterControl": {
+                                        "fieldCaption": "[INPUT_NAME2]",
+                                        "parameterName": "[Parameters].[Parameter 1]",
+                                        "formattedValues": [
+                                            "select4",
+                                            "select5",
+                                            "select6",
+                                        ],
+                                    },
+                                },
+                            },
+                        }
+                    }
+                },
+                "dataDictionary": {
+                    "dataSegments": {
+                        "0": {
+                            "dataColumns": [
+                                {
+                                    "dataType": "cstring",
+                                    "dataValues": ["1", "2", "3", "4", "5", "6"],
+                                },
+                                {"dataType": "real",
+                                    "dataValues": [1, 2, 3, 4, 5]},
+                            ]
+                        },
+                        "1": {
+                            "dataColumns": [
+                                {"dataType": "cstring",
+                                    "dataValues": ["7", "8", "9"]}
+                            ]
+                        },
+                    }
+                },
+            }
+        }
+    }
+}
+
 vqlCmdResponseDictionaryEmpty = {
     "vqlCmdResponse": {
         "layoutStatus": {
@@ -450,6 +718,274 @@ vqlCmdResponseDictionaryEmpty = {
     }
 }
 
+storyPointsCmdResponse = {
+    "vqlCmdResponse": {
+        "layoutStatus": {
+            "applicationPresModel": {
+                "workbookPresModel": {
+                    "dashboardPresModel": {
+                        "zones": {
+                            "2": {
+                                "worksheet": "[WORKSHEET1]",
+                                "presModelHolder": {
+                                    "quickFilterDisplay": {
+                                        "quickFilter": {
+                                            "categoricalFilter": {
+                                                "columnFullNames": ["[FILTER_1]"],
+                                                "domainTables": [{
+                                                    "label": "FITLTER_VALUE_1"
+                                                }, {
+                                                    "label": "FITLTER_VALUE_2"
+                                                }, {
+                                                    "label": "FITLTER_VALUE_3"
+                                                }],
+                                                "fn": "[FILTER].[FILTER_1]"
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "3": {
+                                "presModelHolder": {
+                                    "flipboard": {
+                                        "storyPoints": {
+                                            "1": {
+                                                "dashboardPresModel": {
+                                                    "zones": {
+                                                        "0": {
+                                                            "worksheet": "[WORKSHEET1]",
+                                                            "presModelHolder": {"visual": {"vizData": {
+                                                                "paneColumnsData": {
+                                                                    "paneColumnsList": [
+                                                                        {
+                                                                            "vizPaneColumns": [
+                                                                                {
+                                                                                    "tupleIds": [],
+                                                                                    "valueIndices": [
+                                                                                        1,
+                                                                                        2,
+                                                                                        3,
+                                                                                        4,
+                                                                                    ],
+                                                                                    "aliasIndices": [],
+                                                                                },
+                                                                                {
+                                                                                    "tupleIds": [],
+                                                                                    "valueIndices": [],
+                                                                                    "aliasIndices": [
+                                                                                        -6,
+                                                                                        -7,
+                                                                                        -8,
+                                                                                        -9,
+                                                                                    ],
+                                                                                },
+                                                                            ]
+                                                                        }
+                                                                    ],
+                                                                    "vizDataColumns": [
+                                                                        {
+                                                                            "fieldCaption": "[FIELD1]",
+                                                                            "dataType": "cstring",
+                                                                            "paneIndices": [0],
+                                                                            "columnIndices": [0],
+                                                                            "isAutoSelect": True,
+                                                                        },
+                                                                        {
+                                                                            "fieldCaption": "[FIELD2]",
+                                                                            "dataType": "cstring",
+                                                                            "paneIndices": [0],
+                                                                            "columnIndices": [1],
+                                                                            "isAutoSelect": True
+                                                                        },
+                                                                    ]
+                                                                }
+                                                            }}},
+                                                        },
+                                                        "1": {
+                                                            "presModelHolder": {
+                                                                "parameterControl": {
+                                                                    "fieldCaption": "[INPUT_NAME1]",
+                                                                    "parameterName": "[Parameters].[Parameter 1]",
+                                                                    "formattedValues": [
+                                                                        "select1",
+                                                                        "select2",
+                                                                        "select3",
+                                                                    ],
+                                                                }
+                                                            }
+                                                        },
+                                                        "2": {
+                                                            "presModelHolder": {
+                                                                "parameterControl": {
+                                                                    "fieldCaption": "[INPUT_NAME2]",
+                                                                    "parameterName": "[Parameters].[Parameter 1]",
+                                                                    "formattedValues": [
+                                                                        "select4",
+                                                                        "select5",
+                                                                        "select6",
+                                                                    ],
+                                                                }
+                                                            }
+                                                        },
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "dataDictionary": {
+                    "dataSegments": {
+                        "0": {
+                            "dataColumns": [
+                                {
+                                    "dataType": "cstring",
+                                    "dataValues": ["1", "2", "3", "4", "5", "6"],
+                                },
+                                {"dataType": "real",
+                                    "dataValues": [1, 2, 3, 4, 5]},
+                            ]
+                        },
+                        "1": {
+                            "dataColumns": [
+                                {"dataType": "cstring",
+                                    "dataValues": ["7", "8", "9"]}
+                            ]
+                        },
+                    }
+                },
+            }
+        }
+    }
+}
+
+storyPointsInfo = {
+    "sheetName": "[SHEET_NAME]",
+    "worldUpdate": {
+        "applicationPresModel": {
+            "workbookPresModel": {
+                "dashboardPresModel": {
+                    "zones": {
+                        "2": {
+                            "worksheet": "[WORKSHEET1]",
+                            "presModelHolder": {
+                                "quickFilterDisplay": {
+                                    "quickFilter": {
+                                        "categoricalFilter": {
+                                            "columnFullNames": ["[FILTER_1]"],
+                                            "domainTables": [{
+                                                "label": "FITLTER_VALUE_1"
+                                            }, {
+                                                "label": "FITLTER_VALUE_2"
+                                            }, {
+                                                "label": "FITLTER_VALUE_3"
+                                            }],
+                                            "fn": "[FILTER].[FILTER_1]"
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "3": {
+                            "presModelHolder": {
+                                "flipboard": {
+                                    "storyPoints": {
+                                        "1": {
+                                            "dashboardPresModel": {
+                                                "zones": {
+                                                    "0": {
+                                                        "worksheet": "[WORKSHEET1]",
+                                                        "presModelHolder": {"visual": {"vizData": {
+                                                            "paneColumnsData": {
+                                                                "paneColumnsList": [
+                                                                    {
+                                                                        "vizPaneColumns": [
+                                                                            {
+                                                                                "tupleIds": [],
+                                                                                "valueIndices": [
+                                                                                    1,
+                                                                                    2,
+                                                                                    3,
+                                                                                    4,
+                                                                                ],
+                                                                                "aliasIndices": [],
+                                                                            },
+                                                                            {
+                                                                                "tupleIds": [],
+                                                                                "valueIndices": [],
+                                                                                "aliasIndices": [
+                                                                                    -6,
+                                                                                    -7,
+                                                                                    -8,
+                                                                                    -9,
+                                                                                ],
+                                                                            },
+                                                                        ]
+                                                                    }
+                                                                ],
+                                                                "vizDataColumns": [
+                                                                    {
+                                                                        "fieldCaption": "[FIELD1]",
+                                                                        "dataType": "cstring",
+                                                                        "paneIndices": [0],
+                                                                        "columnIndices": [0],
+                                                                        "isAutoSelect": True,
+                                                                    },
+                                                                    {
+                                                                        "fieldCaption": "[FIELD2]",
+                                                                        "dataType": "cstring",
+                                                                        "paneIndices": [0],
+                                                                        "columnIndices": [1],
+                                                                        "isAutoSelect": True
+                                                                    },
+                                                                ]
+                                                            }
+                                                        }}},
+                                                    },
+                                                    "1": {
+                                                        "presModelHolder": {
+                                                            "parameterControl": {
+                                                                "fieldCaption": "[INPUT_NAME1]",
+                                                                "parameterName": "[Parameters].[Parameter 1]",
+                                                                "formattedValues": [
+                                                                    "select1",
+                                                                    "select2",
+                                                                    "select3",
+                                                                ],
+                                                            }
+                                                        }
+                                                    },
+                                                    "2": {
+                                                        "presModelHolder": {
+                                                            "parameterControl": {
+                                                                "fieldCaption": "[INPUT_NAME2]",
+                                                                "parameterName": "[Parameters].[Parameter 1]",
+                                                                "formattedValues": [
+                                                                    "select4",
+                                                                    "select5",
+                                                                    "select6",
+                                                                ],
+                                                            }
+                                                        }
+                                                    },
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+}
+
+
 info = {
     "sheetName": "[SHEET_NAME]",
     "worldUpdate": {
@@ -483,6 +1019,26 @@ info = {
                                 }
                             }
                         },
+                        "2": {
+                            "worksheet": "[WORKSHEET1]",
+                            "presModelHolder": {
+                                "quickFilterDisplay": {
+                                    "quickFilter": {
+                                        "categoricalFilter": {
+                                            "columnFullNames": ["[FILTER_1]"],
+                                            "domainTables": [{
+                                                "label": "FITLTER_VALUE_1"
+                                            }, {
+                                                "label": "FITLTER_VALUE_2"
+                                            }, {
+                                                "label": "FITLTER_VALUE_3"
+                                            }],
+                                            "fn": "[FILTER].[FILTER_1]"
+                                        }
+                                    }
+                                }
+                            }
+                        },
                     }
                 }
             }
@@ -507,6 +1063,20 @@ tableauDataResponse = """
 """ % (
     json.dumps(info),
     json.dumps(data),
+)
+
+tableauDataResponseWithTupleIds = """
+433337;%s433337;%s
+""" % (
+    json.dumps(info),
+    json.dumps(dataWithTupleIds),
+)
+
+tableauDataResponseWithStoryPoints = """
+433337;%s433337;%s
+""" % (
+    json.dumps(storyPointsInfo),
+    json.dumps(dataWithoutPresModelWithDictionary),
 )
 
 fakeUri = "https://public.tableau.com/example"

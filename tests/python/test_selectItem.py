@@ -7,7 +7,7 @@ from tests.python.test_common import info as info
 from tests.python.test_common import noWorksheet as noWorksheet
 from tests.python.test_common import emptyValues as emptyValues
 from tableauscraper import TableauScraper as TS
-from tableauscraper.TableauDashboard import TableauDashboard
+from tableauscraper.TableauWorkbook import TableauWorkbook
 
 
 def test_selectItem(mocker: MockerFixture) -> None:
@@ -16,7 +16,7 @@ def test_selectItem(mocker: MockerFixture) -> None:
     mocker.patch("builtins.input", side_effect=["0", "0", "0", ""])
     mocker.patch("tableauscraper.api.select", return_value=vqlCmdResponse)
     tableauDataFrameGroup = selectItem.get(ts, data, info, ts.logger)
-    assert type(tableauDataFrameGroup) is TableauDashboard
+    assert type(tableauDataFrameGroup) is TableauWorkbook
     assert len(tableauDataFrameGroup.worksheets) == 1
     assert tableauDataFrameGroup.worksheets[0].name == "[WORKSHEET1]"
     assert tableauDataFrameGroup.worksheets[0].data.shape[0] == 4
@@ -29,7 +29,7 @@ def test_selectItem(mocker: MockerFixture) -> None:
     # no worksheet
     mocker.patch("builtins.input", side_effect=["0", "0", "0", ""])
     tableauDataFrameGroup = selectItem.get(ts, noWorksheet, info, ts.logger)
-    assert type(tableauDataFrameGroup) is TableauDashboard
+    assert type(tableauDataFrameGroup) is TableauWorkbook
     assert len(tableauDataFrameGroup.worksheets) == 0
 
     # no column name selected
