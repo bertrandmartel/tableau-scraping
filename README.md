@@ -28,13 +28,11 @@ url = "https://public.tableau.com/views/PlayerStats-Top5Leagues20192020/OnePlaye
 
 ts = TS()
 ts.loads(url)
-dashboard = ts.getDashboard()
+workbook = ts.getWorkbook()
 
-for t in dashboard.worksheets:
-	#show worksheet name
-	print(f"WORKSHEET NAME : {t.name}")
-	#show dataframe for this worksheet
-	print(t.data)
+for t in workbook.worksheets:
+	print(f"worksheet name : {t.name}") #show worksheet name
+	print(t.data) #show dataframe for this worksheet
 ```
 
 [Try this on repl.it](https://repl.it/@bertrandmartel/TableauGetWorksheets)
@@ -58,16 +56,18 @@ values = ts.getWorksheet("ATT MID CREATIVE COMP").getValues("ATTR(Player)")
 print(values)
 
 #select that value
-dashboard = ts.getWorksheet("ATT MID CREATIVE COMP").select("ATTR(Player)", "Vinicius Júnior")
+wb = ts.getWorksheet("ATT MID CREATIVE COMP").select("ATTR(Player)", "Vinicius Júnior")
 
 #display worksheets
-for t in dashboard.worksheets:
+for t in wb.worksheets:
 	print(t.data)
 ```
 
 [Try this on repl.it](https://repl.it/@bertrandmartel/TableauSelectItem)
 
-- select item in a dropdown
+- set parameter
+
+Get list of parameters with `workbook.getParameters()` and set parameter value using `workbook.setParameter("column_name", "value")` :
 
 ```python
 from tableauscraper import TableauScraper as TS
@@ -76,25 +76,50 @@ url = "https://public.tableau.com/views/PlayerStats-Top5Leagues20192020/OnePlaye
 
 ts = TS()
 ts.loads(url)
-dashboard = ts.getDashboard()
+workbook = ts.getWorkbook()
 
-#show dropdown input name
-inputNames = dashboard.getDropdownInputs()
-print(inputNames)
+# show parameters values / column
+parameters = workbook.getParameters()
+print(parameters)
 
-#show dropdown values for a given input name
-values = dashboard.getDropdownValues("P.League 2")
-print(values)
+# set parameters column / value
+workbook = workbook.setParameter("P.League 2", "Ligue 1")
 
-#select that value
-dashboard = dashboard.setDropdown("P.League 2", "Ligue 1")
-
-#display worksheets
-for t in dashboard.worksheets:
-	print(t.data)
+# display worksheets
+for t in workbook.worksheets:
+    print(t.data)
 ```
 
-[Try this on repl.it](https://repl.it/@bertrandmartel/TableauDropdown)
+[Try this on repl.it](https://repl.it/@bertrandmartel/TableauParameter)
+
+- set filter
+
+Get list of filters with `worksheet.getFilters` and set filter value using `worksheet.setFilter("column_name", "value")`:
+
+```python
+from tableauscraper import TableauScraper as TS
+
+url = 'https://public.tableau.com/views/WomenInOlympics/Dashboard1'
+ts = TS()
+ts.loads(url)
+
+# show original data for worksheet
+ws = ts.getWorksheet("Bar Chart")
+print(ws.data)
+
+# get filters columns and values
+filters = ws.getFilters()
+print(filters)
+
+# set filter value
+wb = ws.setFilter('[Olympics]', 'Winter')
+
+# show the new data for worksheet
+countyWs = wb.getWorksheet("Bar Chart")
+print(countyWs.data)
+```
+
+[Try this on repl.it](https://repl.it/@bertrandmartel/TableauFilter)
 
 ### Sample usecases
 
