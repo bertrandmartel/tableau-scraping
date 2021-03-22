@@ -17,3 +17,4 @@ https://public.tableau.com/views/NewspapersByCountyCalifornia/Newspaperbycounty
 https://public.tableau.com/views/OregonCOVID-19CasesbyZIPCode-SummaryTable/CasesbyZIPCodeSummaryTable
 https://tableau.ons.org.br/t/ONS_Publico/views/DemandaMxima/HistricoDemandaMxima
 https://public.tableau.com/views/WomenInOlympics/Dashboard1
+https://public.tableau.com/views/COVID-19VaccineTrackerDashboard_16153822244270/Dosesadministered
