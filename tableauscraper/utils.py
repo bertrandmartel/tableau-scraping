@@ -473,8 +473,7 @@ def getParameterControlVqlResponse(presModel):
             "parameterName": zones[z]["presModelHolder"]["parameterControl"]["parameterName"]
         }
         for z in list(zones)
-        if ("worksheet" in zones[z])
-        and ("presModelHolder" in zones[z])
+        if ("presModelHolder" in zones[z])
         and ("parameterControl" in zones[z]["presModelHolder"])
     ]
 
