@@ -133,6 +133,27 @@ print(countyWs.data)
 
 [Try this on repl.it](https://repl.it/@bertrandmartel/TableauFilter)
 
+- Go to sheet
+
+Get list of all sheets with subsheets visible or invisible, ability to send a go-to-sheet command (dashboar button) :
+
+```python
+from tableauscraper import TableauScraper as TS
+
+url = "https://public.tableau.com/views/COVID-19VaccineTrackerDashboard_16153822244270/Dosesadministered"
+ts = TS()
+ts.loads(url)
+workbook = ts.getWorkbook()
+
+sheets = workbook.getSheets()
+print(sheets)
+
+nycAdults = workbook.goToSheet("NYC Adults")
+for t in nycAdults.worksheets:
+    print(f"worksheet name : {t.name}")  # show worksheet name
+    print(t.data)  # show dataframe for this worksheet
+```
+
 ### Sample usecases
 
 - https://replit.com/@bertrandmartel/TableauOregonCovid

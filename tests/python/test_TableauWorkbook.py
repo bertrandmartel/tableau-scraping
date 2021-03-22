@@ -161,3 +161,34 @@ def test_TableauWorkbook(mocker: MockerFixture) -> None:
         ],
         "parameterName": "[Parameters].[Parameter 1]",
     }]
+
+
+def test_Sheets(mocker: MockerFixture) -> None:
+    mocker.patch(
+        "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
+    )
+    mocker.patch("tableauscraper.api.getTableauData",
+                 return_value=tableauDataResponse)
+    mocker.patch("tableauscraper.api.goToSheet", return_value=vqlCmdResponse)
+    ts = TS()
+    ts.loads(fakeUri)
+    wb = ts.getWorkbook()
+
+    sheets = wb.getSheets()
+    assert sheets == [{
+        "sheet": "[WORKSHEET1]",
+        "isDashboard": False,
+        "isVisible": True,
+        "namesOfSubsheets": [],
+        "windowId":"{XXXXX}"
+    }]
+
+    wbRes = wb.goToSheet("[WORKSHEET1]")
+    assert type(wbRes) is TableauWorkbook
+    assert len(wbRes.worksheets) == 1
+    assert wbRes.worksheets[0].name == "[WORKSHEET1]"
+
+    # sheet not found
+    wbRes = wb.goToSheet("XXXXXX")
+    assert type(wbRes) is TableauWorkbook
+    assert len(wbRes.worksheets) == 0

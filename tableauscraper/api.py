@@ -108,6 +108,19 @@ def setParameterValue(scraper, parameterName, value):
     return r.json()
 
 
+def goToSheet(scraper, windowId):
+    delayExecution(scraper)
+    payload = (
+        ("windowId", (None, windowId)),
+    )
+    r = scraper.session.post(
+        f'{scraper.host}{scraper.tableauData["vizql_root"]}/sessions/{scraper.tableauData["sessionid"]}/commands/tabdoc/goto-sheet',
+        files=payload,
+        verify=scraper.verify
+    )
+    return r.json()
+
+
 def delayExecution(scraper):
     if scraper.lastActionTime != 0:
         currentTime = time.time()

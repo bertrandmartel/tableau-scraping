@@ -985,7 +985,6 @@ storyPointsInfo = {
     },
 }
 
-
 info = {
     "sheetName": "[SHEET_NAME]",
     "worldUpdate": {
@@ -1040,7 +1039,14 @@ info = {
                             }
                         },
                     }
-                }
+                },
+                "sheetsInfo": [{
+                    "sheet": "[WORKSHEET1]",
+                    "isDashboard": False,
+                    "isVisible": True,
+                    "namesOfSubsheets": [],
+                    "windowId":"{XXXXX}"
+                }]
             }
         }
     },

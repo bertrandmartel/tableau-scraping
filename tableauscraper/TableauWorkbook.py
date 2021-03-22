@@ -88,3 +88,36 @@ class TableauWorkbook:
         )
         self.updateFullData(r)
         return tableauscraper.dashboard.getWorksheetsCmdResponse(self._scraper, r)
+
+    def getSheets(self):
+        presModel = tableauscraper.utils.getPresModelVizInfo(
+            self._originalInfo)
+        return [
+            {
+                "sheet": t["sheet"],
+                "isDashboard": t["isDashboard"],
+                "isVisible": t["isVisible"],
+                "namesOfSubsheets": t["namesOfSubsheets"],
+                "windowId": t["windowId"]
+            }
+            for t in presModel["workbookPresModel"]["sheetsInfo"]
+        ]
+
+    def goToSheet(self, sheetName):
+        windowId = [
+            t["windowId"]
+            for t in self.getSheets()
+            if t["sheet"] == sheetName
+        ]
+        if len(windowId) == 0:
+            self._scraper.logger.error(f"sheet {sheetName} not found")
+            return TableauWorkbook(
+                scraper=self._scraper,
+                originalData=self._originalData,
+                originalInfo=self._originalInfo,
+                data=list(),
+                cmdResponse=self.cmdResponse,
+            )
+        r = tableauscraper.api.goToSheet(self._scraper, windowId[0])
+        self.updateFullData(r)
+        return tableauscraper.dashboard.getWorksheetsCmdResponse(self._scraper, r)
