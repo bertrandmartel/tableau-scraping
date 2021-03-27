@@ -65,10 +65,7 @@ class TableauWorksheet:
     def getFilters(self) -> List[str]:
         presModel = tableauscraper.utils.getPresModelVizInfo(
             self._originalInfo)
-        return [
-            t
-            for t in tableauscraper.utils.listFilters(presModel, self.name)
-        ]
+        return tableauscraper.utils.listFilters(presModel, self.name)
 
     def setFilter(self, columnName, value):
         try:
