@@ -302,7 +302,7 @@ def test_TableauWorkbook_getFilters(mocker: MockerFixture) -> None:
     assert type(filters) is list
     assert filters == [
         {
-            "column": "[FILTER_1]",
+            "column": "FILTER_1",
             "values": ["FITLTER_VALUE_1", "FITLTER_VALUE_2", "FITLTER_VALUE_3"],
             "globalFieldName": "[FILTER].[FILTER_1]"
         },
@@ -324,7 +324,7 @@ def test_TableauWorkbook_setFilter(mocker: MockerFixture) -> None:
 
     ws = tableauDataFrameGroup.getWorksheet("[WORKSHEET1]")
     tableauDataFrameGroup = ws.setFilter(
-        "[FILTER_1]", "FITLTER_VALUE_1"
+        "FILTER_1", "FITLTER_VALUE_1"
     )
     assert type(tableauDataFrameGroup) is TableauWorkbook
     assert len(tableauDataFrameGroup.worksheets) == 1
@@ -345,7 +345,7 @@ def test_TableauWorkbook_setFilter(mocker: MockerFixture) -> None:
 
     # incorrect value
     tableauDataFrameGroup = ws.setFilter(
-        "[FILTER_1]", "FITLTER_VALUE_X"
+        "FILTER_1", "FITLTER_VALUE_X"
     )
     assert type(tableauDataFrameGroup) is TableauWorkbook
     assert len(tableauDataFrameGroup.worksheets) == 0

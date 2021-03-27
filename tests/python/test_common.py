@@ -728,20 +728,28 @@ storyPointsCmdResponse = {
                             "2": {
                                 "worksheet": "[WORKSHEET1]",
                                 "presModelHolder": {
-                                    "quickFilterDisplay": {
-                                        "quickFilter": {
-                                            "categoricalFilter": {
-                                                "columnFullNames": ["[FILTER_1]"],
-                                                "domainTables": [{
-                                                    "label": "FITLTER_VALUE_1"
-                                                }, {
-                                                    "label": "FITLTER_VALUE_2"
-                                                }, {
-                                                    "label": "FITLTER_VALUE_3"
+                                    "visual": {
+                                        "filtersJson": json.dumps([{
+                                            "table": {
+                                                "schema": [{
+                                                    "caption": "FILTER_1",
+                                                    "name": ["FILTER", "FILTER_1"]
                                                 }],
-                                                "fn": "[FILTER].[FILTER_1]"
+                                                "tuples": [{
+                                                    "t": [{
+                                                        "v": "FITLTER_VALUE_1"
+                                                    }]
+                                                }, {
+                                                    "t": [{
+                                                        "v": "FITLTER_VALUE_2"
+                                                    }]
+                                                }, {
+                                                    "t": [{
+                                                        "v": "FITLTER_VALUE_3"
+                                                    }]
+                                                }]
                                             }
-                                        }
+                                        }])
                                     }
                                 }
                             },
@@ -872,20 +880,28 @@ storyPointsInfo = {
                         "2": {
                             "worksheet": "[WORKSHEET1]",
                             "presModelHolder": {
-                                "quickFilterDisplay": {
-                                    "quickFilter": {
-                                        "categoricalFilter": {
-                                            "columnFullNames": ["[FILTER_1]"],
-                                            "domainTables": [{
-                                                "label": "FITLTER_VALUE_1"
-                                            }, {
-                                                "label": "FITLTER_VALUE_2"
-                                            }, {
-                                                "label": "FITLTER_VALUE_3"
+                                "visual": {
+                                    "filtersJson": json.dumps([{
+                                        "table": {
+                                            "schema": [{
+                                                "caption": "FILTER_1",
+                                                "name": ["FILTER", "FILTER_1"]
                                             }],
-                                            "fn": "[FILTER].[FILTER_1]"
+                                            "tuples": [{
+                                                "t": [{
+                                                    "v": "FITLTER_VALUE_1"
+                                                }]
+                                            }, {
+                                                "t": [{
+                                                    "v": "FITLTER_VALUE_2"
+                                                }]
+                                            }, {
+                                                "t": [{
+                                                    "v": "FITLTER_VALUE_3"
+                                                }]
+                                            }]
                                         }
-                                    }
+                                    }])
                                 }
                             }
                         },
@@ -1021,20 +1037,28 @@ info = {
                         "2": {
                             "worksheet": "[WORKSHEET1]",
                             "presModelHolder": {
-                                "quickFilterDisplay": {
-                                    "quickFilter": {
-                                        "categoricalFilter": {
-                                            "columnFullNames": ["[FILTER_1]"],
-                                            "domainTables": [{
-                                                "label": "FITLTER_VALUE_1"
-                                            }, {
-                                                "label": "FITLTER_VALUE_2"
-                                            }, {
-                                                "label": "FITLTER_VALUE_3"
+                                "visual": {
+                                    "filtersJson": json.dumps([{
+                                        "table": {
+                                            "schema": [{
+                                                "caption": "FILTER_1",
+                                                "name": ["FILTER", "FILTER_1"]
                                             }],
-                                            "fn": "[FILTER].[FILTER_1]"
+                                            "tuples": [{
+                                                "t": [{
+                                                    "v": "FITLTER_VALUE_1"
+                                                }]
+                                            }, {
+                                                "t": [{
+                                                    "v": "FITLTER_VALUE_2"
+                                                }]
+                                            }, {
+                                                "t": [{
+                                                    "v": "FITLTER_VALUE_3"
+                                                }]
+                                            }]
                                         }
-                                    }
+                                    }])
                                 }
                             }
                         },
