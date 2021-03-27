@@ -1,5 +1,6 @@
 import pandas as pd
 import copy
+import json
 
 
 def selectWorksheet(data, logger, single=False):
@@ -480,22 +481,34 @@ def getParameterControlVqlResponse(presModel):
 
 def listFilters(presModel, worksheetName):
     zones = presModel["workbookPresModel"]["dashboardPresModel"]["zones"]
-    return [
-        {
-            "column": zones[z]["presModelHolder"]["quickFilterDisplay"]["quickFilter"]["categoricalFilter"]["columnFullNames"][0],
-            "values": [
-                t["label"] for t in zones[z]["presModelHolder"]["quickFilterDisplay"]["quickFilter"]["categoricalFilter"]["domainTables"]
-            ],
-            "globalFieldName": zones[z]["presModelHolder"]["quickFilterDisplay"]["quickFilter"]["categoricalFilter"]["fn"]
-        }
+    filters = [
+        json.loads(zones[z]["presModelHolder"]["visual"]["filtersJson"])
         for z in list(zones)
         if ("worksheet" in zones[z])
         and ("presModelHolder" in zones[z])
-        and ("quickFilterDisplay" in zones[z]["presModelHolder"])
-        and ("quickFilter" in zones[z]["presModelHolder"]["quickFilterDisplay"])
-        and ("categoricalFilter" in zones[z]["presModelHolder"]["quickFilterDisplay"]["quickFilter"])
-        and ("columnFullNames" in zones[z]["presModelHolder"]["quickFilterDisplay"]["quickFilter"]["categoricalFilter"])
-        and ("domainTables" in zones[z]["presModelHolder"]["quickFilterDisplay"]["quickFilter"]["categoricalFilter"])
-        and ("fn" in zones[z]["presModelHolder"]["quickFilterDisplay"]["quickFilter"]["categoricalFilter"])
+        and ("visual" in zones[z]["presModelHolder"])
+        and ("filtersJson" in zones[z]["presModelHolder"]["visual"])
         and zones[z]["worksheet"] == worksheetName
     ]
+    if len(filters) != 0:
+        entries = []
+        for arr in filters:
+            result = [
+                {
+                    "columns": [(z["caption"], z["name"]) for z in t["table"]["schema"]],
+                    "values": [z["t"][0]["v"] for z in t["table"]["tuples"] if "t" in z and len(z["t"]) != 0]
+                }
+                for t in arr
+                if "table" in t
+                and "schema" in t["table"]
+                and "tuples" in t["table"]
+            ]
+            for r in result:
+                for c in r["columns"]:
+                    entries.append({
+                        "column": c[0],
+                        "values": r["values"],
+                        "globalFieldName": f"[{c[1][0]}].[{c[1][1]}]"
+                    })
+        return entries
+    return []
