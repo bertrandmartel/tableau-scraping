@@ -124,7 +124,7 @@ filters = ws.getFilters()
 print(filters)
 
 # set filter value
-wb = ws.setFilter('[Olympics]', 'Winter')
+wb = ws.setFilter('Olympics', 'Winter')
 
 # show the new data for worksheet
 countyWs = wb.getWorksheet("Bar Chart")
