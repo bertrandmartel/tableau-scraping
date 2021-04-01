@@ -54,15 +54,16 @@ def getTableauData(scraper):
 
 def select(scraper, worksheetName, selection):
     delayExecution(scraper)
-    payload = {
-        "worksheet": worksheetName,
-        "dashboard": scraper.dashboard,
-        "selection": json.dumps({"objectIds": selection, "selectionType": "tuples"}),
-        "selectOptions": "select-options-simple",
-    }
+    payload = (
+        ("worksheet", (None, worksheetName)),
+        ("dashboard", (None, scraper.dashboard)),
+        ("selection", (None, json.dumps(
+            {"objectIds": selection, "selectionType": "tuples"}))),
+        ("selectOptions", (None, "select-options-simple")),
+    )
     r = scraper.session.post(
         f'{scraper.host}{scraper.tableauData["vizql_root"]}/sessions/{scraper.tableauData["sessionid"]}/commands/tabdoc/select',
-        data=payload,
+        files=payload,
         verify=scraper.verify
     )
     return r.json()
