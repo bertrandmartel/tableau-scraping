@@ -43,6 +43,7 @@ with pd.option_context(
         print("|" + ("-" * (os.get_terminal_size().columns - 2)) + "|")
         print(worksheet.data)
         print("")
+        print("selectable values")
         # selectable values
         selection = worksheet.getSelectableItems()
         print(
@@ -50,6 +51,14 @@ with pd.option_context(
         for select in selection:
             print(f'column: ${select["column"]}')
             print(f'values: {select["values"]}')
+            print("--------------")
+
+        print("filterable values")
+        # filterable values
+        filters = worksheet.getFilters()
+        for t in filters:
+            print(f'column: ${t["column"]}')
+            print(f'values: {t["values"]}')
             print("--------------")
 
         print("")
