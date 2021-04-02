@@ -63,8 +63,11 @@ class TableauWorksheet:
             ]
 
     def getFilters(self) -> List[str]:
-        presModel = tableauscraper.utils.getPresModelVizInfo(
-            self._originalInfo)
+        if self.cmdResponse:
+            presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
+        else:
+            presModel = tableauscraper.utils.getPresModelVizInfo(
+                self._originalInfo)
         return tableauscraper.utils.listFilters(presModel, self.name)
 
     def setFilter(self, columnName, value):
