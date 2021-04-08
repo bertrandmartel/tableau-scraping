@@ -120,4 +120,5 @@ class TableauWorkbook:
             )
         r = tableauscraper.api.goToSheet(self._scraper, windowId[0])
         self.updateFullData(r)
+        self._scraper.dashboard = sheetName
         return tableauscraper.dashboard.getWorksheetsCmdResponse(self._scraper, r)
