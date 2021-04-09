@@ -20,3 +20,5 @@ https://public.tableau.com/views/WomenInOlympics/Dashboard1
 https://public.tableau.com/views/COVID-19VaccineTrackerDashboard_16153822244270/Dosesadministered
 https://www.nh.gov/t/DHHS/views/COVID19TestingDashboard/TestingDashboard
 https://dashboards.doh.nj.gov/views/DailyConfirmedCaseSummary7_22_2020/PCRandAntigenPositives
+https://public.tableau.com/views/EpiCOVIDtest/CountyNumbersTable
+https://covid19tracker.health.ny.gov/views/Race_Ethnicity_Public/RacebyCounty
