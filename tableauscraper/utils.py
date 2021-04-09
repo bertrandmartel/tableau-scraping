@@ -1,6 +1,7 @@
 import pandas as pd
 import copy
 import json
+import re
 
 
 def selectWorksheet(data, logger, single=False):
@@ -255,6 +256,17 @@ def getData(dataFull, indicesInfo):
     for index in indicesInfo:
         if index["dataType"] in dataFull:
             t = dataFull[index["dataType"]]
+            if len(index["valueIndices"]) > 0:
+                frameData[f'{index["fieldCaption"]}-value'] = [
+                    onDataValue(it, t, cstring) for it in index["valueIndices"]
+                ]
+            if len(index["aliasIndices"]) > 0:
+                frameData[f'{index["fieldCaption"]}-alias'] = [
+                    onDataValue(it, t, cstring) for it in index["aliasIndices"]
+                ]
+        else:
+            # if datatype is not found, try cstring
+            t = cstring
             if len(index["valueIndices"]) > 0:
                 frameData[f'{index["fieldCaption"]}-value'] = [
                     onDataValue(it, t, cstring) for it in index["valueIndices"]
