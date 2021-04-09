@@ -277,24 +277,6 @@ def getData(dataFull, indicesInfo):
     return frameData
 
 
-def getDataCmdResponse(dataFull, indicesInfo):
-    cstring = dataFull["cstring"]
-    frameData = {}
-    for index in indicesInfo:
-        if index["dataType"] in dataFull:
-            t = dataFull[index["dataType"]]
-            if len(index["valueIndices"]) > 0:
-                frameData[f'{index["fieldCaption"]}-value'] = [
-                    onDataValue(it, t, cstring) for it in index["valueIndices"]
-                ]
-            if len(index["aliasIndices"]) > 0:
-                frameData[f'{index["fieldCaption"]}-alias'] = [
-                    onDataValue(it, t, cstring) for it in index["aliasIndices"]
-                ]
-
-    return frameData
-
-
 def getDataFullCmdResponse(presModel, originSegments):
     dataSegments = presModel["dataDictionary"]["dataSegments"]
     dataSegmentscp = copy.deepcopy(dataSegments)
@@ -407,21 +389,7 @@ def getWorksheetCmdResponse(selectedZone, dataFull):
         for t in columnsData["vizDataColumns"]
         if t.get("fieldCaption")
     ]
-
-    frameData = {}
-    for index in result:
-        if index["dataType"] in dataFull:
-            t = dataFull[index["dataType"]]
-            if len(index["valueIndices"]) > 0:
-                frameData[f'{index["fieldCaption"]}-value'] = [
-                    onDataValue(it, t, cstring) for it in index["valueIndices"]
-                ]
-            if len(index["aliasIndices"]) > 0:
-                frameData[f'{index["fieldCaption"]}-alias'] = [
-                    onDataValue(it, t, cstring) for it in index["aliasIndices"]
-                ]
-
-    return frameData
+    return getData(dataFull, result)
 
 
 def selectWorksheetCmdResponse(presModel, logger):

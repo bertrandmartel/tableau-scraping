@@ -106,7 +106,7 @@ class TableauWorksheet:
             return [
                 {
                     "column": t["fieldCaption"],
-                    "values": next(iter([y for y in tableauscraper.utils.getDataCmdResponse(self._data_dictionnary, [t]).values()]), [])
+                    "values": next(iter([y for y in tableauscraper.utils.getData(self._data_dictionnary, [t]).values()]), [])
                 }
                 for t in tableauscraper.utils.getIndicesInfoVqlResponse(presModel, self.name, noSelectFilter=True)
             ]
@@ -144,7 +144,7 @@ class TableauWorksheet:
             ]
             if len(columnObj) == 0:
                 return []
-            frameData = tableauscraper.utils.getDataCmdResponse(
+            frameData = tableauscraper.utils.getData(
                 self._data_dictionnary, [columnObj[0]]
             )
             frameDataKeys = list(frameData.keys())

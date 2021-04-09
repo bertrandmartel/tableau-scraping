@@ -231,20 +231,6 @@ def test_getParameterControlVqlResponse():
     }]
 
 
-def test_getDataCmdResponse():
-    presModel = vqlCmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
-    dataFull = utils.getDataFullCmdResponse(presModel, {})
-    indicesInfo = utils.getIndicesInfoVqlResponse(presModel, "[WORKSHEET1]")
-    frameData = utils.getDataCmdResponse(dataFull, indicesInfo)
-    assert len(frameData.keys()) == 2
-    assert "[FIELD1]-value" in frameData
-    assert "[FIELD2]-alias" in frameData
-    assert len(frameData["[FIELD1]-value"]) == 4
-    assert len(frameData["[FIELD2]-alias"]) == 4
-    assert frameData["[FIELD1]-value"] == ["2", "3", "4", "5"]
-    assert frameData["[FIELD2]-alias"] == ["6", "7", "8", "9"]
-
-
 def test_getIndicesInfoVqlResponse():
     presModel = vqlCmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
     indicesInfo = utils.getIndicesInfoVqlResponse(presModel, "[WORKSHEET1]")
