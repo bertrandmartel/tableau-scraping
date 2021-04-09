@@ -1,7 +1,6 @@
 import pandas as pd
 import copy
 import json
-import re
 
 
 def selectWorksheet(data, logger, single=False):
