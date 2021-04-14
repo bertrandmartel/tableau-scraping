@@ -22,3 +22,4 @@ https://www.nh.gov/t/DHHS/views/COVID19TestingDashboard/TestingDashboard
 https://dashboards.doh.nj.gov/views/DailyConfirmedCaseSummary7_22_2020/PCRandAntigenPositives
 https://public.tableau.com/views/EpiCOVIDtest/CountyNumbersTable
 https://covid19tracker.health.ny.gov/views/Race_Ethnicity_Public/RacebyCounty
+https://analytics.la.gov/t/LDH/views/covid19_hosp_vent_reg/Hosp_vent_c
