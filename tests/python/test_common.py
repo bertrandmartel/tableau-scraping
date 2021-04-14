@@ -733,6 +733,7 @@ storyPointsCmdResponse = {
                                             "table": {
                                                 "schema": [{
                                                     "caption": "FILTER_1",
+                                                    "ordinal": 0,
                                                     "name": ["FILTER", "FILTER_1"]
                                                 }],
                                                 "tuples": [{
@@ -885,6 +886,7 @@ storyPointsInfo = {
                                         "table": {
                                             "schema": [{
                                                 "caption": "FILTER_1",
+                                                "ordinal": 0,
                                                 "name": ["FILTER", "FILTER_1"]
                                             }],
                                             "tuples": [{
@@ -1042,6 +1044,7 @@ info = {
                                         "table": {
                                             "schema": [{
                                                 "caption": "FILTER_1",
+                                                "ordinal": 0,
                                                 "name": ["FILTER", "FILTER_1"]
                                             }],
                                             "tuples": [{
