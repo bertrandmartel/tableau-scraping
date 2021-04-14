@@ -225,7 +225,10 @@ def getIndicesInfoStoryPoint(presModel, worksheet, noSelectFilter=True, noFieldC
 
 
 def getDataFull(presModelMap, originSegments):
-    dataSegments = presModelMap["dataDictionary"]["presModelHolder"]["genDataDictionaryPresModel"]["dataSegments"]
+    dataSegments = {}
+    if "dataDictionary" in presModelMap:
+        dataSegments = presModelMap["dataDictionary"]["presModelHolder"]["genDataDictionaryPresModel"]["dataSegments"]
+
     dataSegmentscp = copy.deepcopy(dataSegments)
     originSegmentscp = copy.deepcopy(originSegments)
     dataColumns = []
@@ -278,7 +281,9 @@ def getData(dataFull, indicesInfo):
 
 
 def getDataFullCmdResponse(presModel, originSegments):
-    dataSegments = presModel["dataDictionary"]["dataSegments"]
+    dataSegments = {}
+    if "dataDictionary" in presModel:
+        dataSegments = presModel["dataDictionary"]["dataSegments"]
     dataSegmentscp = copy.deepcopy(dataSegments)
     originSegmentscp = copy.deepcopy(originSegments)
     dataColumns = []

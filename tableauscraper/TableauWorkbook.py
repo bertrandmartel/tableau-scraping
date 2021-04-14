@@ -21,12 +21,16 @@ class TableauWorkbook:
 
     def updateFullData(self, cmdResponse):
         presModel = cmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
-        dataSegments = presModel["dataDictionary"]["dataSegments"]
-        dataSegmentscp = copy.deepcopy(dataSegments)
-        keys = list(dataSegmentscp.keys())
-        for key in keys:
-            if dataSegmentscp[key] is not None:
-                self._scraper.dataSegments[key] = dataSegmentscp[key]
+        if "dataDictionary" in presModel:
+            dataSegments = presModel["dataDictionary"]["dataSegments"]
+            dataSegmentscp = copy.deepcopy(dataSegments)
+            keys = list(dataSegmentscp.keys())
+            for key in keys:
+                if dataSegmentscp[key] is not None:
+                    self._scraper.dataSegments[key] = dataSegmentscp[key]
+        else:
+            self._scraper.logger.warning(
+                f"no data dictionary present in response")
 
     def getWorksheetNames(self):
         return tableauscraper.utils.getWorksheetNames(self)
