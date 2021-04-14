@@ -170,6 +170,7 @@ for t in nycAdults.worksheets:
 - https://replit.com/@bertrandmartel/TableauCovidNewHampshire
 - https://replit.com/@bertrandmartel/TableauCovidNewJersey
 - https://replit.com/@bertrandmartel/TableauCovid19Wyoming
+- https://replit.com/@bertrandmartel/TableauCovid19Louisiana
 
 ### Testing Python script
 
