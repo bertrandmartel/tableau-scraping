@@ -75,7 +75,7 @@ class TableauWorksheet:
             filter = [
                 {
                     "globalFieldName": t["globalFieldName"],
-                    "index": t["values"].index(value)
+                    "index": t["values"].index(value) + t["ordinal"]
                 }
                 for t in self.getFilters()
                 if t["column"] == columnName

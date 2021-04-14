@@ -474,7 +474,7 @@ def listFilters(presModel, worksheetName):
         for arr in filters:
             result = [
                 {
-                    "columns": [(z["caption"], z["name"]) for z in t["table"]["schema"]],
+                    "columns": [(z["caption"], z["name"], z["ordinal"]) for z in t["table"]["schema"]],
                     "values": [z["t"][0]["v"] for z in t["table"]["tuples"] if "t" in z and len(z["t"]) != 0]
                 }
                 for t in arr
@@ -486,6 +486,7 @@ def listFilters(presModel, worksheetName):
                 for c in r["columns"]:
                     entries.append({
                         "column": c[0],
+                        "ordinal": c[2],
                         "values": r["values"],
                         "globalFieldName": f"[{c[1][0]}].[{c[1][1]}]"
                     })
