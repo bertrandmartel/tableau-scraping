@@ -23,3 +23,7 @@ https://dashboards.doh.nj.gov/views/DailyConfirmedCaseSummary7_22_2020/PCRandAnt
 https://public.tableau.com/views/EpiCOVIDtest/CountyNumbersTable
 https://covid19tracker.health.ny.gov/views/Race_Ethnicity_Public/RacebyCounty
 https://analytics.la.gov/t/LDH/views/covid19_hosp_vent_reg/Hosp_vent_c
+
+server side rendering
+https://public.tableau.com/views/InstatIndexRanking/Instatindex
+https://public.tableau.com/views/v_7_14_2020/COVID-19TestingCommons
