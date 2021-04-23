@@ -171,6 +171,29 @@ for t in nycAdults.worksheets:
 - https://replit.com/@bertrandmartel/TableauCovidNewJersey
 - https://replit.com/@bertrandmartel/TableauCovid19Wyoming
 - https://replit.com/@bertrandmartel/TableauCovid19Louisiana
+- https://replit.com/@bertrandmartel/TableauCIESFootball
+- https://replit.com/@bertrandmartel/TableauCovid19TestingCommonsASU
+
+### Server side rendering
+
+If the tableau url you're working on is using [server side rendering](https://help.tableau.com/current/server/en-us/browser_rendering.htm), data can't be extracted as is.
+
+You can checkout if your tableau url is using server side rendering by opening chrome development console / network tab. You would notice those API calls when mouse hovering tables or maps `render-tooltip-server`:
+
+![tooltip](https://user-images.githubusercontent.com/5183022/115800554-2642a800-a3db-11eb-9a71-e279cbc58aaf.png)
+
+Server side rendering means that no data is sent to the browser. Instead, the server is rendering the tableau chart using images only and detects selection using mouse coordinates.
+
+To extract the data, one thing that has worked with some tableau url was to trigger a specific filter that is not server-side-rendered. You can checkout the network tab on Chrome development console to check if the filter call is using or not server-side rendering or client-side-rendering with `renderMode`:
+
+![client side rendering](https://user-images.githubusercontent.com/5183022/115800868-b7198380-a3db-11eb-95c0-7104f7f0c77c.png)
+
+If the filter is only using client side rendering, you can list all filters and perform the filter for each value. This technique only works if the tableau data has "cleared" the filter by default otherwise the data is already cached when the tableau data is loaded, and since it's using server side rendering you can't access this data
+
+Checkout the following repl.it for examples with tableau url using server side rendering:
+
+- https://replit.com/@bertrandmartel/TableauCIESFootball
+- https://replit.com/@bertrandmartel/TableauCovid19TestingCommonsASU
 
 ### Testing Python script
 
