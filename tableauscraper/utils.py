@@ -48,7 +48,7 @@ def listWorksheetInfo(presModel):
         if ("worksheet" in zones[z])
         and ("presModelHolder" in zones[z])
         and ("visual" in zones[z]["presModelHolder"])
-        and ("vizData" in zones[z]["presModelHolder"]["visual"])
+        # and ("vizData" in zones[z]["presModelHolder"]["visual"])
     ]
 
 
@@ -226,7 +226,7 @@ def getIndicesInfoStoryPoint(presModel, worksheet, noSelectFilter=True, noFieldC
 
 def getDataFull(presModelMap, originSegments):
     dataSegments = {}
-    if "dataDictionary" in presModelMap:
+    if ("dataDictionary" in presModelMap) and ("presModelHolder" in presModelMap["dataDictionary"]):
         dataSegments = presModelMap["dataDictionary"]["presModelHolder"]["genDataDictionaryPresModel"]["dataSegments"]
 
     dataSegmentscp = copy.deepcopy(dataSegments)
@@ -253,7 +253,10 @@ def onDataValue(it, value, cstring):
 
 
 def getData(dataFull, indicesInfo):
-    cstring = dataFull["cstring"]
+    if "cstring" in dataFull:
+        cstring = dataFull["cstring"]
+    else:
+        cstring = {}
     frameData = {}
     for index in indicesInfo:
         if index["dataType"] in dataFull:
