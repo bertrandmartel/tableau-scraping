@@ -78,9 +78,10 @@ class TableauScraper:
         self.info = json.loads(dataReg.group(1))
         self.data = json.loads(dataReg.group(2))
 
-        presModelMap = self.data["secondaryInfo"]["presModelMap"]
-        self.dataSegments = presModelMap["dataDictionary"]["presModelHolder"]["genDataDictionaryPresModel"]["dataSegments"]
-
+        if "presModelMap" in self.data["secondaryInfo"]:
+            presModelMap = self.data["secondaryInfo"]["presModelMap"]
+            self.dataSegments = presModelMap["dataDictionary"][
+                "presModelHolder"]["genDataDictionaryPresModel"]["dataSegments"]
         self.dashboard = self.info["sheetName"]
 
     # def listWorksheetNames(self):
