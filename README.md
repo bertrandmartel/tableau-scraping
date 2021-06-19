@@ -153,6 +153,8 @@ print(sp.getWorksheetNames())
 print(sp.getWorksheet("Timeline").data)
 ```
 
+[Try this on repl.it](https://replit.com/@bertrandmartel/TableauEarthquakeStorypoint)
+
 #### Download CSV data
 
 For Tableau URL that have the download feature enabled, you can download full data using:
@@ -219,6 +221,9 @@ for t in nycAdults.worksheets:
 - https://replit.com/@bertrandmartel/TableauCovid19Louisiana
 - https://replit.com/@bertrandmartel/TableauCIESFootball
 - https://replit.com/@bertrandmartel/TableauCovid19TestingCommonsASU
+- https://replit.com/@bertrandmartel/TableauCovid19Tracker
+- https://replit.com/@bertrandmartel/TableauCovid19CbreResidentMigration
+- https://replit.com/@bertrandmartel/TableauEarthquakeStorypoint
 
 ### Server side rendering
 
