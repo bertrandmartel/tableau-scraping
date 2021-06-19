@@ -283,6 +283,14 @@ Rscript tableau.R
 
 R library is under development
 
+## Dependencies
+
+[requirements.txt](https://github.com/bertrandmartel/tableau-scraping/blob/master/requirements.txt)
+
+- pandas
+- requests
+- beautifulsoup4
+
 ## Stackoverflow Questions
 
 See [those stackoverflow posts about this topic](https://stackoverflow.com/search?q=user%3A2614364+%5Btableau-api%5D)
