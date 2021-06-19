@@ -140,14 +140,24 @@ For Tableau URL that have the download feature enabled, you can download full da
 ```python
 from tableauscraper import TableauScraper as TS
 
-url = 'https://covid19tracker.health.ny.gov/views/DailyHospitalizationSummary/Reopening-DailyHospitalization'
+url = 'https://public.tableau.com/views/WYCOVID-19Dashboard/WyomingCOVID-19CaseDashboard'
 ts = TS()
 ts.loads(url)
 wb = ts.getWorkbook()
-data = wb.getCsvData(sheetName="Chart (2)")
+data = wb.getCsvData(sheetName='case map')
 
 print(data)
 ```
+
+Note that in some Tableau server, the prefix used in the API url is different. As it's set in the javascript, it must be set manually if it's not the same as public.tableau.com like:
+
+```python
+wb.getCsvData(sheetName='worksheet1', prefix="vud")
+```
+
+The prefix values, I've encountered are: `vud` and `vudcsv`. The default is `vudcsv`.
+
+[Try this on repl.it](https://replit.com/@bertrandmartel/TableauCovidWyomingCsv)
 
 - Go to sheet
 
