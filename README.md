@@ -133,6 +133,22 @@ print(countyWs.data)
 
 [Try this on repl.it](https://repl.it/@bertrandmartel/TableauFilter)
 
+- Download CSV data
+
+For Tableau URL that have the download feature enabled, you can download full data using:
+
+```python
+from tableauscraper import TableauScraper as TS
+
+url = 'https://covid19tracker.health.ny.gov/views/DailyHospitalizationSummary/Reopening-DailyHospitalization'
+ts = TS()
+ts.loads(url)
+wb = ts.getWorkbook()
+data = wb.getCsvData(sheetName="Chart (2)")
+
+print(data)
+```
+
 - Go to sheet
 
 Get list of all sheets with subsheets visible or invisible, ability to send a go-to-sheet command (dashboar button) :

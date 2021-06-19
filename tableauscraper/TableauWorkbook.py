@@ -2,6 +2,9 @@ from typing import List
 from tableauscraper.TableauWorksheet import TableauWorksheet
 import tableauscraper
 import copy
+import pandas as pd
+import io
+from pandas.errors import ParserError
 
 
 class TableauWorkbook:
@@ -20,8 +23,9 @@ class TableauWorkbook:
         self._originalInfo = originalInfo
 
     def updateFullData(self, cmdResponse):
-        presModel = cmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
-        if "dataDictionary" in presModel:
+        if (("applicationPresModel" in cmdResponse["vqlCmdResponse"]["layoutStatus"]) and
+                ("dataDictionary" in cmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"])):
+            presModel = cmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
             dataSegments = presModel["dataDictionary"]["dataSegments"]
             dataSegmentscp = copy.deepcopy(dataSegments)
             keys = list(dataSegmentscp.keys())
@@ -126,3 +130,33 @@ class TableauWorkbook:
         self.updateFullData(r)
         self._scraper.dashboard = sheetName
         return tableauscraper.dashboard.getWorksheetsCmdResponse(self._scraper, r)
+
+    def getDownloadableData(self, sheetName):
+        presModel = tableauscraper.utils.getPresModelVizInfo(
+            self._originalInfo)
+        if ("workbookPresModel" in presModel) and ("dashboardPresModel" in presModel["workbookPresModel"]) and ("viewIds" in presModel["workbookPresModel"]["dashboardPresModel"]):
+            if sheetName in presModel["workbookPresModel"]["dashboardPresModel"]["viewIds"]:
+                tableauscraper.api.getDownloadableData(
+                    self._scraper, sheetName, self._scraper.dashboard, presModel["workbookPresModel"]["dashboardPresModel"]["viewIds"][sheetName])
+            else:
+                print(f"{sheetName} not present in viewIds list")
+        else:
+            print("no viewIds found in json info")
+
+    def getCsvData(self, sheetName):
+        presModel = tableauscraper.utils.getPresModelVizInfo(
+            self._originalInfo)
+        if ("workbookPresModel" in presModel) and ("dashboardPresModel" in presModel["workbookPresModel"]) and ("viewIds" in presModel["workbookPresModel"]["dashboardPresModel"]):
+            if sheetName in presModel["workbookPresModel"]["dashboardPresModel"]["viewIds"]:
+                r = tableauscraper.api.getCsvData(
+                    self._scraper, presModel["workbookPresModel"]["dashboardPresModel"]["viewIds"][sheetName])
+                try:
+                    return pd.read_csv(io.StringIO(r))
+                except ParserError:
+                    return None
+
+            else:
+                print(f"{sheetName} not present in viewIds list")
+        else:
+            print("no viewIds found in json info")
+        return None

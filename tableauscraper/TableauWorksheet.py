@@ -35,9 +35,22 @@ class TableauWorksheet:
         self._data_dictionnary = dataFull
 
     def updateFullData(self, cmdResponse):
-        presModel = cmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
-        if "dataDictionary" in presModel:
+        if (("applicationPresModel" in cmdResponse["vqlCmdResponse"]["layoutStatus"]) and
+                ("dataDictionary" in cmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"])):
+            presModel = cmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
             dataSegments = presModel["dataDictionary"]["dataSegments"]
+            dataSegmentscp = copy.deepcopy(dataSegments)
+            keys = list(dataSegmentscp.keys())
+            for key in keys:
+                if dataSegmentscp[key] is not None:
+                    self._scraper.dataSegments[key] = dataSegmentscp[key]
+        elif (("cmdResultList" in cmdResponse["vqlCmdResponse"]) and
+              (len(cmdResponse["vqlCmdResponse"]["cmdResultList"]) > 0) and
+              ("commandReturn" in cmdResponse["vqlCmdResponse"]["cmdResultList"][0]) and
+              ("underlyingDataTable" in cmdResponse["vqlCmdResponse"]["cmdResultList"][0]["commandReturn"]) and
+                ("dataDictionary" in cmdResponse["vqlCmdResponse"]["cmdResultList"][0]["commandReturn"]["underlyingDataTable"])):
+            dataSegments = cmdResponse["vqlCmdResponse"]["cmdResultList"][
+                0]["commandReturn"]["underlyingDataTable"]["dataDictionary"]["dataSegments"]
             dataSegmentscp = copy.deepcopy(dataSegments)
             keys = list(dataSegmentscp.keys())
             for key in keys:
@@ -235,3 +248,15 @@ class TableauWorksheet:
             return tableauscraper.TableauWorkbook(
                 scraper=self._scraper, originalData={}, originalInfo={}, data=[]
             )
+
+    def getDownloadableSummaryData(self, numRows=200):
+        r = tableauscraper.api.getDownloadableSummaryData(
+            self._scraper, self.name, self._scraper.dashboard, numRows)
+        self.updateFullData(r)
+        return tableauscraper.dashboard.getWorksheetDownloadCmdResponse(self._scraper, r)
+
+    def getDownloadableUnderlyingData(self, numRows=200):
+        r = tableauscraper.api.getDownloadableUnderlyingData(
+            self._scraper, self.name, self._scraper.dashboard, numRows)
+        self.updateFullData(r)
+        return tableauscraper.dashboard.getWorksheetDownloadCmdResponse(self._scraper, r)

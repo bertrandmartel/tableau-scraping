@@ -21,6 +21,9 @@ from tests.python.test_common import vqlCmdResponseDictionaryEmpty as vqlCmdResp
 
 from tests.python.test_common import dataWithoutPresModelWithDictionary as dataWithoutPresModelWithDictionary
 from tests.python.test_common import storyPointsInfo as storyPointsInfo
+from tests.python.test_common import tableauDownloadableSummaryData as tableauDownloadableSummaryData
+from tests.python.test_common import tableauDownloadableUnderlyingData as tableauDownloadableUnderlyingData
+import json
 
 
 def test_TableauWorksheet(mocker: MockerFixture) -> None:
@@ -394,3 +397,37 @@ def test_TableauWorkbook_selectWithTupleIds(mocker: MockerFixture) -> None:
     # getTuplesIds full after select
     tupleIds = ws.getTupleIds()
     assert tupleIds == [[2, 4, 6, 8]]
+
+
+def test_getDownloadableSummaryData(mocker: MockerFixture) -> None:
+    mocker.patch(
+        "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
+    )
+    mocker.patch("tableauscraper.api.getTableauData",
+                 return_value=tableauDataResponse)
+    mocker.patch("tableauscraper.api.getDownloadableSummaryData",
+                 return_value=json.loads(tableauDownloadableSummaryData))
+    ts = TS()
+    ts.loads(fakeUri)
+    wb = ts.getWorkbook()
+
+    data = wb.getWorksheet("[WORKSHEET1]").getDownloadableSummaryData()
+    assert data.shape[0] == 200
+    assert data.shape[1] == 8
+
+
+def test_getDownloadableUnderlyingData(mocker: MockerFixture) -> None:
+    mocker.patch(
+        "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
+    )
+    mocker.patch("tableauscraper.api.getTableauData",
+                 return_value=tableauDataResponse)
+    mocker.patch("tableauscraper.api.getDownloadableUnderlyingData",
+                 return_value=json.loads(tableauDownloadableUnderlyingData))
+    ts = TS()
+    ts.loads(fakeUri)
+    wb = ts.getWorkbook()
+
+    data = wb.getWorksheet("[WORKSHEET1]").getDownloadableUnderlyingData()
+    assert data.shape[0] == 200
+    assert data.shape[1] == 42

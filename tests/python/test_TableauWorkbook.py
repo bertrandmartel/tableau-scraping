@@ -13,6 +13,7 @@ from tests.python.test_common import (
     vqlCmdResponseEmptyValues as vqlCmdResponseEmptyValues,
 )
 from tests.python.test_common import storyPointsCmdResponse as storyPointsCmdResponse
+from tests.python.test_common import tableauDownloadableCsvData as tableauDownloadableCsvData
 
 
 def test_TableauWorkbook(mocker: MockerFixture) -> None:
@@ -192,3 +193,43 @@ def test_Sheets(mocker: MockerFixture) -> None:
     wbRes = wb.goToSheet("XXXXXX")
     assert type(wbRes) is TableauWorkbook
     assert len(wbRes.worksheets) == 0
+
+
+def test_getCsvData(mocker: MockerFixture) -> None:
+    mocker.patch(
+        "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
+    )
+    mocker.patch("tableauscraper.api.getTableauData",
+                 return_value=tableauDataResponse)
+    mocker.patch("tableauscraper.api.getCsvData",
+                 return_value=tableauDownloadableCsvData)
+    ts = TS()
+    ts.loads(fakeUri)
+    wb = ts.getWorkbook()
+
+    data = wb.getCsvData("[WORKSHEET1]")
+    print(data)
+    assert data.shape[0] == 3
+    assert data.shape[1] == 1
+
+
+def test_getDownloadableData(mocker: MockerFixture) -> None:
+    mocker.patch(
+        "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
+    )
+    mocker.patch("tableauscraper.api.getTableauData",
+                 return_value=tableauDataResponse)
+    mocker.patch("tableauscraper.api.getDownloadableData",
+                 return_value=tableauVizHtmlResponse)
+
+    ts = TS()
+    ts.loads(fakeUri)
+
+    dataFrameGroup = ts.getWorkbook()
+    dataFrameGroup.getDownloadableData(sheetName="[WORKSHEET1]")
+
+    assert type(dataFrameGroup) is TableauWorkbook
+    assert "_originalData" in dataFrameGroup.__dict__
+    assert dataFrameGroup.__dict__["_scraper"] is ts
+    assert not dataFrameGroup.cmdResponse
+    assert len(dataFrameGroup.worksheets) == 2

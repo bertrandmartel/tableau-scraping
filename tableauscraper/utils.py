@@ -262,30 +262,37 @@ def getData(dataFull, indicesInfo):
         if index["dataType"] in dataFull:
             t = dataFull[index["dataType"]]
             if len(index["valueIndices"]) > 0:
-                frameData[f'{index["fieldCaption"]}-value'] = [
-                    onDataValue(it, t, cstring) for it in index["valueIndices"]
-                ]
+                values = []
+                for value in index["valueIndices"]:
+                    if value < len(t):
+                        values.append(onDataValue(value, t, cstring))
+                frameData[f'{index["fieldCaption"]}-value'] = values
             if len(index["aliasIndices"]) > 0:
-                frameData[f'{index["fieldCaption"]}-alias'] = [
-                    onDataValue(it, t, cstring) for it in index["aliasIndices"]
-                ]
+                values = []
+                for value in index["aliasIndices"]:
+                    if value < len(t):
+                        values.append(onDataValue(value, t, cstring))
+                frameData[f'{index["fieldCaption"]}-alias'] = values
         else:
             # if datatype is not found, try cstring
             t = cstring
             if len(index["valueIndices"]) > 0:
-                frameData[f'{index["fieldCaption"]}-value'] = [
-                    onDataValue(it, t, cstring) for it in index["valueIndices"]
-                ]
+                values = []
+                for value in index["valueIndices"]:
+                    if value < len(t):
+                        values.append(onDataValue(value, t, cstring))
+                frameData[f'{index["fieldCaption"]}-value'] = values
             if len(index["aliasIndices"]) > 0:
-                frameData[f'{index["fieldCaption"]}-alias'] = [
-                    onDataValue(it, t, cstring) for it in index["aliasIndices"]
-                ]
+                values = []
+                for value in index["aliasIndices"]:
+                    if value < len(t):
+                        values.append(onDataValue(value, t, cstring))
+                frameData[f'{index["fieldCaption"]}-alias'] = values
     return frameData
 
 
-def getDataFullCmdResponse(presModel, originSegments):
-    dataSegments = {}
-    if "dataDictionary" in presModel:
+def getDataFullCmdResponse(presModel, originSegments, dataSegments={}):
+    if (not dataSegments) and ("dataDictionary" in presModel):
         dataSegments = presModel["dataDictionary"]["dataSegments"]
     dataSegmentscp = copy.deepcopy(dataSegments)
     originSegmentscp = copy.deepcopy(originSegments)
@@ -395,6 +402,20 @@ def getWorksheetCmdResponse(selectedZone, dataFull):
             "columnIndices": t["columnIndices"][0],
         }
         for t in columnsData["vizDataColumns"]
+        if t.get("fieldCaption")
+    ]
+    return getData(dataFull, result)
+
+
+def getWorksheetDownloadCmdResponse(dataFull, underlyingDataTableColumns):
+    result = [
+        {
+            "fieldCaption": t["fieldCaption"],
+            "valueIndices": t["valueIndices"],
+            "aliasIndices": t["aliasIndices"],
+            "dataType": t["dataType"]
+        }
+        for t in underlyingDataTableColumns
         if t.get("fieldCaption")
     ]
     return getData(dataFull, result)

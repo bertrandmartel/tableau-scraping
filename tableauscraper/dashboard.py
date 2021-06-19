@@ -129,6 +129,16 @@ def getWorksheetsCmdResponse(TS, data):
     )
 
 
+def getWorksheetDownloadCmdResponse(TS, data):
+    table = data["vqlCmdResponse"]["cmdResultList"][0]["commandReturn"]["underlyingDataTable"]
+    dataFull = utils.getDataFullCmdResponse(
+        {}, TS.dataSegments, table["dataDictionary"]["dataSegments"])
+    frameData = utils.getWorksheetDownloadCmdResponse(
+        dataFull, table["underlyingDataTableColumns"])
+    df = pd.DataFrame.from_dict(frameData, orient="index").fillna(0).T
+    return df
+
+
 def getWorksheetCmdResponse(TS, data, worksheetName):
     presModel = data["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
     zonesWithWorksheet = [

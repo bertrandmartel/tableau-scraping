@@ -13,6 +13,14 @@ from typing import List
 import logging
 
 
+class TableauException(Exception):
+    def __init__(self, message):
+        self.message = message
+
+    def __str__(self):
+        return self.message
+
+
 class TableauScraper:
 
     host: str = ""
@@ -41,9 +49,9 @@ class TableauScraper:
         self.info = {}
         self.verify = verify
 
-    def loads(self, url):
+    def loads(self, url, params={}):
         api.setSession(self)
-        r = api.getTableauViz(self, self.session, url)
+        r = api.getTableauViz(self, self.session, url, params)
         soup = BeautifulSoup(r, "html.parser")
 
         tableauPlaceHolder = soup.find("div", {"class": "tableauPlaceholder"})
@@ -74,18 +82,19 @@ class TableauScraper:
         self.host = "{uri.scheme}://{uri.netloc}".format(uri=uri)
 
         r = api.getTableauData(self)
-        dataReg = re.search(r"\d+;({.*})\d+;({.*})", r, re.MULTILINE)
-        self.info = json.loads(dataReg.group(1))
-        self.data = json.loads(dataReg.group(2))
 
-        if "presModelMap" in self.data["secondaryInfo"]:
-            presModelMap = self.data["secondaryInfo"]["presModelMap"]
-            self.dataSegments = presModelMap["dataDictionary"][
-                "presModelHolder"]["genDataDictionaryPresModel"]["dataSegments"]
-        self.dashboard = self.info["sheetName"]
+        try:
+            dataReg = re.search(r"\d+;({.*})\d+;({.*})", r, re.MULTILINE)
+            self.info = json.loads(dataReg.group(1))
+            self.data = json.loads(dataReg.group(2))
 
-    # def listWorksheetNames(self):
-    #     return dashboard.getWorksheetNames(self)
+            if "presModelMap" in self.data["secondaryInfo"]:
+                presModelMap = self.data["secondaryInfo"]["presModelMap"]
+                self.dataSegments = presModelMap["dataDictionary"][
+                    "presModelHolder"]["genDataDictionaryPresModel"]["dataSegments"]
+            self.dashboard = self.info["sheetName"]
+        except (AttributeError):
+            raise TableauException(message=r.text)
 
     def getWorkbook(self) -> TableauWorkbook:
         return dashboard.getWorksheets(self, self.data, self.info)

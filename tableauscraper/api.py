@@ -1,4 +1,5 @@
 import json
+from json.decoder import JSONDecodeError
 import time
 import requests
 
@@ -24,13 +25,15 @@ def getTableauVizForSession(scraper, session, url):
     return r.text
 
 
-def getTableauViz(scraper, session, url):
-    r = session.get(url, params={
-        ":embed": "y",
-        ":showVizHome": "no"
-    },
-        verify=scraper.verify
-    )
+def getTableauViz(scraper, session, url, params={}):
+    if not params:
+        params = {
+            ":embed": "y",
+            ":showVizHome": "no"
+        }
+    r = session.get(url, params=params,
+                    verify=scraper.verify
+                    )
     return r.text
 
 
@@ -52,6 +55,72 @@ def getTableauData(scraper):
     return r.text
 
 
+def getCsvData(scraper, viewId):
+    dataUrl = f'{scraper.host}{scraper.tableauData["vizql_root"]}/vud/sessions/{scraper.tableauData["sessionid"]}/views/{viewId}'
+    r = scraper.session.get(
+        dataUrl,
+        params={
+            "csv": "true",
+            "showall": "true"
+        },
+        verify=scraper.verify)
+    scraper.lastActionTime = time.time()
+    return r.content.decode('utf-8')
+
+
+def getDownloadableData(scraper, worksheetName, dashboardName, viewId):
+    input = json.dumps({
+        "worksheet": worksheetName,
+        "dashboard": dashboardName
+    })
+    dataUrl = f'{scraper.host}{scraper.tableauData["vizql_root"]}/viewData/sessions/{scraper.tableauData["sessionid"]}/views/{viewId}'
+    r = scraper.session.get(
+        dataUrl,
+        params={
+            "maxrows": "200",
+            "viz": input
+        },
+        verify=scraper.verify)
+    scraper.lastActionTime = time.time()
+    return r.text
+
+
+def getDownloadableSummaryData(scraper, worksheetName, dashboardName, numRows=200):
+    delayExecution(scraper)
+    payload = (
+        ("maxRows", (None, numRows)),
+        ("visualIdPresModel", (None, json.dumps(
+            {"worksheet": worksheetName, "dashboard": dashboardName, "flipboardZoneId": 0, "storyPointId": 0}))
+         ),
+    )
+    r = scraper.session.post(
+        f'{scraper.host}{scraper.tableauData["vizql_root"]}/sessions/{scraper.tableauData["sessionid"]}/commands/tabdoc/get-summary-data',
+        files=payload,
+        verify=scraper.verify
+    )
+    return r.json()
+
+
+def getDownloadableUnderlyingData(scraper, worksheetName, dashboardName, numRows=200):
+    delayExecution(scraper)
+    payload = (
+        ("maxRows", (None, numRows)),
+        ("includeAllColumns", (None, "true")),
+        ("visualIdPresModel", (None, json.dumps(
+            {"worksheet": worksheetName, "dashboard": dashboardName, "flipboardZoneId": 0, "storyPointId": 0}))
+         ),
+    )
+    r = scraper.session.post(
+        f'{scraper.host}{scraper.tableauData["vizql_root"]}/sessions/{scraper.tableauData["sessionid"]}/commands/tabdoc/get-underlying-data',
+        files=payload,
+        verify=scraper.verify
+    )
+    try:
+        return r.json()
+    except ValueError:
+        raise APIResponseException(message=r.text)
+
+
 def select(scraper, worksheetName, selection):
     delayExecution(scraper)
     payload = (
@@ -66,7 +135,10 @@ def select(scraper, worksheetName, selection):
         files=payload,
         verify=scraper.verify
     )
-    return r.json()
+    try:
+        return r.json()
+    except (ValueError, JSONDecodeError):
+        raise APIResponseException(message=r.text)
 
 
 def filter(scraper, worksheetName, globalFieldName, selection):
