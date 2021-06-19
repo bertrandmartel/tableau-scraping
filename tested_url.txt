@@ -25,6 +25,8 @@ https://covid19tracker.health.ny.gov/views/Race_Ethnicity_Public/RacebyCounty
 https://analytics.la.gov/t/LDH/views/covid19_hosp_vent_reg/Hosp_vent_c
 https://covid19tracker.health.ny.gov/views/DailyHospitalizationSummary/Reopening-DailyHospitalization
 https://public.tableau.com/views/WYCOVID-19Dashboard/WyomingCOVID-19CaseDashboard
+https://public.tableau.com/views/CBREMigrationAnalysisv1extract/CBREMigrationAnalysis
+https://public.tableau.com/views/EarthquakeTrendStory2/Finished-Earthquakestory
 
 server side rendering
 https://public.tableau.com/views/InstatIndexRanking/Instatindex
