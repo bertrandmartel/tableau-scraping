@@ -4,7 +4,7 @@ import tableauscraper
 import copy
 import pandas as pd
 import io
-from pandas.errors import ParserError
+from pandas.errors import ParserError, EmptyDataError
 
 
 class TableauWorkbook:
@@ -143,16 +143,16 @@ class TableauWorkbook:
         else:
             print("no viewIds found in json info")
 
-    def getCsvData(self, sheetName):
+    def getCsvData(self, sheetName, prefix="vudcsv"):
         presModel = tableauscraper.utils.getPresModelVizInfo(
             self._originalInfo)
         if ("workbookPresModel" in presModel) and ("dashboardPresModel" in presModel["workbookPresModel"]) and ("viewIds" in presModel["workbookPresModel"]["dashboardPresModel"]):
             if sheetName in presModel["workbookPresModel"]["dashboardPresModel"]["viewIds"]:
                 r = tableauscraper.api.getCsvData(
-                    self._scraper, presModel["workbookPresModel"]["dashboardPresModel"]["viewIds"][sheetName])
+                    self._scraper, presModel["workbookPresModel"]["dashboardPresModel"]["viewIds"][sheetName], prefix=prefix)
                 try:
                     return pd.read_csv(io.StringIO(r))
-                except ParserError:
+                except (ParserError, EmptyDataError):
                     return None
 
             else:

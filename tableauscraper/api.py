@@ -55,8 +55,8 @@ def getTableauData(scraper):
     return r.text
 
 
-def getCsvData(scraper, viewId):
-    dataUrl = f'{scraper.host}{scraper.tableauData["vizql_root"]}/vud/sessions/{scraper.tableauData["sessionid"]}/views/{viewId}'
+def getCsvData(scraper, viewId, prefix="vudcsv"):
+    dataUrl = f'{scraper.host}{scraper.tableauData["vizql_root"]}/{prefix}/sessions/{scraper.tableauData["sessionid"]}/views/{viewId}'
     r = scraper.session.get(
         dataUrl,
         params={
