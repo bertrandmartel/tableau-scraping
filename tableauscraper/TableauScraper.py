@@ -94,7 +94,7 @@ class TableauScraper:
                     "presModelHolder"]["genDataDictionaryPresModel"]["dataSegments"]
             self.dashboard = self.info["sheetName"]
         except (AttributeError):
-            raise TableauException(message=r.text)
+            raise TableauException(message=r)
 
     def getWorkbook(self) -> TableauWorkbook:
         return dashboard.getWorksheets(self, self.data, self.info)
