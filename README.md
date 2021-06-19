@@ -19,7 +19,7 @@ pip install TableauScraper
 
 ### Usage
 
-- Get worksheets data
+#### Get worksheets data
 
 ```python
 from tableauscraper import TableauScraper as TS
@@ -37,7 +37,7 @@ for t in workbook.worksheets:
 
 [Try this on repl.it](https://repl.it/@bertrandmartel/TableauGetWorksheets)
 
-- Get a specific worksheet
+#### Get a specific worksheet
 
 ```python
 from tableauscraper import TableauScraper as TS
@@ -51,7 +51,7 @@ ws = ts.getWorksheet("ATT MID CREATIVE COMP")
 print(ws.data)
 ```
 
-- select a selectable item
+#### select a selectable item
 
 ```python
 from tableauscraper import TableauScraper as TS
@@ -77,7 +77,7 @@ for t in dashboard.worksheets:
 
 [Try this on repl.it](https://repl.it/@bertrandmartel/TableauSelectItem)
 
-- set parameter
+#### set parameter
 
 Get list of parameters with `workbook.getParameters()` and set parameter value using `workbook.setParameter("column_name", "value")` :
 
@@ -104,7 +104,7 @@ for t in workbook.worksheets:
 
 [Try this on repl.it](https://repl.it/@bertrandmartel/TableauParameter)
 
-- set filter
+#### set filter
 
 Get list of filters with `worksheet.getFilters` and set filter value using `worksheet.setFilter("column_name", "value")`:
 
@@ -133,7 +133,7 @@ print(countyWs.data)
 
 [Try this on repl.it](https://repl.it/@bertrandmartel/TableauFilter)
 
-- Download CSV data
+#### Download CSV data
 
 For Tableau URL that have the download feature enabled, you can download full data using:
 
@@ -159,7 +159,7 @@ The prefix values, I've encountered are: `vud` and `vudcsv`. The default is `vud
 
 [Try this on repl.it](https://replit.com/@bertrandmartel/TableauCovidWyomingCsv)
 
-- Go to sheet
+#### Go to sheet
 
 Get list of all sheets with subsheets visible or invisible, ability to send a go-to-sheet command (dashboar button) :
 
