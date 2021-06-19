@@ -106,12 +106,10 @@ def getWorksheetsCmdResponse(TS, data):
     output = []
     for selectedZone in zonesWithWorksheet:
         frameData = utils.getWorksheetCmdResponse(selectedZone, dataFull)
-
         if frameData is None:
             continue
 
         df = pd.DataFrame.from_dict(frameData, orient="index").fillna(0).T
-
         output.append(
             TableauWorksheet(
                 scraper=TS,
@@ -119,8 +117,7 @@ def getWorksheetsCmdResponse(TS, data):
                 originalInfo={},
                 worksheetName=selectedZone["worksheet"],
                 dataFrame=df,
-                dataFull=utils.getDataFullCmdResponse(
-                    presModel, TS.dataSegments),
+                dataFull=dataFull,
                 cmdResponse=True,
             )
         )
