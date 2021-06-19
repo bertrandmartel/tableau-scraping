@@ -1421,3 +1421,120 @@ Otsego;0;0;0;Mohawk Valley;Faux;Faux;18/06/2021;0;Mohawk Valley;42.457405;-75.05
 Franklin;0;0;0;North Country;Faux;Faux;18/06/2021;0;North Country;44.343929;-74.144363;Adirondack Medical Center-Saranac Lake Site;Independent;;1;Capital District Regional Office;6/17/2021;Rest of State;1;49
 Albany;5;2;11;Capital Region;Vrai;Vrai;18/06/2021;0;Capital Region;42.65337;-73.773834;Albany Medical Center Hospital;Albany Medical Center;;1;Capital District Regional Office;6/17/2021;Rest of State;249;1457
 """
+
+tableauStoryPointsInfoNav = {
+    'sheetName': '[WORKSHEET1]',
+    'worldUpdate': {
+        'applicationPresModel': {
+            'renderMode': 'render-mode-client',
+            'workbookPresModel': {
+                'dashboardPresModel': {
+                    'sheetPath': {
+                        'sheetName': '[WORKSHEET1]',
+                        'isDashboard': True
+                    },
+                    'zones': {
+                        '4': {
+                            'zoneId': 4,
+                            'zoneZOrder': 2,
+                            'presModelHolder': {
+                                'flipboardNav': {
+                                    'currentStorypointIndex': 0,
+                                    'storypointNavItems': [{
+                                        'storyPointId': 1,
+                                        'storyPointCaption': '1',
+                                        'isCaptured': True,
+                                        'storyPointIsEmpty': False,
+                                        'containsValidDatasources': True
+                                    }, {
+                                        'storyPointId': 2,
+                                        'storyPointCaption': '2',
+                                        'isCaptured': True,
+                                        'storyPointIsEmpty': False,
+                                        'containsValidDatasources': True
+                                    }, {
+                                        'storyPointId': 3,
+                                        'storyPointCaption': '3',
+                                        'isCaptured': True,
+                                        'storyPointIsEmpty': False,
+                                        'containsValidDatasources': True
+                                    }, {
+                                        'storyPointId': 4,
+                                        'storyPointCaption': '4',
+                                        'isCaptured': True,
+                                        'storyPointIsEmpty': False,
+                                        'containsValidDatasources': True
+                                    }, {
+                                        'storyPointId': 5,
+                                        'storyPointCaption': '5',
+                                        'isCaptured': True,
+                                        'storyPointIsEmpty': False,
+                                        'containsValidDatasources': True
+                                    }, {
+                                        'storyPointId': 9,
+                                        'storyPointCaption': '6',
+                                        'isCaptured': True,
+                                        'storyPointIsEmpty': False,
+                                        'containsValidDatasources': True
+                                    }, {
+                                        'storyPointId': 10,
+                                        'storyPointCaption': '7',
+                                        'isCaptured': True,
+                                        'storyPointIsEmpty': False,
+                                        'containsValidDatasources': True
+                                    }, {
+                                        'storyPointId': 11,
+                                        'storyPointCaption': '8',
+                                        'isCaptured': True,
+                                        'storyPointIsEmpty': False,
+                                        'containsValidDatasources': True
+                                    }, {
+                                        'storyPointId': 8,
+                                        'storyPointCaption': '9',
+                                        'isCaptured': True,
+                                        'storyPointIsEmpty': False,
+                                        'containsValidDatasources': True
+                                    }, {
+                                        'storyPointId': 12,
+                                        'storyPointCaption': '10',
+                                        'isCaptured': True,
+                                        'storyPointIsEmpty': False,
+                                        'containsValidDatasources': True
+                                    }, {
+                                        'storyPointId': 13,
+                                        'storyPointCaption': '11',
+                                        'isCaptured': True,
+                                        'storyPointIsEmpty': False,
+                                        'containsValidDatasources': True
+                                    }, {
+                                        'storyPointId': 14,
+                                        'storyPointCaption': '12',
+                                        'isCaptured': True,
+                                        'storyPointIsEmpty': False,
+                                        'containsValidDatasources': True
+                                    }],
+                                    'navArrowsVisible': True,
+                                    'spaceBetweenPoints': 2,
+                                    'isStoryEmpty': False,
+                                    'isPresentationModeDoc': False
+                                }
+                            },
+                            'hasCaption': False,
+                            'isVisible': True,
+                            'isSelectionDisabled': True,
+                            'bgColor': 'rgb(255,255,255)',
+                            'blendedZoneContentColor': 'rgb(255,255,255)'
+                        }
+                    },
+                },
+            }
+        }
+    }
+}
+
+tableauDataResponseWithStoryPointsNav = """
+433337;%s433337;%s
+""" % (
+    json.dumps(tableauStoryPointsInfoNav),
+    json.dumps(dataWithoutPresModelWithDictionary),
+)

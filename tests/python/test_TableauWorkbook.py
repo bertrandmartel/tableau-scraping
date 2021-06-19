@@ -14,6 +14,7 @@ from tests.python.test_common import (
 )
 from tests.python.test_common import storyPointsCmdResponse as storyPointsCmdResponse
 from tests.python.test_common import tableauDownloadableCsvData as tableauDownloadableCsvData
+from tests.python.test_common import tableauDataResponseWithStoryPointsNav
 
 
 def test_TableauWorkbook(mocker: MockerFixture) -> None:
@@ -44,7 +45,7 @@ def test_TableauWorkbook(mocker: MockerFixture) -> None:
     assert len(dataFrameGroup.worksheets) == 1
     worksheetNames = dataFrameGroup.getWorksheetNames()
     assert type(worksheetNames) is list
-    assert worksheetNames == ["[WORKSHEET1]", "[WORKSHEET2]"]
+    assert worksheetNames == ["[WORKSHEET1]"]
 
     # get worksheets (initial response)
     dataFrameGroup = ts.getWorkbook()
@@ -208,7 +209,6 @@ def test_getCsvData(mocker: MockerFixture) -> None:
     wb = ts.getWorkbook()
 
     data = wb.getCsvData("[WORKSHEET1]")
-    print(data)
     assert data.shape[0] == 3
     assert data.shape[1] == 1
 
@@ -233,3 +233,48 @@ def test_getDownloadableData(mocker: MockerFixture) -> None:
     assert dataFrameGroup.__dict__["_scraper"] is ts
     assert not dataFrameGroup.cmdResponse
     assert len(dataFrameGroup.worksheets) == 2
+
+
+def test_getStoryPoints(mocker: MockerFixture) -> None:
+    mocker.patch(
+        "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
+    )
+    mocker.patch(
+        "tableauscraper.api.getTableauData", return_value=tableauDataResponseWithStoryPointsNav
+    )
+    ts = TS()
+    ts.loads(fakeUri)
+    wb = ts.getWorkbook()
+    storyPointResult = wb.getStoryPoints()
+
+    assert storyPointResult["storyBoard"] == "[WORKSHEET1]"
+    assert len(storyPointResult["storyPoints"]) == 1
+    assert len(storyPointResult["storyPoints"][0]) == 12
+
+    # test no story point
+    mocker.patch(
+        "tableauscraper.api.getTableauData", return_value=tableauDataResponse
+    )
+    ts = TS()
+    ts.loads(fakeUri)
+    wb = ts.getWorkbook()
+    storyPointResult = wb.getStoryPoints()
+    assert len(storyPointResult["storyPoints"]) == 0
+
+
+def test_goToStoryPoint(mocker: MockerFixture) -> None:
+    mocker.patch(
+        "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
+    )
+    mocker.patch(
+        "tableauscraper.api.getTableauData", return_value=tableauDataResponseWithStoryPointsNav
+    )
+    mocker.patch("tableauscraper.api.setActiveStoryPoint",
+                 return_value=vqlCmdResponse)
+
+    ts = TS()
+    ts.loads(fakeUri)
+    wb = ts.getWorkbook()
+    storyWb = wb.goToStoryPoint(storyPointId=1)
+    assert type(storyWb) is TableauWorkbook
+    assert len(storyWb.worksheets) == 1

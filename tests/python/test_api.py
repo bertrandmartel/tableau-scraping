@@ -170,6 +170,21 @@ def test_getCsvData(httpserver, mocker: MockerFixture):
     assert result == tableauDownloadableCsvData
 
 
+def test_setActiveStoryPoint(httpserver, mocker: MockerFixture):
+    mocker.patch(
+        "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
+    )
+    mocker.patch("tableauscraper.api.getTableauData",
+                 return_value=tableauDataResponse)
+    ts = TS()
+    ts.loads(fakeUri)
+    httpserver.serve_content(json.dumps(vqlCmdResponse))
+    ts.host = httpserver.url + "/"
+    result = api.setActiveStoryPoint(scraper=ts, storyBoard="",
+                                     storyPointId=1)
+    assert result == vqlCmdResponse
+
+
 def test_delayExcution():
     ts = TS()
     ts.lastActionTime = time.time()

@@ -133,6 +133,26 @@ print(countyWs.data)
 
 [Try this on repl.it](https://repl.it/@bertrandmartel/TableauFilter)
 
+#### Story points
+
+Some Tableau dashboard have storypoints where you can navigate. To list the storypoints and go to a specific storypoints:
+
+```python
+from tableauscraper import TableauScraper as TS
+
+url = 'https://public.tableau.com/views/EarthquakeTrendStory2/Finished-Earthquakestory'
+ts = TS()
+ts.loads(url)
+wb = ts.getWorkbook()
+
+print(wb.getStoryPoints())
+print("go to specific storypoint")
+sp = wb.goToStoryPoint(storyPointId=10)
+
+print(sp.getWorksheetNames())
+print(sp.getWorksheet("Timeline").data)
+```
+
 #### Download CSV data
 
 For Tableau URL that have the download feature enabled, you can download full data using:

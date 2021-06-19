@@ -160,3 +160,13 @@ class TableauWorkbook:
         else:
             print("no viewIds found in json info")
         return None
+
+    def getStoryPoints(self):
+        return tableauscraper.utils.getStoryPointsFromInfo(self._originalInfo)
+
+    def goToStoryPoint(self, storyPointId) -> "TableauWorkbook":
+        storypointResult = self.getStoryPoints()
+        r = tableauscraper.api.setActiveStoryPoint(
+            self._scraper, storyBoard=storypointResult["storyBoard"], storyPointId=storyPointId)
+        self.updateFullData(r)
+        return tableauscraper.dashboard.getWorksheetsCmdResponse(self._scraper, r)

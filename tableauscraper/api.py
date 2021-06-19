@@ -194,6 +194,22 @@ def goToSheet(scraper, windowId):
     return r.json()
 
 
+def setActiveStoryPoint(scraper, storyBoard, storyPointId):
+    delayExecution(scraper)
+    payload = (
+        ("storyboard", (None, storyBoard)),
+        ("storyPointId", (None, storyPointId)),
+        ("shouldAutoCapture", (None, "false")),
+        ("shouldAutoRevert", (None, "true")),
+    )
+    r = scraper.session.post(
+        f'{scraper.host}{scraper.tableauData["vizql_root"]}/sessions/{scraper.tableauData["sessionid"]}/commands/tabdoc/set-active-story-point',
+        files=payload,
+        verify=scraper.verify
+    )
+    return r.json()
+
+
 def delayExecution(scraper):
     if scraper.lastActionTime != 0:
         currentTime = time.time()

@@ -45,7 +45,8 @@ def listWorksheetInfo(presModel):
     return [
         zones[z]["worksheet"]
         for z in list(zones)
-        if ("worksheet" in zones[z])
+        if zones[z] is not None
+        and ("worksheet" in zones[z])
         and ("presModelHolder" in zones[z])
         and ("visual" in zones[z]["presModelHolder"])
         # and ("vizData" in zones[z]["presModelHolder"]["visual"])
@@ -57,7 +58,8 @@ def listStoryPointsInfo(presModel):
     storypoints = [
         zones[z]["presModelHolder"]["flipboard"]["storyPoints"]
         for z in list(zones)
-        if ("presModelHolder" in zones[z])
+        if zones[z] is not None
+        and ("presModelHolder" in zones[z])
         and ("flipboard" in zones[z]["presModelHolder"])
         and ("storyPoints" in zones[z]["presModelHolder"]["flipboard"])
     ]
@@ -70,7 +72,8 @@ def listStoryPointsInfo(presModel):
             stories = [
                 zones[z]["worksheet"]
                 for z in list(zones)
-                if ("worksheet" in zones[z])
+                if zones[z] is not None
+                and ("worksheet" in zones[z])
                 and ("presModelHolder" in zones[z])
                 and ("visual" in zones[z]["presModelHolder"])
                 and ("vizData" in zones[z]["presModelHolder"]["visual"])
@@ -78,20 +81,24 @@ def listStoryPointsInfo(presModel):
     return stories
 
 
-def getWorksheetNames(scraper):
-    if scraper.cmdResponse:
-        presModel = scraper._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
-        return [
-            t["worksheet"]
-            for t in listWorksheetCmdResponse(presModel)
-        ]
-    else:
-        presModel = getPresModelVizData(scraper._originalData)
-        if presModel is None:
-            presModel = getPresModelVizInfo(scraper._originalInfo)
-            worksheets = listWorksheetInfo(presModel)
-            return listStoryPointsInfo(presModel) if len(worksheets) == 0 else worksheets
-        return listWorksheet(presModel)
+def getWorksheetNames(wb):
+    return [
+        t.name
+        for t in wb.worksheets
+    ]
+    # if scraper.cmdResponse:
+    #     presModel = scraper._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
+    #     return [
+    #         t["worksheet"]
+    #         for t in listWorksheetCmdResponse(presModel)
+    #     ]
+    # else:
+    #     presModel = getPresModelVizData(scraper._originalData)
+    #     if presModel is None:
+    #         presModel = getPresModelVizInfo(scraper._originalInfo)
+    #         worksheets = listWorksheetInfo(presModel)
+    #         return listStoryPointsInfo(presModel) if len(worksheets) == 0 else worksheets
+    #     return listWorksheet(presModel)
 
 
 def listWorksheet(presModelMap):
@@ -313,12 +320,50 @@ def getDataFullCmdResponse(presModel, originSegments, dataSegments={}):
     return dataFull
 
 
+def getStoryPointsFromInfo(info):
+    result = {
+        "storyBoard": "",
+        "storyPoints": []
+    }
+    if "sheetName" in info:
+        result["storyBoard"] = info["sheetName"]
+    else:
+        print("sheet name not found")
+        return result
+    presModel = getPresModelVizInfo(info)
+    if (("workbookPresModel" in presModel) and
+        ("dashboardPresModel" in presModel["workbookPresModel"]) and
+            ("zones" in presModel["workbookPresModel"]["dashboardPresModel"])):
+        zones = presModel["workbookPresModel"]["dashboardPresModel"]["zones"]
+        storyPointsNav = [
+            zones[z]["presModelHolder"]["flipboardNav"]["storypointNavItems"]
+            for z in list(zones)
+            if zones[z] is not None
+            and ("presModelHolder" in zones[z])
+            and "flipboardNav" in zones[z]["presModelHolder"]
+            and "storypointNavItems" in zones[z]["presModelHolder"]["flipboardNav"]
+        ]
+        storyPointsList = []
+        for t in storyPointsNav:
+            storyPoints = []
+            for story in t:
+                storyPoints.append({
+                    "storyPointId": story["storyPointId"],
+                    "storyPointCaption": story["storyPointCaption"]
+                })
+            storyPointsList.append(storyPoints)
+        result["storyPoints"] = storyPointsList
+        return result
+    return result
+
+
 def listWorksheetCmdResponse(presModel):
     zones = presModel["workbookPresModel"]["dashboardPresModel"]["zones"]
     return [
         zones[z]
         for z in list(zones)
-        if ("worksheet" in zones[z])
+        if zones[z] is not None
+        and ("worksheet" in zones[z])
         and ("presModelHolder" in zones[z])
         and ("visual" in zones[z]["presModelHolder"])
         and ("vizData" in zones[z]["presModelHolder"]["visual"])
@@ -330,7 +375,8 @@ def listStoryPointsCmdResponse(presModel):
     storypoints = [
         zones[z]["presModelHolder"]["flipboard"]["storyPoints"]
         for z in list(zones)
-        if ("presModelHolder" in zones[z])
+        if zones[z] is not None
+        and ("presModelHolder" in zones[z])
         and ("flipboard" in zones[z]["presModelHolder"])
         and ("storyPoints" in zones[z]["presModelHolder"]["flipboard"])
     ]
@@ -343,7 +389,8 @@ def listStoryPointsCmdResponse(presModel):
             stories = [
                 zones[z]
                 for z in list(zones)
-                if ("worksheet" in zones[z])
+                if zones[z] is not None
+                and ("worksheet" in zones[z])
                 and ("presModelHolder" in zones[z])
                 and ("visual" in zones[z]["presModelHolder"])
                 and ("vizData" in zones[z]["presModelHolder"]["visual"])
@@ -356,7 +403,8 @@ def listWorksheetStoryPoint(presModel, hasWorksheet=True):
     storypoints = [
         zones[z]["presModelHolder"]["flipboard"]["storyPoints"]
         for z in list(zones)
-        if ("presModelHolder" in zones[z])
+        if zones[z] is not None
+        and ("presModelHolder" in zones[z])
         and ("flipboard" in zones[z]["presModelHolder"])
         and ("storyPoints" in zones[z]["presModelHolder"]["flipboard"])
     ]
@@ -370,7 +418,8 @@ def listWorksheetStoryPoint(presModel, hasWorksheet=True):
                 stories = [
                     zones[z]
                     for z in list(zones)
-                    if ("worksheet" in zones[z])
+                    if zones[z] is not None
+                    and ("worksheet" in zones[z])
                     and ("presModelHolder" in zones[z])
                     and ("visual" in zones[z]["presModelHolder"])
                     and ("vizData" in zones[z]["presModelHolder"]["visual"])
@@ -385,7 +434,6 @@ def listWorksheetStoryPoint(presModel, hasWorksheet=True):
 
 
 def getWorksheetCmdResponse(selectedZone, dataFull):
-    cstring = dataFull["cstring"]
     details = selectedZone["presModelHolder"]["visual"]["vizData"]
 
     if "paneColumnsData" not in details:
@@ -492,7 +540,8 @@ def listFilters(presModel, worksheetName):
     filters = [
         json.loads(zones[z]["presModelHolder"]["visual"]["filtersJson"])
         for z in list(zones)
-        if ("worksheet" in zones[z])
+        if zones[z] is not None
+        and ("worksheet" in zones[z])
         and ("presModelHolder" in zones[z])
         and ("visual" in zones[z]["presModelHolder"])
         and ("filtersJson" in zones[z]["presModelHolder"]["visual"])
