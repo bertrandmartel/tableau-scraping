@@ -49,7 +49,7 @@ class TableauWorkbook:
                 self._scraper, self._originalData, self._originalInfo
             )
 
-    def getWorksheet(self, worksheetName):
+    def getWorksheet(self, worksheetName) -> TableauWorksheet:
         if self.cmdResponse:
             return tableauscraper.dashboard.getWorksheetCmdResponse(
                 self._scraper, self._originalData, worksheetName
