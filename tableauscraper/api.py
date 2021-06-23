@@ -210,6 +210,23 @@ def setActiveStoryPoint(scraper, storyBoard, storyPointId):
     return r.json()
 
 
+def levelDrill(scraper, worksheetName, drillDown, position=0):
+    delayExecution(scraper)
+    payload = (
+        ("worksheet", (None, worksheetName)),
+        ("dashboard", (None, scraper.dashboard)),
+        ("boolAggregateDrillUp", (None, "true" if drillDown else "false")),
+        ("shelfType", (None, "columns-shelf")),
+        ("position", (None, position)),
+    )
+    r = scraper.session.post(
+        f'{scraper.host}{scraper.tableauData["vizql_root"]}/sessions/{scraper.tableauData["sessionid"]}/commands/tabdoc/level-drill-up-down',
+        files=payload,
+        verify=scraper.verify
+    )
+    return r.json()
+
+
 def delayExecution(scraper):
     if scraper.lastActionTime != 0:
         currentTime = time.time()

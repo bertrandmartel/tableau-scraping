@@ -431,3 +431,21 @@ def test_getDownloadableUnderlyingData(mocker: MockerFixture) -> None:
     data = wb.getWorksheet("[WORKSHEET1]").getDownloadableUnderlyingData()
     assert data.shape[0] == 200
     assert data.shape[1] == 42
+
+
+def test_levelDrill(mocker: MockerFixture) -> None:
+    mocker.patch(
+        "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
+    )
+    mocker.patch("tableauscraper.api.getTableauData",
+                 return_value=tableauDataResponse)
+    mocker.patch("tableauscraper.api.levelDrill",
+                 return_value=vqlCmdResponse)
+    ts = TS()
+    ts.loads(fakeUri)
+    wb = ts.getWorkbook()
+    wb = wb.getWorksheet("[WORKSHEET1]").levelDrill(
+        drillDown=True)
+    assert type(wb) is TableauWorkbook
+    assert len(wb.worksheets) == 1
+    assert wb.worksheets[0].name == "[WORKSHEET1]"

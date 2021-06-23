@@ -260,3 +260,9 @@ class TableauWorksheet:
             self._scraper, self.name, self._scraper.dashboard, numRows)
         self.updateFullData(r)
         return tableauscraper.dashboard.getWorksheetDownloadCmdResponse(self._scraper, r)
+
+    def levelDrill(self, drillDown, position=0):
+        r = tableauscraper.api.levelDrill(
+            self._scraper, self.name, drillDown, position)
+        self.updateFullData(r)
+        return tableauscraper.dashboard.getWorksheetsCmdResponse(self._scraper, r)
