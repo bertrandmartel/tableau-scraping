@@ -27,6 +27,7 @@ https://covid19tracker.health.ny.gov/views/DailyHospitalizationSummary/Reopening
 https://public.tableau.com/views/WYCOVID-19Dashboard/WyomingCOVID-19CaseDashboard
 https://public.tableau.com/views/CBREMigrationAnalysisv1extract/CBREMigrationAnalysis
 https://public.tableau.com/views/EarthquakeTrendStory2/Finished-Earthquakestory
+https://tableau.azdhs.gov/views/ELRv2testlevelandpeopletested/PeopleTested
 
 server side rendering
 https://public.tableau.com/views/InstatIndexRanking/Instatindex
