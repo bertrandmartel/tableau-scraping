@@ -155,6 +155,34 @@ print(sp.getWorksheet("Timeline").data)
 
 [Try this on repl.it](https://replit.com/@bertrandmartel/TableauEarthquakeStorypoint)
 
+#### Level drill Up/Down
+
+On some graph/table, there is a drill up/down feature used to zoom in or out data like this
+![drill up/down](https://user-images.githubusercontent.com/5183022/123021337-332c4980-d3d4-11eb-8e8c-d19c5b989edb.png)
+
+```python
+from tableauscraper import TableauScraper as TS
+
+url = 'https://tableau.azdhs.gov/views/ELRv2testlevelandpeopletested/PeopleTested'
+ts = TS()
+ts.loads(url)
+wb = ts.getWorkbook()
+
+sheetName = "P1 - Tests by Day W/ % Positivity (Both) (2)"
+
+drillDown1 = wb.getWorksheet(sheetName).levelDrill(drillDown=True, position=1)
+drillDown2 = drillDown1.getWorksheet(sheetName).levelDrill(drillDown=True, position=1)
+drillDown3 = drillDown2.getWorksheet(sheetName).levelDrill(drillDown=True, position=1)
+
+print(drillDown1.getWorksheet(sheetName).data)
+print(drillDown2.getWorksheet(sheetName).data)
+print(drillDown3.getWorksheet(sheetName).data)
+```
+
+[Try this on repl.it](https://replit.com/@bertrandmartel/TableauCovid19AzdhsPeopleTested)
+
+The `position` parameter is default to `0`. It doesn't seem to be present in the json configuration. If the default is not working try incrementing it or checkout the network tabs using Chrome devtools.
+
 #### Download CSV data
 
 For Tableau URL that have the download feature enabled, you can download full data using:
@@ -224,6 +252,7 @@ for t in nycAdults.worksheets:
 - https://replit.com/@bertrandmartel/TableauCovid19Tracker
 - https://replit.com/@bertrandmartel/TableauCovid19CbreResidentMigration
 - https://replit.com/@bertrandmartel/TableauEarthquakeStorypoint
+- https://replit.com/@bertrandmartel/TableauCovid19AzdhsPeopleTested
 
 ### Server side rendering
 
@@ -293,4 +322,4 @@ R library is under development
 
 ## Stackoverflow Questions
 
-See [those stackoverflow posts about this topic](https://stackoverflow.com/search?q=user%3A2614364+%5Btableau-api%5D)
+See [those stackoverflow posts about this topic](https://stackoverflow.com/search?q=user%3A2614364+tableau+%5Bweb-scraping%5D)
