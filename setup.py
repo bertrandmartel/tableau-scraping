@@ -1,6 +1,6 @@
 import setuptools
 
-version = "0.1.15"
+version = "0.1.16"
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
@@ -11,10 +11,11 @@ setuptools.setup(
     author="Bertrand Martel",
     author_email="bmartel.fr@gmail.com",
     description="Library to get data from Tableau Viz",
-    long_description=long_description,
     long_description_content_type="text/markdown",
+    long_description=long_description,
     url="https://github.com/bertrandmartel/tableau-scraping",
-    packages=["tableauscraper"],  # setuptools.find_packages(),
+    packages=["tableauscraper"],
+    license="MIT",
     classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
