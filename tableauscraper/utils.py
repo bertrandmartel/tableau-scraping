@@ -497,7 +497,8 @@ def getParameterControlInput(info):
                 "parameterName": zones[key]["presModelHolder"]["parameterControl"]["parameterName"]
             }
             for key in list(zones)
-            if "parameterControl" in zones[key]["presModelHolder"]
+            if ("presModelHolder" in zones[key])
+            and ("parameterControl" in zones[key]["presModelHolder"])
         ]
     return [
         {
