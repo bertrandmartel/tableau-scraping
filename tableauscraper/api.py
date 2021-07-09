@@ -48,6 +48,7 @@ def getTableauData(scraper):
         dataUrl,
         data={
             "sheet_id": scraper.tableauData["sheetId"],
+            "clientDimension": json.dumps({"w": 1920, "h": 1080})
         },
         verify=scraper.verify
     )
