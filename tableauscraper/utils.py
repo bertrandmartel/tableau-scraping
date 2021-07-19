@@ -273,13 +273,19 @@ def getData(dataFull, indicesInfo):
                 for value in index["valueIndices"]:
                     if value < len(t):
                         values.append(onDataValue(value, t, cstring))
-                frameData[f'{index["fieldCaption"]}-value'] = values
+                if f'{index["fieldCaption"]}-value' not in frameData:
+                    frameData[f'{index["fieldCaption"]}-value'] = values
+                else:
+                    frameData[f'{index["fieldCaption"]}-{index["fn"]}-value'] = values
             if len(index["aliasIndices"]) > 0:
                 values = []
                 for value in index["aliasIndices"]:
                     if value < len(t):
                         values.append(onDataValue(value, t, cstring))
-                frameData[f'{index["fieldCaption"]}-alias'] = values
+                if f'{index["fieldCaption"]}-alias' not in frameData:
+                    frameData[f'{index["fieldCaption"]}-alias'] = values
+                else:
+                    frameData[f'{index["fieldCaption"]}-{index["fn"]}-alias'] = values
         else:
             # if datatype is not found, try cstring
             t = cstring
@@ -288,13 +294,19 @@ def getData(dataFull, indicesInfo):
                 for value in index["valueIndices"]:
                     if value < len(t):
                         values.append(onDataValue(value, t, cstring))
-                frameData[f'{index["fieldCaption"]}-value'] = values
+                if f'{index["fieldCaption"]}-value' not in frameData:
+                    frameData[f'{index["fieldCaption"]}-value'] = values
+                else:
+                    frameData[f'{index["fieldCaption"]}-{index["fn"]}-value'] = values
             if len(index["aliasIndices"]) > 0:
                 values = []
                 for value in index["aliasIndices"]:
                     if value < len(t):
                         values.append(onDataValue(value, t, cstring))
-                frameData[f'{index["fieldCaption"]}-alias'] = values
+                if f'{index["fieldCaption"]}-alias' not in frameData:
+                    frameData[f'{index["fieldCaption"]}-alias'] = values
+                else:
+                    frameData[f'{index["fieldCaption"]}-{index["fn"]}-alias'] = values
     return frameData
 
 
@@ -448,6 +460,7 @@ def getWorksheetCmdResponse(selectedZone, dataFull):
             "dataType": t.get("dataType"),
             "paneIndices": t["paneIndices"][0],
             "columnIndices": t["columnIndices"][0],
+            "fn": t.get("fn", "")
         }
         for t in columnsData["vizDataColumns"]
         if t.get("fieldCaption")
@@ -461,7 +474,8 @@ def getWorksheetDownloadCmdResponse(dataFull, underlyingDataTableColumns):
             "fieldCaption": t["fieldCaption"],
             "valueIndices": t["valueIndices"],
             "aliasIndices": t["aliasIndices"],
-            "dataType": t["dataType"]
+            "dataType": t["dataType"],
+            "fn": t.get("fn", "")
         }
         for t in underlyingDataTableColumns
         if t.get("fieldCaption")
