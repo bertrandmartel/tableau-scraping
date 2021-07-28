@@ -318,10 +318,10 @@ python3 prompt.py -get parameter -url "https://public.tableau.com/views/COVID-19
 
 `TableauScraper` class has the following optional parameters :
 
-| Parameters | default value | description                                                       |
-| ---------- | ------------- | ----------------------------------------------------------------- |
-| logLevel   | logging.INFO  | log level                                                         |
-| delayMs    | 500           | minimum delay in millis between actions (select/dropdown request) |
+| Parameters | default value | description                               |
+| ---------- | ------------- | ----------------------------------------- |
+| logLevel   | logging.INFO  | log level                                 |
+| delayMs    | 500           | minimum delay in millis between api calls |
 
 ## R
 
