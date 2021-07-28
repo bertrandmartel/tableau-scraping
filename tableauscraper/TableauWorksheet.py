@@ -38,17 +38,22 @@ class TableauWorksheet:
         if (("applicationPresModel" in cmdResponse["vqlCmdResponse"]["layoutStatus"]) and
                 ("dataDictionary" in cmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"])):
             presModel = cmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
-            dataSegments = presModel["dataDictionary"]["dataSegments"]
-            dataSegmentscp = copy.deepcopy(dataSegments)
-            keys = list(dataSegmentscp.keys())
-            for key in keys:
-                if dataSegmentscp[key] is not None:
-                    self._scraper.dataSegments[key] = dataSegmentscp[key]
+            if "dataSegments" in presModel["dataDictionary"]:
+                dataSegments = presModel["dataDictionary"]["dataSegments"]
+                dataSegmentscp = copy.deepcopy(dataSegments)
+                keys = list(dataSegmentscp.keys())
+                for key in keys:
+                    if dataSegmentscp[key] is not None:
+                        self._scraper.dataSegments[key] = dataSegmentscp[key]
+            else:
+                self._scraper.logger.warning(
+                    f"no data dictionary present in response")
         elif (("cmdResultList" in cmdResponse["vqlCmdResponse"]) and
               (len(cmdResponse["vqlCmdResponse"]["cmdResultList"]) > 0) and
               ("commandReturn" in cmdResponse["vqlCmdResponse"]["cmdResultList"][0]) and
               ("underlyingDataTable" in cmdResponse["vqlCmdResponse"]["cmdResultList"][0]["commandReturn"]) and
-                ("dataDictionary" in cmdResponse["vqlCmdResponse"]["cmdResultList"][0]["commandReturn"]["underlyingDataTable"])):
+                ("dataDictionary" in cmdResponse["vqlCmdResponse"]["cmdResultList"][0]["commandReturn"]["underlyingDataTable"]) and
+                ("dataSegments" in cmdResponse["vqlCmdResponse"]["cmdResultList"][0]["commandReturn"]["underlyingDataTable"]["dataDictionary"])):
             dataSegments = cmdResponse["vqlCmdResponse"]["cmdResultList"][
                 0]["commandReturn"]["underlyingDataTable"]["dataDictionary"]["dataSegments"]
             dataSegmentscp = copy.deepcopy(dataSegments)

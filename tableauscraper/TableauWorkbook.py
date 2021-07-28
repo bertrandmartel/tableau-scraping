@@ -26,12 +26,16 @@ class TableauWorkbook:
         if (("applicationPresModel" in cmdResponse["vqlCmdResponse"]["layoutStatus"]) and
                 ("dataDictionary" in cmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"])):
             presModel = cmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
-            dataSegments = presModel["dataDictionary"]["dataSegments"]
-            dataSegmentscp = copy.deepcopy(dataSegments)
-            keys = list(dataSegmentscp.keys())
-            for key in keys:
-                if dataSegmentscp[key] is not None:
-                    self._scraper.dataSegments[key] = dataSegmentscp[key]
+            if "dataSegments" in presModel["dataDictionary"]:
+                dataSegments = presModel["dataDictionary"]["dataSegments"]
+                dataSegmentscp = copy.deepcopy(dataSegments)
+                keys = list(dataSegmentscp.keys())
+                for key in keys:
+                    if dataSegmentscp[key] is not None:
+                        self._scraper.dataSegments[key] = dataSegmentscp[key]
+            else:
+                self._scraper.logger.warning(
+                    f"no data dictionary present in response")
         else:
             self._scraper.logger.warning(
                 f"no data dictionary present in response")
