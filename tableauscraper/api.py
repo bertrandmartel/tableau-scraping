@@ -99,6 +99,7 @@ def getDownloadableSummaryData(scraper, worksheetName, dashboardName, numRows=20
         files=payload,
         verify=scraper.verify
     )
+    scraper.lastActionTime = time.time()
     return r.json()
 
 
@@ -116,6 +117,7 @@ def getDownloadableUnderlyingData(scraper, worksheetName, dashboardName, numRows
         files=payload,
         verify=scraper.verify
     )
+    scraper.lastActionTime = time.time()
     try:
         return r.json()
     except ValueError:
@@ -136,6 +138,7 @@ def select(scraper, worksheetName, selection):
         files=payload,
         verify=scraper.verify
     )
+    scraper.lastActionTime = time.time()
     try:
         return r.json()
     except (ValueError, JSONDecodeError):
@@ -161,6 +164,7 @@ def filter(scraper, worksheetName, globalFieldName, selection):
         files=payload,
         verify=scraper.verify
     )
+    scraper.lastActionTime = time.time()
     try:
         return r.json()
     except ValueError:
@@ -179,6 +183,7 @@ def setParameterValue(scraper, parameterName, value):
         files=payload,
         verify=scraper.verify
     )
+    scraper.lastActionTime = time.time()
     return r.json()
 
 
@@ -192,6 +197,7 @@ def goToSheet(scraper, windowId):
         files=payload,
         verify=scraper.verify
     )
+    scraper.lastActionTime = time.time()
     return r.json()
 
 
@@ -251,6 +257,7 @@ def setActiveStoryPoint(scraper, storyBoard, storyPointId):
         files=payload,
         verify=scraper.verify
     )
+    scraper.lastActionTime = time.time()
     return r.json()
 
 
@@ -268,6 +275,7 @@ def levelDrill(scraper, worksheetName, drillDown, position=0):
         files=payload,
         verify=scraper.verify
     )
+    scraper.lastActionTime = time.time()
     return r.json()
 
 
