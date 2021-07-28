@@ -195,6 +195,49 @@ def goToSheet(scraper, windowId):
     return r.json()
 
 
+def exportCrosstabServerDialog(scraper):
+    delayExecution(scraper)
+    payload = (
+        ("thumbnailUris", (None, json.dumps({}))),
+    )
+    r = scraper.session.post(
+        f'{scraper.host}{scraper.tableauData["vizql_root"]}/sessions/{scraper.tableauData["sessionid"]}/commands/tabsrv/export-crosstab-server-dialog',
+        files=payload,
+        verify=scraper.verify
+    )
+    scraper.lastActionTime = time.time()
+    return r.json()
+
+
+def exportCrosstabToCsvServer(scraper, sheetId):
+    delayExecution(scraper)
+    payload = (
+        ("sheetdocId", (None, sheetId)),
+        ("useTabs", (None, "true")),
+        ("sendNotifications", (None, "true")),
+    )
+    r = scraper.session.post(
+        f'{scraper.host}{scraper.tableauData["vizql_root"]}/sessions/{scraper.tableauData["sessionid"]}/commands/tabsrv/export-crosstab-to-csvserver',
+        files=payload,
+        verify=scraper.verify
+    )
+    scraper.lastActionTime = time.time()
+    return r.json()
+
+
+def downloadCrossTabData(scraper, resultKey):
+    r = scraper.session.get(
+        f'{scraper.host}{scraper.tableauData["vizql_root"]}/tempfile/sessions/{scraper.tableauData["sessionid"]}/',
+        params={
+            "key": resultKey,
+            "keepfile": "yes",
+            "attachment": "yes"
+        },
+        verify=scraper.verify)
+    scraper.lastActionTime = time.time()
+    return r.content.decode('utf-16')
+
+
 def setActiveStoryPoint(scraper, storyBoard, storyPointId):
     delayExecution(scraper)
     payload = (

@@ -1422,6 +1422,56 @@ Franklin;0;0;0;North Country;Faux;Faux;18/06/2021;0;North Country;44.343929;-74.
 Albany;5;2;11;Capital Region;Vrai;Vrai;18/06/2021;0;Capital Region;42.65337;-73.773834;Albany Medical Center Hospital;Albany Medical Center;;1;Capital District Regional Office;6/17/2021;Rest of State;249;1457
 """
 
+tableauExportCrosstabServerDialog = """
+{
+	"vqlCmdResponse": {
+		"layoutStatus": {
+			"applicationPresModel": {
+				"presentationLayerNotification": [{
+					"presModelHolder": {
+						"genExportCrosstabOptionsDialogPresModel": {
+							"thumbnailSheetPickerItems": [{
+								"thumbnailUri": "",
+								"sheetName": "[WORKSHEET1]",
+								"sheetdocId": "{XXXXX-XXXX-XXXX-XXXX-XXXXXXXXXX}"
+							}]
+						}
+					}
+				}],
+				"dashboardObjectsLibrary": []
+			},
+			"isWorldNew": false,
+			"guid": ""
+		}
+	}
+}
+"""
+
+tableauExportCrosstabToCsvServer = """
+{
+	"vqlCmdResponse": {
+		"layoutStatus": {
+			"applicationPresModel": {
+				"presentationLayerNotification": [{
+					"presModelHolder": {
+						"genExportFilePresModel": {
+							"resultKey": "3224154322"
+						}
+					}
+				}]
+			}
+		}
+	}
+}
+"""
+
+tableauCrossTabData = """"
+Header1 	Header2 	
+1	A 	
+2	B 	
+3	C 	
+"""
+
 tableauStoryPointsInfoNav = {
     'sheetName': '[WORKSHEET1]',
     'worldUpdate': {

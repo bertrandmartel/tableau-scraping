@@ -209,6 +209,27 @@ The prefix values, I've encountered are: `vud` and `vudcsv`. The default is `vud
 
 [Try this on repl.it](https://replit.com/@bertrandmartel/TableauCovidWyomingCsv)
 
+#### Download Cross Tab data
+
+For Tableau URL that have the crosstab feature enabled, you can download the crosstab using:
+
+```python
+from tableauscraper import TableauScraper as TS
+
+url = "https://tableau.soa.org/t/soa-public/views/USPostLevelTermMortalityExperienceInteractiveTool/DataTable2"
+
+ts = TS()
+ts.loads(url)
+wb = ts.getWorkbook()
+
+wb.setParameter(inputName="Count or Amount", value="Amount")
+
+data = wb.getCrossTabData(
+    sheetName="Data Table 2 - Premium Jump & PLT Duration")
+
+print(data)
+```
+
 #### Go to sheet
 
 Get list of all sheets with subsheets visible or invisible, ability to send a go-to-sheet command (dashboar button) :

@@ -14,6 +14,9 @@ import requests
 from tests.python.test_common import tableauDownloadableSummaryData
 from tests.python.test_common import tableauDownloadableUnderlyingData
 from tests.python.test_common import tableauDownloadableCsvData
+from tests.python.test_common import tableauExportCrosstabServerDialog
+from tests.python.test_common import tableauExportCrosstabToCsvServer
+from tests.python.test_common import tableauCrossTabData
 
 
 def test_getTableauViz(httpserver):
@@ -198,6 +201,48 @@ def test_levelDrill(httpserver, mocker: MockerFixture):
     result = api.levelDrill(scraper=ts, worksheetName="",
                             drillDown=True)
     assert result == vqlCmdResponse
+
+
+def test_export_crosstab_server_dialog(httpserver, mocker: MockerFixture):
+    mocker.patch(
+        "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
+    )
+    mocker.patch("tableauscraper.api.getTableauData",
+                 return_value=tableauDataResponse)
+    ts = TS()
+    ts.loads(fakeUri)
+    httpserver.serve_content(json.dumps(tableauExportCrosstabServerDialog))
+    ts.host = httpserver.url + "/"
+    result = api.exportCrosstabServerDialog(scraper=ts)
+    assert result == tableauExportCrosstabServerDialog
+
+
+def test_tableau_export_crosstab_to_csv_server(httpserver, mocker: MockerFixture):
+    mocker.patch(
+        "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
+    )
+    mocker.patch("tableauscraper.api.getTableauData",
+                 return_value=tableauDataResponse)
+    ts = TS()
+    ts.loads(fakeUri)
+    httpserver.serve_content(json.dumps(tableauExportCrosstabToCsvServer))
+    ts.host = httpserver.url + "/"
+    result = api.exportCrosstabToCsvServer(scraper=ts, sheetId="xxx")
+    assert result == tableauExportCrosstabToCsvServer
+
+
+def test_tableau_downloadable_csv_data(httpserver, mocker: MockerFixture):
+    mocker.patch(
+        "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
+    )
+    mocker.patch("tableauscraper.api.getTableauData",
+                 return_value=tableauDataResponse)
+    ts = TS()
+    ts.loads(fakeUri)
+    httpserver.serve_content(tableauCrossTabData.encode("utf-16"))
+    ts.host = httpserver.url + "/"
+    result = api.downloadCrossTabData(scraper=ts, resultKey="xxx")
+    assert result == tableauCrossTabData
 
 
 def test_delayExcution():

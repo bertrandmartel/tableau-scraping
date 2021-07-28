@@ -165,6 +165,30 @@ class TableauWorkbook:
             print("no viewIds found in json info")
         return None
 
+    def getCrossTabData(self, sheetName):
+        r = tableauscraper.api.exportCrosstabServerDialog(self._scraper)
+
+        sheets = [
+            t for t in r["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]["presentationLayerNotification"][
+                0]["presModelHolder"]["genExportCrosstabOptionsDialogPresModel"]["thumbnailSheetPickerItems"]
+            if t["sheetName"] == sheetName
+        ]
+        if len(sheets) == 0:
+            self._scraper.logger.warning(
+                f"sheet {sheetName} not found in API result")
+            return None
+
+        sheetId = sheets[0]["sheetdocId"]
+        r = tableauscraper.api.exportCrosstabToCsvServer(
+            self._scraper, sheetId)
+        resultKey = r[
+            "vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]["presentationLayerNotification"][0]["presModelHolder"]["genExportFilePresModel"]["resultKey"]
+        r = tableauscraper.api.downloadCrossTabData(self._scraper, resultKey)
+        try:
+            return pd.read_csv(io.StringIO(r), sep='\t')
+        except (ParserError, EmptyDataError):
+            return None
+
     def getStoryPoints(self):
         return tableauscraper.utils.getStoryPointsFromInfo(self._originalInfo)
 

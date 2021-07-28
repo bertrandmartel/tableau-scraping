@@ -15,6 +15,10 @@ from tests.python.test_common import (
 from tests.python.test_common import storyPointsCmdResponse as storyPointsCmdResponse
 from tests.python.test_common import tableauDownloadableCsvData as tableauDownloadableCsvData
 from tests.python.test_common import tableauDataResponseWithStoryPointsNav
+from tests.python.test_common import tableauCrossTabData
+from tests.python.test_common import tableauExportCrosstabServerDialog
+from tests.python.test_common import tableauExportCrosstabToCsvServer
+import json
 
 
 def test_TableauWorkbook(mocker: MockerFixture) -> None:
@@ -278,3 +282,25 @@ def test_goToStoryPoint(mocker: MockerFixture) -> None:
     storyWb = wb.goToStoryPoint(storyPointId=1)
     assert type(storyWb) is TableauWorkbook
     assert len(storyWb.worksheets) == 1
+
+
+# def test_getCrossTabData(mocker: MockerFixture) -> None:
+#     mocker.patch(
+#         "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
+#     )
+#     mocker.patch("tableauscraper.api.getTableauData",
+#                  return_value=tableauDataResponse)
+#     mocker.patch("tableauscraper.api.exportCrosstabServerDialog",
+#                  return_value=json.loads(tableauExportCrosstabServerDialog))
+#     mocker.patch("tableauscraper.api.exportCrosstabToCsvServer",
+#                  return_value=json.loads(tableauExportCrosstabToCsvServer))
+#     mocker.patch("tableauscraper.api.downloadCrossTabData",
+#                  return_value=tableauCrossTabData)
+
+#     ts = TS()
+#     ts.loads(fakeUri)
+#     wb = ts.getWorkbook()
+
+#     data = wb.getCrossTabData(sheetName="[WORKSHEET1]")
+#     assert data.shape[0] == 3
+#     assert data.shape[1] == 1
