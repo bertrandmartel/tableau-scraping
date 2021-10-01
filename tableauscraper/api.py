@@ -171,6 +171,29 @@ def filter(scraper, worksheetName, globalFieldName, selection):
         raise APIResponseException(message=r.text)
 
 
+def dashboardFilter(scraper, columnName, selection):
+    delayExecution(scraper)
+    payload = (
+        ("dashboard", (None, scraper.dashboard)),
+        ("qualifiedFieldCaption", (None, columnName)),
+        ("exclude", (None, "false")),
+        ("filterUpdateType", (None, "filter-replace")),
+        ("filterValues", (None, json.dumps(selection,
+                                           ensure_ascii=False)))
+    )
+
+    r = scraper.session.post(
+        f'{scraper.host}{scraper.tableauData["vizql_root"]}/sessions/{scraper.tableauData["sessionid"]}/commands/tabdoc/dashboard-categorical-filter',
+        files=payload,
+        verify=scraper.verify
+    )
+    scraper.lastActionTime = time.time()
+    try:
+        return r.json()
+    except ValueError:
+        raise APIResponseException(message=r.text)
+
+
 def setParameterValue(scraper, parameterName, value):
     delayExecution(scraper)
     payload = (
