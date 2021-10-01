@@ -274,6 +274,7 @@ for t in nycAdults.worksheets:
 - https://replit.com/@bertrandmartel/TableauCovid19CbreResidentMigration
 - https://replit.com/@bertrandmartel/TableauEarthquakeStorypoint
 - https://replit.com/@bertrandmartel/TableauCovid19AzdhsPeopleTested
+- https://replit.com/@bertrandmartel/TableauCovidDDCMOPH
 
 ### Server side rendering
 
