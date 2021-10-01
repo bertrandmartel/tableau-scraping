@@ -133,6 +133,8 @@ print(countyWs.data)
 
 [Try this on repl.it](https://repl.it/@bertrandmartel/TableauFilter)
 
+You can specify `dashboardFilter=True` in order to use `dashboard-categorical-filter` API instead of `categorical-filter-by-index` API
+
 #### Story points
 
 Some Tableau dashboard have storypoints where you can navigate. To list the storypoints and go to a specific storypoints:
