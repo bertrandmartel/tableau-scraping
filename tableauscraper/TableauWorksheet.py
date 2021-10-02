@@ -92,7 +92,7 @@ class TableauWorksheet:
                 self._originalInfo)
         return tableauscraper.utils.listFilters(presModel, self.name)
 
-    def setFilter(self, columnName, value, dashboardFilter=False):
+    def setFilter(self, columnName, value, dashboardFilter=False, membershipTarget=True):
         try:
             filter = [
                 {
@@ -112,7 +112,7 @@ class TableauWorksheet:
                     self._scraper, columnName, [value])
             else:
                 r = tableauscraper.api.filter(
-                    self._scraper, self.name, filter[0]["globalFieldName"], [filter[0]["index"]])
+                    self._scraper, self.name, filter[0]["globalFieldName"], [filter[0]["index"]], membershipTarget)
             self.updateFullData(r)
             return tableauscraper.dashboard.getWorksheetsCmdResponse(self._scraper, r)
         except ValueError as e:

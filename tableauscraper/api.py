@@ -145,7 +145,7 @@ def select(scraper, worksheetName, selection):
         raise APIResponseException(message=r.text)
 
 
-def filter(scraper, worksheetName, globalFieldName, selection):
+def filter(scraper, worksheetName, globalFieldName, selection, membershipTarget=True):
     delayExecution(scraper)
     payload = (
         (
@@ -155,10 +155,11 @@ def filter(scraper, worksheetName, globalFieldName, selection):
             }))
         ),
         ("globalFieldName", (None, globalFieldName)),
-        ("membershipTarget", (None, "filter")),
         ("filterIndices", (None, json.dumps(selection))),
         ("filterUpdateType", (None, "filter-replace"))
     )
+    if membershipTarget:
+        payload = (("membershipTarget", (None, "filter")),) + payload
     r = scraper.session.post(
         f'{scraper.host}{scraper.tableauData["vizql_root"]}/sessions/{scraper.tableauData["sessionid"]}/commands/tabdoc/categorical-filter-by-index',
         files=payload,
