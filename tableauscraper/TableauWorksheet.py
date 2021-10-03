@@ -130,7 +130,7 @@ class TableauWorksheet:
                         selectedIndex.append(idx)
             if dashboardFilter:
                 r = tableauscraper.api.dashboardFilter(
-                    self._scraper, columnName, [value])
+                    self._scraper, columnName, [value] if not isinstance(value, list) else value)
             else:
                 r = tableauscraper.api.filter(
                     self._scraper,
