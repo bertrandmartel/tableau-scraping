@@ -133,7 +133,15 @@ print(countyWs.data)
 
 [Try this on repl.it](https://repl.it/@bertrandmartel/TableauFilter)
 
-You can specify `dashboardFilter=True` in order to use `dashboard-categorical-filter` API instead of `categorical-filter-by-index` API
+#### More advanced filtering options
+
+- You can specify `dashboardFilter=True` in order to use `dashboard-categorical-filter` API instead of `categorical-filter-by-index` API ([related](https://github.com/bertrandmartel/tableau-scraping/issues/26))
+
+- You can discard `membershipTarget` property from being sent in `setFilter` using `setFilter('COLUMN','VALUE', membershipTarget=False)` ([related](https://github.com/bertrandmartel/tableau-scraping/issues/29))
+
+- You can specify multiple filters for filters that enable that feature using `setFilter('COLUMN', ['VALUE1','VALUE2'])`
+
+- You can specify a "filter-delta" filter type adding the parameter `filterDelta=True` like the following `setFilter('COLUMN','VALUE', filterDelta=True)`. This will discard all filters and add the one corresponding to `['VALUE']` in this case. This is helpful when all or some filters are selected by default, and you want to unselect them. The default behaviour (`filterDelta=False`) is `filter-replace` which sometimes doesn't work when filter multi-selection is possible in the dashboard.
 
 #### Story points
 
