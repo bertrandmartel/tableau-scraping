@@ -553,7 +553,26 @@ def getParameterControlVqlResponse(presModel):
     ]
 
 
-def listFilters(presModel, worksheetName):
+def getSelectedFilters(presModel, worksheetName):
+    zones = presModel["workbookPresModel"]["dashboardPresModel"]["zones"]
+    return [
+        {
+            "fn": zones[z]["presModelHolder"]["quickFilterDisplay"]["quickFilter"]["categoricalFilter"]["fn"],
+            "columnFullNames": zones[z]["presModelHolder"]["quickFilterDisplay"]["quickFilter"]["categoricalFilter"]["columnFullNames"],
+            "domainTables":zones[z]["presModelHolder"]["quickFilterDisplay"]["quickFilter"]["categoricalFilter"]["domainTables"],
+        }
+        for z in list(zones)
+        if zones[z] is not None
+        and ("worksheet" in zones[z])
+        and ("presModelHolder" in zones[z])
+        and ("quickFilterDisplay" in zones[z]["presModelHolder"])
+        and ("quickFilter" in zones[z]["presModelHolder"]["quickFilterDisplay"])
+        and ("categoricalFilter" in zones[z]["presModelHolder"]["quickFilterDisplay"]["quickFilter"])
+        and zones[z]["worksheet"] == worksheetName
+    ]
+
+
+def listFilters(presModel, worksheetName, selectedFilters):
     zones = presModel["workbookPresModel"]["dashboardPresModel"]["zones"]
     filters = [
         json.loads(zones[z]["presModelHolder"]["visual"]["filtersJson"])
@@ -584,7 +603,8 @@ def listFilters(presModel, worksheetName):
                         "column": c[0],
                         "ordinal": c[2],
                         "values": r["values"],
-                        "globalFieldName": f"[{c[1][0]}].[{c[1][1]}]"
+                        "globalFieldName": f"[{c[1][0]}].[{c[1][1]}]",
+                        "selection": [it for it in selectedFilters if it["fn"] == f"[{c[1][0]}].[{c[1][1]}]"]
                     })
         return entries
     return []

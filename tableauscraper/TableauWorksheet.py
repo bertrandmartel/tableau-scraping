@@ -87,10 +87,18 @@ class TableauWorksheet:
     def getFilters(self) -> List[str]:
         if self.cmdResponse:
             presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
+            selectedFilters = tableauscraper.utils.getSelectedFilters(
+                presModel,
+                self.name
+            )
         else:
             presModel = tableauscraper.utils.getPresModelVizInfo(
                 self._originalInfo)
-        return tableauscraper.utils.listFilters(presModel, self.name)
+            selectedFilters = tableauscraper.utils.getSelectedFilters(
+                tableauscraper.utils.getPresModelVizInfo(self._originalInfo),
+                self.name
+            )
+        return tableauscraper.utils.listFilters(presModel, self.name, selectedFilters)
 
     def setFilter(self, columnName, value, dashboardFilter=False, membershipTarget=True):
         try:
