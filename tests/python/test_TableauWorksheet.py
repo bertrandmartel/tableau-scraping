@@ -308,7 +308,8 @@ def test_TableauWorkbook_getFilters(mocker: MockerFixture) -> None:
             "column": "FILTER_1",
             "ordinal": 0,
             "values": ["FITLTER_VALUE_1", "FITLTER_VALUE_2", "FITLTER_VALUE_3"],
-            "globalFieldName": "[FILTER].[FILTER_1]"
+            "globalFieldName": "[FILTER].[FILTER_1]",
+            "selection": []
         },
     ]
 
