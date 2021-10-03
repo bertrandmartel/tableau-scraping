@@ -105,7 +105,14 @@ class TableauWorksheet:
             filter = [
                 {
                     "globalFieldName": t["globalFieldName"],
-                    "index": t["values"].index(value) + t["ordinal"],
+                    "indices": (
+                        ([t["values"].index(value) + t["ordinal"]])
+                        if not isinstance(value, list)
+                        else [
+                            t["values"].index(it) + t["ordinal"]
+                            for it in value
+                        ]
+                    ),
                     "selection": t["selection"]
                 }
                 for t in self.getFilters()
@@ -129,7 +136,7 @@ class TableauWorksheet:
                     self._scraper,
                     worksheetName=self.name,
                     globalFieldName=filter[0]["globalFieldName"],
-                    selection=[filter[0]["index"]],
+                    selection=filter[0]["indices"],
                     selectionToRemove=[] if not filterDelta else selectedIndex,
                     membershipTarget=membershipTarget,
                     filterDelta=filterDelta
