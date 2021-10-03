@@ -100,12 +100,13 @@ class TableauWorksheet:
             )
         return tableauscraper.utils.listFilters(presModel, self.name, selectedFilters)
 
-    def setFilter(self, columnName, value, dashboardFilter=False, membershipTarget=True):
+    def setFilter(self, columnName, value, dashboardFilter=False, membershipTarget=True, filterDelta=False):
         try:
             filter = [
                 {
                     "globalFieldName": t["globalFieldName"],
-                    "index": t["values"].index(value) + t["ordinal"]
+                    "index": t["values"].index(value) + t["ordinal"],
+                    "selection": t["selection"]
                 }
                 for t in self.getFilters()
                 if t["column"] == columnName
@@ -115,12 +116,24 @@ class TableauWorksheet:
                 return tableauscraper.TableauWorkbook(
                     scraper=self._scraper, originalData={}, originalInfo={}, data=[]
                 )
+            selectedIndex = []
+            if (len(filter[0]["selection"]) > 0) and ("domainTables" in filter[0]["selection"][0]):
+                for idx, val in enumerate(filter[0]["selection"][0]["domainTables"]):
+                    if ("isSelected" in val) and val["isSelected"]:
+                        selectedIndex.append(idx)
             if dashboardFilter:
                 r = tableauscraper.api.dashboardFilter(
                     self._scraper, columnName, [value])
             else:
                 r = tableauscraper.api.filter(
-                    self._scraper, self.name, filter[0]["globalFieldName"], [filter[0]["index"]], membershipTarget)
+                    self._scraper,
+                    worksheetName=self.name,
+                    globalFieldName=filter[0]["globalFieldName"],
+                    selection=[filter[0]["index"]],
+                    selectionToRemove=[] if not filterDelta else selectedIndex,
+                    membershipTarget=membershipTarget,
+                    filterDelta=filterDelta
+                )
             self.updateFullData(r)
             return tableauscraper.dashboard.getWorksheetsCmdResponse(self._scraper, r)
         except ValueError as e:
