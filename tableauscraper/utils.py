@@ -320,10 +320,11 @@ def getDataFullCmdResponse(presModel, originSegments, dataSegments={}):
     originSegmentscp = copy.deepcopy(originSegments)
     dataColumns = []
     for d in list(originSegmentscp):
-        dataColumns.extend(originSegmentscp[d]["dataColumns"])
+        if (originSegmentscp[d] is not None):
+            dataColumns.extend(originSegmentscp[d]["dataColumns"])
 
     for d in list(dataSegmentscp):
-        if d not in originSegments:
+        if (d not in originSegments) and (dataSegmentscp[d] is not None):
             dataColumns.extend(dataSegmentscp[d]["dataColumns"])
 
     dataFull = {}
