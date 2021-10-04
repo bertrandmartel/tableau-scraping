@@ -169,13 +169,24 @@ class TableauWorksheet:
     def getSelectableItems(self) -> List[str]:
         if self.cmdResponse:
             presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
-            return [
+            selectableItems = [
                 {
                     "column": t["fieldCaption"],
                     "values": next(iter([y for y in tableauscraper.utils.getData(self._data_dictionnary, [t]).values()]), [])
                 }
                 for t in tableauscraper.utils.getIndicesInfoVqlResponse(presModel, self.name, noSelectFilter=True)
             ]
+            if len(selectableItems) == 0:
+                indicesInfo = tableauscraper.utils.getIndicesInfoStoryPoint(
+                    presModel, self.name, noSelectFilter=True)
+                return [
+                    {
+                        "column": t["fieldCaption"],
+                        "values": next(iter([y for y in tableauscraper.utils.getData(self._data_dictionnary, [t]).values()]), [])
+                    }
+                    for t in indicesInfo
+                ]
+            return selectableItems
         else:
             presModel = tableauscraper.utils.getPresModelVizData(
                 self._originalData)
@@ -209,7 +220,15 @@ class TableauWorksheet:
                 if t["fieldCaption"] == column
             ]
             if len(columnObj) == 0:
-                return []
+                indicesInfo = tableauscraper.utils.getIndicesInfoStoryPoint(
+                    presModel, self.name, noSelectFilter=True)
+                columnObj = [
+                    t
+                    for t in indicesInfo
+                    if t["fieldCaption"] == column
+                ]
+                if len(columnObj) == 0:
+                    return []
             frameData = tableauscraper.utils.getData(
                 self._data_dictionnary, [columnObj[0]]
             )
