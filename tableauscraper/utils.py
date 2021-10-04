@@ -556,7 +556,7 @@ def getParameterControlVqlResponse(presModel):
 
 def getSelectedFilters(presModel, worksheetName):
     zones = presModel["workbookPresModel"]["dashboardPresModel"]["zones"]
-    return [
+    selectedFilters = [
         {
             "fn": zones[z]["presModelHolder"]["quickFilterDisplay"]["quickFilter"]["categoricalFilter"]["fn"],
             "columnFullNames": zones[z]["presModelHolder"]["quickFilterDisplay"]["quickFilter"]["categoricalFilter"]["columnFullNames"],
@@ -571,6 +571,39 @@ def getSelectedFilters(presModel, worksheetName):
         and ("categoricalFilter" in zones[z]["presModelHolder"]["quickFilterDisplay"]["quickFilter"])
         and zones[z]["worksheet"] == worksheetName
     ]
+    if len(selectedFilters) == 0:
+        storypoints = [
+            zones[z]["presModelHolder"]["flipboard"]["storyPoints"]
+            for z in list(zones)
+            if zones[z] is not None
+            and ("presModelHolder" in zones[z])
+            and ("flipboard" in zones[z]["presModelHolder"])
+            and ("storyPoints" in zones[z]["presModelHolder"]["flipboard"])
+        ]
+        if len(storypoints) > 0:
+            storypoint = storypoints[0]
+            keys = list(storypoint.keys())
+            selectedFilters = []
+            for key in keys:
+                zones = storypoint[key]["dashboardPresModel"]["zones"]
+                selectedFilters.extend([
+                    {
+                        "fn": zones[z]["presModelHolder"]["quickFilterDisplay"]["quickFilter"]["categoricalFilter"]["fn"],
+                        "columnFullNames": zones[z]["presModelHolder"]["quickFilterDisplay"]["quickFilter"]["categoricalFilter"]["columnFullNames"],
+                        "domainTables":zones[z]["presModelHolder"]["quickFilterDisplay"]["quickFilter"]["categoricalFilter"]["domainTables"],
+                    }
+                    for z in list(zones)
+                    if zones[z] is not None
+                    and ("worksheet" in zones[z])
+                    and ("presModelHolder" in zones[z])
+                    and ("quickFilterDisplay" in zones[z]["presModelHolder"])
+                    and ("quickFilter" in zones[z]["presModelHolder"]["quickFilterDisplay"])
+                    and ("categoricalFilter" in zones[z]["presModelHolder"]["quickFilterDisplay"]["quickFilter"])
+                    and zones[z]["worksheet"] == worksheetName
+                ])
+            return selectedFilters
+    else:
+        return selectedFilters
 
 
 def listFilters(presModel, worksheetName, selectedFilters):
@@ -610,6 +643,58 @@ def listFilters(presModel, worksheetName, selectedFilters):
                         "selectionAlt": [it for it in selectedFilters if it["fn"] == f"[{c[1][0]}].[{c[1][1]}]"]
                     })
         return entries
+    else:
+        storypoints = [
+            zones[z]["presModelHolder"]["flipboard"]["storyPoints"]
+            for z in list(zones)
+            if zones[z] is not None
+            and ("presModelHolder" in zones[z])
+            and ("flipboard" in zones[z]["presModelHolder"])
+            and ("storyPoints" in zones[z]["presModelHolder"]["flipboard"])
+        ]
+        if len(storypoints) > 0:
+            storypoint = storypoints[0]
+            keys = list(storypoint.keys())
+            filtersList = []
+            for key in keys:
+                zones = storypoint[key]["dashboardPresModel"]["zones"]
+                filters = [
+                    json.loads(zones[z]["presModelHolder"]
+                               ["visual"]["filtersJson"])
+                    for z in list(zones)
+                    if zones[z] is not None
+                    and ("worksheet" in zones[z])
+                    and ("presModelHolder" in zones[z])
+                    and ("visual" in zones[z]["presModelHolder"])
+                    and ("filtersJson" in zones[z]["presModelHolder"]["visual"])
+                    and zones[z]["worksheet"] == worksheetName
+                ]
+                if len(filters) != 0:
+                    entries = []
+                    for arr in filters:
+                        result = [
+                            {
+                                "columns": [(z["caption"], z["name"], z["ordinal"]) for z in t["table"]["schema"]],
+                                "values": [z["t"][0]["v"] for z in t["table"]["tuples"] if "t" in z and len(z["t"]) != 0],
+                                "selection": [z["t"][0]["v"] for z in t["table"]["tuples"] if ("t" in z) and (len(z["t"]) != 0) and ("s" in z) and (z["s"] == True)]
+                            }
+                            for t in arr
+                            if "table" in t
+                            and "schema" in t["table"]
+                            and "tuples" in t["table"]
+                        ]
+                        for r in result:
+                            for c in r["columns"]:
+                                entries.append({
+                                    "column": c[0],
+                                    "ordinal": c[2],
+                                    "values": r["values"],
+                                    "globalFieldName": f"[{c[1][0]}].[{c[1][1]}]",
+                                    "selection": r["selection"],
+                                    "selectionAlt": [it for it in selectedFilters if it["fn"] == f"[{c[1][0]}].[{c[1][1]}]"]
+                                })
+                    filtersList.extend(entries)
+            return filtersList
     return []
 
 
