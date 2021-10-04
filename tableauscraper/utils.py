@@ -613,5 +613,8 @@ def listFilters(presModel, worksheetName, selectedFilters):
 
 
 def getTooltipText(tooltipServerCmdResponse):
-    return json.loads(
-        tooltipServerCmdResponse["vqlCmdResponse"]["cmdResultList"][0]["commandReturn"]["tooltipText"])["htmlTooltip"]
+    tooltipText = tooltipServerCmdResponse["vqlCmdResponse"]["cmdResultList"][0]["commandReturn"]["tooltipText"]
+    if tooltipText != "":
+        return json.loads(tooltipText)["htmlTooltip"]
+    else:
+        return ""
