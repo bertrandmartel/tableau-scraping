@@ -872,6 +872,22 @@ storyPointsCmdResponse = {
     }
 }
 
+tooltipCmdResponse = {
+    "vqlCmdResponse": {
+        "cmdResultList": [{
+            "commandName": "tabsrv:render-tooltip-server",
+            "commandReturn": {
+                "tooltipText": json.dumps({
+                    "htmlTooltip": "<div></div>"
+                })
+            }
+        }],
+        "layoutStatus": {
+
+        }
+    }
+}
+
 storyPointsInfo = {
     "sheetName": "[SHEET_NAME]",
     "worldUpdate": {

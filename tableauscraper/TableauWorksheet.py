@@ -113,7 +113,10 @@ class TableauWorksheet:
                             for it in value
                         ]
                     ),
-                    "selection": t["selection"]
+                    "selection": t["selection"],
+                    "selectionAlt": t["selectionAlt"],
+                    "values": t["values"],
+                    "ordinal": t["ordinal"]
                 }
                 for t in self.getFilters()
                 if t["column"] == columnName
@@ -124,10 +127,19 @@ class TableauWorksheet:
                     scraper=self._scraper, originalData={}, originalInfo={}, data=[]
                 )
             selectedIndex = []
-            if (len(filter[0]["selection"]) > 0) and ("domainTables" in filter[0]["selection"][0]):
-                for idx, val in enumerate(filter[0]["selection"][0]["domainTables"]):
-                    if ("isSelected" in val) and val["isSelected"]:
+
+            # get selection from filterJson
+            if (len(filter[0]["selection"]) > 0):
+                for idx, val in enumerate(filter[0]["values"]):
+                    if val in filter[0]["selection"]:
+                        selectedIndex.append(idx + filter[0]["ordinal"])
+
+            # get selection from quickFilter
+            if (len(filter[0]["selectionAlt"]) > 0) and ("domainTables" in filter[0]["selectionAlt"][0]):
+                for idx, val in enumerate(filter[0]["selectionAlt"][0]["domainTables"]):
+                    if ("isSelected" in val) and val["isSelected"] and (idx not in selectedIndex):
                         selectedIndex.append(idx)
+
             if dashboardFilter:
                 r = tableauscraper.api.dashboardFilter(
                     self._scraper, columnName, [value] if not isinstance(value, list) else value)
@@ -303,3 +315,8 @@ class TableauWorksheet:
             self._scraper, self.name, drillDown, position)
         self.updateFullData(r)
         return tableauscraper.dashboard.getWorksheetsCmdResponse(self._scraper, r)
+
+    def renderTooltip(self, x, y):
+        r = tableauscraper.api.renderTooltipServer(
+            self._scraper, self.name, x, y)
+        return tableauscraper.utils.getTooltipText(r)

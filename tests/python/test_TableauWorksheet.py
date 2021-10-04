@@ -18,6 +18,7 @@ from tests.python.test_common import tableauDataResponse as tableauDataResponse
 from tests.python.test_common import fakeUri as fakeUri
 from tests.python.test_common import emptyValues as emptyValues
 from tests.python.test_common import vqlCmdResponseDictionaryEmpty as vqlCmdResponseDictionaryEmpty
+from tests.python.test_common import tooltipCmdResponse as tooltipCmdResponse
 
 from tests.python.test_common import dataWithoutPresModelWithDictionary as dataWithoutPresModelWithDictionary
 from tests.python.test_common import storyPointsInfo as storyPointsInfo
@@ -309,7 +310,8 @@ def test_TableauWorkbook_getFilters(mocker: MockerFixture) -> None:
             "ordinal": 0,
             "values": ["FITLTER_VALUE_1", "FITLTER_VALUE_2", "FITLTER_VALUE_3"],
             "globalFieldName": "[FILTER].[FILTER_1]",
-            "selection": []
+            "selection": [],
+            "selectionAlt": []
         },
     ]
 
@@ -450,3 +452,22 @@ def test_levelDrill(mocker: MockerFixture) -> None:
     assert type(wb) is TableauWorkbook
     assert len(wb.worksheets) == 1
     assert wb.worksheets[0].name == "[WORKSHEET1]"
+
+
+def test_TableauWorksheet_renderTooltip(mocker: MockerFixture) -> None:
+    mocker.patch(
+        "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
+    )
+    mocker.patch("tableauscraper.api.getTableauData",
+                 return_value=tableauDataResponse)
+    mocker.patch("tableauscraper.api.renderTooltipServer",
+                 return_value=tooltipCmdResponse)
+    ts = TS()
+    ts.loads(fakeUri)
+    wb = ts.getWorkbook()
+    ws = wb.getWorksheet("[WORKSHEET1]")
+
+    tableauDataFrameGroup = ws.renderTooltip(
+        x=0, y=0
+    )
+    assert tableauDataFrameGroup == "<div></div>"

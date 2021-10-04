@@ -307,6 +307,33 @@ def levelDrill(scraper, worksheetName, drillDown, position=0):
     return r.json()
 
 
+def renderTooltipServer(scraper, worksheetName, x, y):
+    delayExecution(scraper)
+    payload = (
+        ("worksheet", (None, worksheetName)),
+        ("dashboard", (None, scraper.dashboard)),
+        ("vizRegionRect", (None, json.dumps({
+            "r": "viz",
+            "x": x,
+            "y": y,
+            "w": 0,
+            "h": 0,
+            "fieldVector": None
+        }))),
+        ("allowHoverActions", (None, "true")),
+        ("allowPromptText", (None, "true")),
+        ("allowWork", (None, "false")),
+        ("useInlineImages", (None, "true")),
+    )
+    r = scraper.session.post(
+        f'{scraper.host}{scraper.tableauData["vizql_root"]}/sessions/{scraper.tableauData["sessionid"]}/commands/tabsrv/render-tooltip-server',
+        files=payload,
+        verify=scraper.verify
+    )
+    scraper.lastActionTime = time.time()
+    return r.json()
+
+
 def delayExecution(scraper):
     if scraper.lastActionTime != 0:
         currentTime = time.time()

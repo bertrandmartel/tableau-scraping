@@ -124,6 +124,21 @@ def test_setParameterValue(httpserver, mocker: MockerFixture):
     assert result == vqlCmdResponse
 
 
+def test_renderTooltipServer(httpserver, mocker: MockerFixture):
+    mocker.patch(
+        "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
+    )
+    mocker.patch("tableauscraper.api.getTableauData",
+                 return_value=tableauDataResponse)
+    ts = TS()
+    ts.loads(fakeUri)
+    httpserver.serve_content(json.dumps(vqlCmdResponse))
+    ts.host = httpserver.url + "/"
+    result = api.renderTooltipServer(
+        scraper=ts, worksheetName="[WORKSHEET1]", x=0, y=0)
+    assert result == vqlCmdResponse
+
+
 def test_getDownloadableData(httpserver, mocker: MockerFixture):
     mocker.patch(
         "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse

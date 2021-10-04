@@ -590,7 +590,8 @@ def listFilters(presModel, worksheetName, selectedFilters):
             result = [
                 {
                     "columns": [(z["caption"], z["name"], z["ordinal"]) for z in t["table"]["schema"]],
-                    "values": [z["t"][0]["v"] for z in t["table"]["tuples"] if "t" in z and len(z["t"]) != 0]
+                    "values": [z["t"][0]["v"] for z in t["table"]["tuples"] if "t" in z and len(z["t"]) != 0],
+                    "selection": [z["t"][0]["v"] for z in t["table"]["tuples"] if ("t" in z) and (len(z["t"]) != 0) and ("s" in z) and (z["s"] == True)]
                 }
                 for t in arr
                 if "table" in t
@@ -604,7 +605,13 @@ def listFilters(presModel, worksheetName, selectedFilters):
                         "ordinal": c[2],
                         "values": r["values"],
                         "globalFieldName": f"[{c[1][0]}].[{c[1][1]}]",
-                        "selection": [it for it in selectedFilters if it["fn"] == f"[{c[1][0]}].[{c[1][1]}]"]
+                        "selection": r["selection"],
+                        "selectionAlt": [it for it in selectedFilters if it["fn"] == f"[{c[1][0]}].[{c[1][1]}]"]
                     })
         return entries
     return []
+
+
+def getTooltipText(tooltipServerCmdResponse):
+    return json.loads(
+        tooltipServerCmdResponse["vqlCmdResponse"]["cmdResultList"][0]["commandReturn"]["tooltipText"])["htmlTooltip"]
