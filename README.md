@@ -261,6 +261,24 @@ for t in nycAdults.worksheets:
     print(t.data)  # show dataframe for this worksheet
 ```
 
+#### Render tooltip
+
+Get the tooltip html output when `render-tooltip-server` API is called. This is particularly useful when dealing with [server side rendering dashboard](https://github.com/bertrandmartel/tableau-scraping#server-side-rendering):
+
+```python
+from tableauscraper import TableauScraper as TS
+
+url = "https://public.tableau.com/views/CMI-2_0/CMI"
+
+ts = TS()
+ts.loads(url)
+workbook = ts.getWorkbook()
+ws = workbook.getWorksheet("US Map - State - CMI")
+
+tooltipHtml = ws.renderTooltip(x=387, y=196)
+print(tooltipHtml)
+```
+
 ### Sample usecases
 
 - https://replit.com/@bertrandmartel/TableauOregonCovid
@@ -291,9 +309,9 @@ for t in nycAdults.worksheets:
 
 If the tableau url you're working on is using [server side rendering](https://help.tableau.com/current/server/en-us/browser_rendering.htm), data can't be extracted as is.
 
-You can checkout if your tableau url is using server side rendering by opening chrome development console / network tab. You would notice those API calls when mouse hovering tables or maps `render-tooltip-server`:
+You can checkout if your tableau url is using server side rendering by opening chrome development console / network tab. You would notice the API calls have `renderMode` properties set to `render-mode-server`:
 
-![tooltip](https://user-images.githubusercontent.com/5183022/115800554-2642a800-a3db-11eb-9a71-e279cbc58aaf.png)
+![server side render mode](https://user-images.githubusercontent.com/5183022/135779239-8321d6a2-81b6-4ae9-8606-b20ba36a86ae.png)
 
 Server side rendering means that no data is sent to the browser. Instead, the server is rendering the tableau chart using images only and detects selection using mouse coordinates.
 
