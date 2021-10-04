@@ -23,6 +23,7 @@ class TableauWorkbook:
         self._originalInfo = originalInfo
 
     def updateFullData(self, cmdResponse):
+        # update data dictionary if present
         if (("applicationPresModel" in cmdResponse["vqlCmdResponse"]["layoutStatus"]) and
                 ("dataDictionary" in cmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"])):
             presModel = cmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
@@ -39,6 +40,20 @@ class TableauWorkbook:
         else:
             self._scraper.logger.warning(
                 f"no data dictionary present in response")
+        # update parameters if present
+        self._scraper.parameters = self.getParameters()
+        if ("applicationPresModel" in cmdResponse["vqlCmdResponse"]["layoutStatus"]):
+            presModel = cmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
+            newParameters = tableauscraper.utils.getParameterControlVqlResponse(
+                presModel)
+            newParameterscsp = copy.deepcopy(newParameters)
+            for newParam in newParameterscsp:
+                found = False
+                for param in self._scraper.parameters:
+                    if newParam["parameterName"] == param["parameterName"]:
+                        found = True
+                if not found:
+                    self._scraper.parameters.append(newParam)
 
     def getWorksheetNames(self):
         return tableauscraper.utils.getWorksheetNames(self)
@@ -64,27 +79,14 @@ class TableauWorkbook:
             )
 
     def getParameters(self):
-        if self.cmdResponse:
-            presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
-            return tableauscraper.utils.getParameterControlVqlResponse(presModel)
-        else:
-            return tableauscraper.utils.getParameterControlInput(self._originalInfo)
+        return self._scraper.parameters
 
     def setParameter(self, inputName, value):
-        parameterNames = []
-        if self.cmdResponse:
-            presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
-            parameterNames = [
-                t["parameterName"]
-                for t in tableauscraper.utils.getParameterControlVqlResponse(presModel)
-                if t["column"] == inputName
-            ]
-        else:
-            parameterNames = [
-                t["parameterName"]
-                for t in tableauscraper.utils.getParameterControlInput(self._originalInfo)
-                if t["column"] == inputName
-            ]
+        parameterNames = [
+            t["parameterName"]
+            for t in self._scraper.parameters
+            if t["column"] == inputName
+        ]
         if len(parameterNames) == 0:
             self._scraper.logger.error(f"column {inputName} not found")
             return TableauWorkbook(
