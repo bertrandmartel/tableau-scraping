@@ -743,19 +743,3 @@ def getFiltersForAllWorksheet(data, info, rootDashboard, cmdResponse=False):
                                   worksheet, selectedFilters, rootDashboard)
             filterResult[worksheet] = filters
     return filterResult
-
-
-# def getFilters(worksheetName, data, info, rootDashboard, cmdResponse=False):
-#     if cmdResponse:
-#         presModel = data["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
-#         selectedFilters = getSelectedFilters(
-#             presModel,
-#             worksheetName
-#         )
-#     else:
-#         presModel = getPresModelVizInfo(info)
-#         selectedFilters = getSelectedFilters(
-#             getPresModelVizInfo(info),
-#             worksheetName
-#         )
-#     return listFilters(presModel, worksheetName, selectedFilters, rootDashboard)
