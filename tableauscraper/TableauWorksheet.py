@@ -69,7 +69,7 @@ class TableauWorksheet:
         # update filters if present
         if ("applicationPresModel" in cmdResponse["vqlCmdResponse"]["layoutStatus"]):
             newFilters = tableauscraper.utils.getFiltersForAllWorksheet(
-                data=cmdResponse, info=None, cmdResponse=True)
+                data=cmdResponse, info=None, rootDashboard=self._scraper.dashboard, cmdResponse=True)
             newFilterscsp = copy.deepcopy(newFilters)
             for worksheet in newFilterscsp:
                 if worksheet not in self._scraper.filters:
@@ -126,7 +126,10 @@ class TableauWorksheet:
                     "selection": t["selection"],
                     "selectionAlt": t["selectionAlt"],
                     "values": t["values"],
-                    "ordinal": t["ordinal"]
+                    "ordinal": t["ordinal"],
+                    "storyboard": t["storyboard"] if "storyboard" in t else None,
+                    "storyboardId": t["storyboardId"] if "storyboardId" in t else None,
+                    "dashboard": t["dashboard"] if "dashboard" in t else self._scraper.dashboard
                 }
                 for t in self.getFilters()
                 if t["column"] == columnName
@@ -161,7 +164,10 @@ class TableauWorksheet:
                     selection=filter[0]["indices"],
                     selectionToRemove=[] if not filterDelta else selectedIndex,
                     membershipTarget=membershipTarget,
-                    filterDelta=filterDelta
+                    filterDelta=filterDelta,
+                    storyboard=filter[0]["storyboard"],
+                    storyboardId=filter[0]["storyboardId"],
+                    dashboard=filter[0]["dashboard"]
                 )
             self.updateFullData(r)
             return tableauscraper.dashboard.getWorksheetsCmdResponse(self._scraper, r)

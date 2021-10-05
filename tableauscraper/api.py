@@ -145,14 +145,19 @@ def select(scraper, worksheetName, selection):
         raise APIResponseException(message=r.text)
 
 
-def filter(scraper, worksheetName, globalFieldName, selection=[], selectionToRemove=[], membershipTarget=True, filterDelta=False):
+def filter(scraper, worksheetName, globalFieldName, dashboard, selection=[], selectionToRemove=[], membershipTarget=True, filterDelta=False, storyboard=None, storyboardId=None):
     delayExecution(scraper)
+    visualIdPresModel = {
+        "worksheet": worksheetName,
+        "dashboard": dashboard
+    }
+    if storyboard is not None:
+        visualIdPresModel["storyboard"] = storyboard
+    if storyboardId is not None:
+        visualIdPresModel["storyPointId"] = storyboardId
     payload = (
         (
-            "visualIdPresModel", (None, json.dumps({
-                "worksheet": worksheetName,
-                "dashboard": scraper.dashboard
-            }))
+            "visualIdPresModel", (None, json.dumps(visualIdPresModel))
         ),
         ("globalFieldName", (None, globalFieldName)),
         ("filterUpdateType", (None, "filter-replace" if not filterDelta else "filter-delta"))

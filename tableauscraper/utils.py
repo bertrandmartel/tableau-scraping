@@ -602,11 +602,10 @@ def getSelectedFilters(presModel, worksheetName):
                     and zones[z]["worksheet"] == worksheetName
                 ])
             return selectedFilters
-    else:
-        return selectedFilters
+    return selectedFilters
 
 
-def listFilters(presModel, worksheetName, selectedFilters):
+def listFilters(presModel, worksheetName, selectedFilters, rootDashboard):
     zones = presModel["workbookPresModel"]["dashboardPresModel"]["zones"]
     filters = [
         json.loads(zones[z]["presModelHolder"]["visual"]["filtersJson"])
@@ -657,6 +656,10 @@ def listFilters(presModel, worksheetName, selectedFilters):
             keys = list(storypoint.keys())
             filtersList = []
             for key in keys:
+                storyboard = storypoint[key]["dashboardPresModel"]["sheetPath"]["storyboard"]
+                storyboardId = storypoint[key]["dashboardPresModel"]["sheetPath"]["storyPointId"]
+                dashboard = storypoint[key]["dashboardPresModel"]["sheetPath"]["sheetName"] if storypoint[
+                    key]["dashboardPresModel"]["sheetPath"]["isDashboard"] else rootDashboard
                 zones = storypoint[key]["dashboardPresModel"]["zones"]
                 filters = [
                     json.loads(zones[z]["presModelHolder"]
@@ -691,7 +694,10 @@ def listFilters(presModel, worksheetName, selectedFilters):
                                     "values": r["values"],
                                     "globalFieldName": f"[{c[1][0]}].[{c[1][1]}]",
                                     "selection": r["selection"],
-                                    "selectionAlt": [it for it in selectedFilters if it["fn"] == f"[{c[1][0]}].[{c[1][1]}]"]
+                                    "selectionAlt": [it for it in selectedFilters if it["fn"] == f"[{c[1][0]}].[{c[1][1]}]"],
+                                    "storyboard": storyboard,
+                                    "storyboardId": storyboardId,
+                                    "dashboard": dashboard
                                 })
                     filtersList.extend(entries)
             return filtersList
@@ -706,7 +712,7 @@ def getTooltipText(tooltipServerCmdResponse):
         return ""
 
 
-def getFiltersForAllWorksheet(data, info, cmdResponse=False):
+def getFiltersForAllWorksheet(data, info, rootDashboard, cmdResponse=False):
     filterResult = {}
     if cmdResponse:
         presModel = data["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
@@ -714,10 +720,10 @@ def getFiltersForAllWorksheet(data, info, cmdResponse=False):
         for worksheet in worksheets:
             selectedFilters = getSelectedFilters(
                 presModel,
-                worksheet
+                worksheet["worksheet"]
             )
             filters = listFilters(presModel,
-                                  worksheet, selectedFilters)
+                                  worksheet["worksheet"], selectedFilters, rootDashboard)
             filterResult[worksheet["worksheet"]] = filters
     else:
         presModelMapVizData = getPresModelVizData(data)
@@ -734,22 +740,22 @@ def getFiltersForAllWorksheet(data, info, cmdResponse=False):
             selectedFilters = getSelectedFilters(
                 presModelMapVizInfo, worksheet)
             filters = listFilters(presModelMapVizInfo,
-                                  worksheet, selectedFilters)
+                                  worksheet, selectedFilters, rootDashboard)
             filterResult[worksheet] = filters
     return filterResult
 
 
-def getFilters(worksheetName, data, info, cmdResponse=False):
-    if cmdResponse:
-        presModel = data["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
-        selectedFilters = getSelectedFilters(
-            presModel,
-            worksheetName
-        )
-    else:
-        presModel = getPresModelVizInfo(info)
-        selectedFilters = getSelectedFilters(
-            getPresModelVizInfo(info),
-            worksheetName
-        )
-    return listFilters(presModel, worksheetName, selectedFilters)
+# def getFilters(worksheetName, data, info, rootDashboard, cmdResponse=False):
+#     if cmdResponse:
+#         presModel = data["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
+#         selectedFilters = getSelectedFilters(
+#             presModel,
+#             worksheetName
+#         )
+#     else:
+#         presModel = getPresModelVizInfo(info)
+#         selectedFilters = getSelectedFilters(
+#             getPresModelVizInfo(info),
+#             worksheetName
+#         )
+#     return listFilters(presModel, worksheetName, selectedFilters, rootDashboard)

@@ -96,9 +96,9 @@ class TableauScraper:
                     "presModelHolder"]["genDataDictionaryPresModel"]["dataSegments"]
                 self.parameters = utils.getParameterControlInput(
                     self.info)
-            self.filters = utils.getFiltersForAllWorksheet(
-                self.data, self.info)
             self.dashboard = self.info["sheetName"]
+            self.filters = utils.getFiltersForAllWorksheet(
+                self.data, self.info, rootDashboard=self.dashboard)
         except (AttributeError):
             raise TableauException(message=r)
 
