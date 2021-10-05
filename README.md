@@ -304,6 +304,7 @@ print(tooltipHtml)
 - https://replit.com/@bertrandmartel/TableauCovid19AzdhsPeopleTested
 - https://replit.com/@bertrandmartel/TableauCovidDDCMOPH
 - https://replit.com/@bertrandmartel/TableauUSCustoms
+- https://replit.com/@bertrandmartel/TableauONSDemandaMaxima
 
 ### Server side rendering
 
