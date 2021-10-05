@@ -54,6 +54,27 @@ class TableauWorkbook:
                         found = True
                 if not found:
                     self._scraper.parameters.append(newParam)
+        # update filters if present
+        if ("applicationPresModel" in cmdResponse["vqlCmdResponse"]["layoutStatus"]):
+            newFilters = tableauscraper.utils.getFiltersForAllWorksheet(
+                data=cmdResponse, info=None, cmdResponse=True)
+            newFilterscsp = copy.deepcopy(newFilters)
+            for worksheet in newFilterscsp:
+                if worksheet not in self._scraper.filters:
+                    self._scraper.filters[worksheet] = newFilters[worksheet]
+                else:
+                    for newFilter in newFilters[worksheet]:
+                        found = False
+                        foundFilterIndex = -1
+                        for idx, filter in enumerate(self._scraper.filters[worksheet]):
+                            if newFilter["globalFieldName"] == filter["globalFieldName"]:
+                                found = True
+                                foundFilterIndex = idx
+                        if not found:
+                            self._scraper.filters[worksheet].append(newFilter)
+                        else:
+                            del self._scraper.filters[worksheet][foundFilterIndex]
+                            self._scraper.filters[worksheet].append(newFilter)
 
     def getWorksheetNames(self):
         return tableauscraper.utils.getWorksheetNames(self)

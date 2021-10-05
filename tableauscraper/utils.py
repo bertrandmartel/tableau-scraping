@@ -704,3 +704,52 @@ def getTooltipText(tooltipServerCmdResponse):
         return json.loads(tooltipText)["htmlTooltip"]
     else:
         return ""
+
+
+def getFiltersForAllWorksheet(data, info, cmdResponse=False):
+    filterResult = {}
+    if cmdResponse:
+        presModel = data["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
+        worksheets = listWorksheetCmdResponse(presModel)
+        for worksheet in worksheets:
+            selectedFilters = getSelectedFilters(
+                presModel,
+                worksheet
+            )
+            filters = listFilters(presModel,
+                                  worksheet, selectedFilters)
+            filterResult[worksheet["worksheet"]] = filters
+    else:
+        presModelMapVizData = getPresModelVizData(data)
+        presModelMapVizInfo = getPresModelVizInfo(info)
+        if presModelMapVizData is not None:
+            worksheets = listWorksheet(presModelMapVizData)
+        elif presModelMapVizInfo is not None:
+            worksheets = listWorksheetInfo(presModelMapVizInfo)
+            if len(worksheets) == 0:
+                worksheets = listStoryPointsInfo(presModelMapVizInfo)
+        else:
+            worksheets = []
+        for worksheet in worksheets:
+            selectedFilters = getSelectedFilters(
+                presModelMapVizInfo, worksheet)
+            filters = listFilters(presModelMapVizInfo,
+                                  worksheet, selectedFilters)
+            filterResult[worksheet] = filters
+    return filterResult
+
+
+def getFilters(worksheetName, data, info, cmdResponse=False):
+    if cmdResponse:
+        presModel = data["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
+        selectedFilters = getSelectedFilters(
+            presModel,
+            worksheetName
+        )
+    else:
+        presModel = getPresModelVizInfo(info)
+        selectedFilters = getSelectedFilters(
+            getPresModelVizInfo(info),
+            worksheetName
+        )
+    return listFilters(presModel, worksheetName, selectedFilters)

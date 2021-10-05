@@ -30,6 +30,7 @@ class TableauScraper:
     tableauData = {}
     dataSegments = {}  # persistent data dictionary
     parameters = {}  # persist parameter controls
+    filters = {}  # persist filters per worksheet
     logger = logging.getLogger("tableauScraper")
     delayMs = 500  # delay between actions (select/dropdown)
     lastActionTime = 0
@@ -95,6 +96,8 @@ class TableauScraper:
                     "presModelHolder"]["genDataDictionaryPresModel"]["dataSegments"]
                 self.parameters = utils.getParameterControlInput(
                     self.info)
+            self.filters = utils.getFiltersForAllWorksheet(
+                self.data, self.info)
             self.dashboard = self.info["sheetName"]
         except (AttributeError):
             raise TableauException(message=r)

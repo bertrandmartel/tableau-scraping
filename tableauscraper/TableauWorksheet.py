@@ -35,6 +35,7 @@ class TableauWorksheet:
         self._data_dictionnary = dataFull
 
     def updateFullData(self, cmdResponse):
+        # persist data dictionary
         if (("applicationPresModel" in cmdResponse["vqlCmdResponse"]["layoutStatus"]) and
                 ("dataDictionary" in cmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"])):
             presModel = cmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
@@ -65,6 +66,28 @@ class TableauWorksheet:
             self._scraper.logger.warning(
                 f"no data dictionary present in response")
 
+        # update filters if present
+        if ("applicationPresModel" in cmdResponse["vqlCmdResponse"]["layoutStatus"]):
+            newFilters = tableauscraper.utils.getFiltersForAllWorksheet(
+                data=cmdResponse, info=None, cmdResponse=True)
+            newFilterscsp = copy.deepcopy(newFilters)
+            for worksheet in newFilterscsp:
+                if worksheet not in self._scraper.filters:
+                    self._scraper.filters[worksheet] = newFilters[worksheet]
+                else:
+                    for newFilter in newFilters[worksheet]:
+                        found = False
+                        foundFilterIndex = -1
+                        for idx, filter in enumerate(self._scraper.filters[worksheet]):
+                            if newFilter["globalFieldName"] == filter["globalFieldName"]:
+                                found = True
+                                foundFilterIndex = idx
+                        if not found:
+                            self._scraper.filters[worksheet].append(newFilter)
+                        else:
+                            del self._scraper.filters[worksheet][foundFilterIndex]
+                            self._scraper.filters[worksheet].append(newFilter)
+
     def getColumns(self) -> List[str]:
         if self.cmdResponse:
             presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
@@ -85,20 +108,7 @@ class TableauWorksheet:
             ]
 
     def getFilters(self) -> List[str]:
-        if self.cmdResponse:
-            presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
-            selectedFilters = tableauscraper.utils.getSelectedFilters(
-                presModel,
-                self.name
-            )
-        else:
-            presModel = tableauscraper.utils.getPresModelVizInfo(
-                self._originalInfo)
-            selectedFilters = tableauscraper.utils.getSelectedFilters(
-                tableauscraper.utils.getPresModelVizInfo(self._originalInfo),
-                self.name
-            )
-        return tableauscraper.utils.listFilters(presModel, self.name, selectedFilters)
+        return self._scraper.filters[self.name] if self.name in self._scraper.filters else []
 
     def setFilter(self, columnName, value, dashboardFilter=False, membershipTarget=True, filterDelta=False):
         try:
