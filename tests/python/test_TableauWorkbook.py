@@ -11,6 +11,7 @@ from tests.python.test_common import fakeUri as fakeUri
 from tests.python.test_common import vqlCmdResponse as vqlCmdResponse
 from tests.python.test_common import (
     vqlCmdResponseEmptyValues as vqlCmdResponseEmptyValues,
+    tableauDataResponseWithStoryPointsOnlyStoryFilter as tableauDataResponseWithStoryPointsOnlyStoryFilter
 )
 from tests.python.test_common import storyPointsCmdResponse as storyPointsCmdResponse
 from tests.python.test_common import tableauDownloadableCsvData as tableauDownloadableCsvData
@@ -167,6 +168,21 @@ def test_TableauWorkbook(mocker: MockerFixture) -> None:
         ],
         "parameterName": "[Parameters].[Parameter 1]",
     }]
+
+
+def test_storybookfilters(mocker: MockerFixture) -> None:
+    mocker.patch(
+        "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
+    )
+    mocker.patch("tableauscraper.api.getTableauData",
+                 return_value=tableauDataResponseWithStoryPointsOnlyStoryFilter)
+    ts = TS()
+    ts.loads(fakeUri)
+    dataFrameGroup = ts.getWorkbook()
+    worksheetNames = dataFrameGroup.getWorksheetNames()
+    assert type(worksheetNames) is list
+    assert not dataFrameGroup.cmdResponse
+    assert worksheetNames == ["[WORKSHEET1]"]
 
 
 def test_Sheets(mocker: MockerFixture) -> None:

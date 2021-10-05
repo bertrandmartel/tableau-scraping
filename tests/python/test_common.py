@@ -1020,6 +1020,139 @@ storyPointsInfo = {
     },
 }
 
+storyPointsInfoOnlyStoryFilter = {
+    "sheetName": "[SHEET_NAME]",
+    "worldUpdate": {
+        "applicationPresModel": {
+            "workbookPresModel": {
+                "dashboardPresModel": {
+                    "zones": {
+                        "3": {
+                            "presModelHolder": {
+                                "flipboard": {
+                                    "storyPoints": {
+                                        "1": {
+                                            "dashboardPresModel": {
+                                                "sheetPath": {
+                                                    "sheetName": "[WORKSHEET1]",
+                                                    "isDashboard": True,
+                                                    "storyboard": "STORYBOARD",
+                                                    "storyPointId": 1
+                                                },
+                                                "zones": {
+                                                    "0": {
+                                                        "worksheet": "[WORKSHEET1]",
+                                                        "presModelHolder": {
+                                                            "visual": {
+                                                                "filtersJson": json.dumps([{
+                                                                    "table": {
+                                                                        "schema": [{
+                                                                            "caption": "FILTER_1",
+                                                                            "ordinal": 0,
+                                                                            "name": ["FILTER", "FILTER_1"]
+                                                                        }],
+                                                                        "tuples": [{
+                                                                            "t": [{
+                                                                                "v": "FITLTER_VALUE_1"
+                                                                            }]
+                                                                        }, {
+                                                                            "t": [{
+                                                                                "v": "FITLTER_VALUE_2"
+                                                                            }]
+                                                                        }, {
+                                                                            "t": [{
+                                                                                "v": "FITLTER_VALUE_3"
+                                                                            }]
+                                                                        }]
+                                                                    }
+                                                                }]),
+                                                                "vizData": {
+                                                                    "paneColumnsData": {
+                                                                        "paneColumnsList": [
+                                                                            {
+                                                                                "vizPaneColumns": [
+                                                                                    {
+                                                                                        "tupleIds": [],
+                                                                                        "valueIndices": [
+                                                                                            1,
+                                                                                            2,
+                                                                                            3,
+                                                                                            4,
+                                                                                        ],
+                                                                                        "aliasIndices": [],
+                                                                                    },
+                                                                                    {
+                                                                                        "tupleIds": [],
+                                                                                        "valueIndices": [],
+                                                                                        "aliasIndices": [
+                                                                                            -6,
+                                                                                            -7,
+                                                                                            -8,
+                                                                                            -9,
+                                                                                        ],
+                                                                                    },
+                                                                                ]
+                                                                            }
+                                                                        ],
+                                                                        "vizDataColumns": [
+                                                                            {
+                                                                                "fieldCaption": "[FIELD1]",
+                                                                                "dataType": "cstring",
+                                                                                "paneIndices": [0],
+                                                                                "columnIndices": [0],
+                                                                                "isAutoSelect": True,
+                                                                            },
+                                                                            {
+                                                                                "fieldCaption": "[FIELD2]",
+                                                                                "dataType": "cstring",
+                                                                                "paneIndices": [0],
+                                                                                "columnIndices": [1],
+                                                                                "isAutoSelect": True
+                                                                            },
+                                                                        ]
+                                                                    }
+                                                                }}},
+                                                    },
+                                                    "1": {
+                                                        "presModelHolder": {
+                                                            "parameterControl": {
+                                                                "fieldCaption": "[INPUT_NAME1]",
+                                                                "parameterName": "[Parameters].[Parameter 1]",
+                                                                "formattedValues": [
+                                                                    "select1",
+                                                                    "select2",
+                                                                    "select3",
+                                                                ],
+                                                            }
+                                                        }
+                                                    },
+                                                    "2": {
+                                                        "presModelHolder": {
+                                                            "parameterControl": {
+                                                                "fieldCaption": "[INPUT_NAME2]",
+                                                                "parameterName": "[Parameters].[Parameter 1]",
+                                                                "formattedValues": [
+                                                                    "select4",
+                                                                    "select5",
+                                                                    "select6",
+                                                                ],
+                                                            }
+                                                        }
+                                                    },
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+}
+
 info = {
     "sheetName": "[SHEET_NAME]",
     "worldUpdate": {
@@ -1129,6 +1262,12 @@ tableauDataResponseWithStoryPoints = """
 433337;%s433337;%s
 """ % (
     json.dumps(storyPointsInfo),
+    json.dumps(dataWithoutPresModelWithDictionary),
+)
+tableauDataResponseWithStoryPointsOnlyStoryFilter = """
+433337;%s433337;%s
+""" % (
+    json.dumps(storyPointsInfoOnlyStoryFilter),
     json.dumps(dataWithoutPresModelWithDictionary),
 )
 

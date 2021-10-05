@@ -78,7 +78,7 @@ def test_filter(httpserver, mocker: MockerFixture):
     httpserver.serve_content(json.dumps(vqlCmdResponse))
     ts.host = httpserver.url + "/"
     result = api.filter(scraper=ts, worksheetName="",
-                        globalFieldName="", selection=[1])
+                        globalFieldName="", selection=[1], dashboard="", storyboard="test", storyboardId=1)
     assert result == vqlCmdResponse
 
 
