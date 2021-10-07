@@ -610,7 +610,8 @@ def listFilters(logger, presModel, worksheetName, selectedFilters, rootDashboard
                 {
                     "columns": [(z["caption"], z["name"], z["ordinal"]) for z in t["table"]["schema"]],
                     "values": [z["t"][0]["v"] for z in t["table"]["tuples"] if "t" in z and len(z["t"]) != 0],
-                    "selection": [z["t"][0]["v"] for z in t["table"]["tuples"] if ("t" in z) and (len(z["t"]) != 0) and ("s" in z) and (z["s"] == True)]
+                    "selection": [z["t"][0]["v"] for z in t["table"]["tuples"] if ("t" in z) and (len(z["t"]) != 0) and ("s" in z) and (z["s"] == True)],
+                    "all": t.get("all", False) or t.get("allChecked", False),
                 }
                 for t in arr
                 if "table" in t
@@ -624,7 +625,7 @@ def listFilters(logger, presModel, worksheetName, selectedFilters, rootDashboard
                         "ordinal": c[2],
                         "values": r["values"],
                         "globalFieldName": f"[{c[1][0]}].[{c[1][1]}]",
-                        "selection": r["selection"],
+                        "selection": r["selection"] if not r["all"] else r["values"],
                         "selectionAlt": [it for it in selectedFilters if it["fn"] == f"[{c[1][0]}].[{c[1][1]}]"]
                     })
         return entries
@@ -678,7 +679,8 @@ def listFilters(logger, presModel, worksheetName, selectedFilters, rootDashboard
                             {
                                 "columns": [(z["caption"], z["name"], z["ordinal"]) for z in t["table"]["schema"]],
                                 "values": [z["t"][0]["v"] for z in t["table"]["tuples"] if "t" in z and len(z["t"]) != 0],
-                                "selection": [z["t"][0]["v"] for z in t["table"]["tuples"] if ("t" in z) and (len(z["t"]) != 0) and ("s" in z) and (z["s"] == True)]
+                                "selection": [z["t"][0]["v"] for z in t["table"]["tuples"] if ("t" in z) and (len(z["t"]) != 0) and ("s" in z) and (z["s"] == True)],
+                                "all": t.get("all", False) or t.get("allChecked", False),
                             }
                             for t in arr
                             if "table" in t
@@ -692,7 +694,7 @@ def listFilters(logger, presModel, worksheetName, selectedFilters, rootDashboard
                                     "ordinal": c[2],
                                     "values": r["values"],
                                     "globalFieldName": f"[{c[1][0]}].[{c[1][1]}]",
-                                    "selection": r["selection"],
+                                    "selection": r["selection"] if not r["all"] else r["values"],
                                     "selectionAlt": [it for it in selectedFilters if it["fn"] == f"[{c[1][0]}].[{c[1][1]}]"],
                                     "storyboard": storyboard,
                                     "storyboardId": storyboardId,
