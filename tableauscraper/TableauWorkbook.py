@@ -59,7 +59,7 @@ class TableauWorkbook:
         # update filters if present
         if ("applicationPresModel" in cmdResponse["vqlCmdResponse"]["layoutStatus"]):
             newFilters = utils.getFiltersForAllWorksheet(
-                self.logger, data=cmdResponse, info=None, rootDashboard=self._scraper.dashboard, cmdResponse=True)
+                self._scraper.logger, data=cmdResponse, info=None, rootDashboard=self._scraper.dashboard, cmdResponse=True)
             newFilterscsp = copy.deepcopy(newFilters)
             for worksheet in newFilterscsp:
                 if worksheet not in self._scraper.filters:
