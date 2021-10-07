@@ -118,10 +118,10 @@ class TableauWorksheet:
                 {
                     "globalFieldName": t["globalFieldName"],
                     "indices": (
-                        ([t["values"].index(value) + t["ordinal"]])
+                        ([t["values"].index(value)])
                         if not isinstance(value, list)
                         else [
-                            t["values"].index(it) + t["ordinal"]
+                            t["values"].index(it)
                             for it in value
                         ]
                     ),
@@ -147,7 +147,7 @@ class TableauWorksheet:
             if (len(filter[0]["selection"]) > 0):
                 for idx, val in enumerate(filter[0]["values"]):
                     if val in filter[0]["selection"]:
-                        selectedIndex.append(idx + filter[0]["ordinal"])
+                        selectedIndex.append(idx)
 
             # get selection from quickFilter
             if (len(filter[0]["selectionAlt"]) > 0) and ("domainTables" in filter[0]["selectionAlt"][0]):
