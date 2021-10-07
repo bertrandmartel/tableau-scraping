@@ -15,7 +15,7 @@ from tests.python.test_common import tableauDownloadableSummaryData
 from tests.python.test_common import tableauDownloadableUnderlyingData
 from tests.python.test_common import tableauDownloadableCsvData
 from tests.python.test_common import tableauExportCrosstabServerDialog
-from tests.python.test_common import tableauExportCrosstabToCsvServer
+from tests.python.test_common import tableauExportCrosstabToCsvServerGenExportFile
 from tests.python.test_common import tableauCrossTabData
 
 
@@ -254,10 +254,11 @@ def test_tableau_export_crosstab_to_csv_server(httpserver, mocker: MockerFixture
                  return_value=tableauDataResponse)
     ts = TS()
     ts.loads(fakeUri)
-    httpserver.serve_content(json.dumps(tableauExportCrosstabToCsvServer))
+    httpserver.serve_content(json.dumps(
+        tableauExportCrosstabToCsvServerGenExportFile))
     ts.host = httpserver.url + "/"
     result = api.exportCrosstabToCsvServer(scraper=ts, sheetId="xxx")
-    assert result == tableauExportCrosstabToCsvServer
+    assert result == tableauExportCrosstabToCsvServerGenExportFile
 
 
 def test_tableau_downloadable_csv_data(httpserver, mocker: MockerFixture):

@@ -760,6 +760,7 @@ storyPointsCmdResponse = {
                                     "flipboard": {
                                         "storyPoints": {
                                             "1": {
+                                                "storyPointId": 1,
                                                 "dashboardPresModel": {
                                                     "zones": {
                                                         "0": {
@@ -1032,6 +1033,7 @@ storyPointsInfoOnlyStoryFilter = {
                                 "flipboard": {
                                     "storyPoints": {
                                         "1": {
+                                            "storyPointId": 1,
                                             "dashboardPresModel": {
                                                 "sheetPath": {
                                                     "sheetName": "[WORKSHEET1]",
@@ -1232,6 +1234,78 @@ info = {
     },
 }
 
+infoWithoutViewIds = {
+    "sheetName": "[SHEET_NAME]",
+    "worldUpdate": {
+        "applicationPresModel": {
+            "workbookPresModel": {
+                "dashboardPresModel": {
+                    "zones": {
+                        "2": {
+                            "worksheet": "[WORKSHEET1]",
+                            "presModelHolder": {
+                                "visual": {
+                                    "filtersJson": json.dumps([{
+                                        "table": {
+                                            "schema": [{
+                                                "caption": "FILTER_1",
+                                                "ordinal": 0,
+                                                "name": ["FILTER", "FILTER_1"]
+                                            }],
+                                            "tuples": [{
+                                                "t": [{
+                                                    "v": "FITLTER_VALUE_1"
+                                                }]
+                                            }, {
+                                                "t": [{
+                                                    "v": "FITLTER_VALUE_2"
+                                                }]
+                                            }, {
+                                                "t": [{
+                                                    "v": "FITLTER_VALUE_3"
+                                                }]
+                                            }]
+                                        }
+                                    }])
+                                }
+                            }
+                        },
+                    }
+                },
+                "sheetsInfo": [{
+                    "sheet": "[WORKSHEET1]",
+                    "isDashboard": False,
+                    "isVisible": True,
+                    "namesOfSubsheets": [],
+                    "windowId":"{XXXXX}"
+                }]
+            }
+        }
+    },
+}
+infoWithViewIdsNoSheet = {
+    "sheetName": "[SHEET_NAME]",
+    "worldUpdate": {
+        "applicationPresModel": {
+            "workbookPresModel": {
+                "dashboardPresModel": {
+                    "zones": {
+                    },
+                    'viewIds': {
+                    },
+                },
+                "sheetsInfo": [{
+                    "sheet": "[WORKSHEET1]",
+                    "isDashboard": False,
+                    "isVisible": True,
+                    "namesOfSubsheets": [],
+                    "windowId":"{XXXXX}"
+                }]
+            }
+        }
+    },
+}
+
 tableauVizHtmlResponse = """
 <div>
 <textarea id="tsConfigContainer">
@@ -1248,6 +1322,19 @@ tableauDataResponse = """
 433337;%s433337;%s
 """ % (
     json.dumps(info),
+    json.dumps(data),
+)
+
+tableauDataResponseNoViewIds = """
+433337;%s433337;%s
+""" % (
+    json.dumps(infoWithoutViewIds),
+    json.dumps(data),
+)
+tableauDataResponseViewIdsNoSheet = """
+433337;%s433337;%s
+""" % (
+    json.dumps(infoWithViewIdsNoSheet),
     json.dumps(data),
 )
 
@@ -1602,7 +1689,7 @@ tableauExportCrosstabServerDialog = """
 }
 """
 
-tableauExportCrosstabToCsvServer = """
+tableauExportCrosstabToCsvServerGenExportFile = """
 {
 	"vqlCmdResponse": {
 		"layoutStatus": {
@@ -1619,13 +1706,25 @@ tableauExportCrosstabToCsvServer = """
 	}
 }
 """
-
-tableauCrossTabData = """"
-Header1 	Header2 	
-1	A 	
-2	B 	
-3	C 	
+tableauExportCrosstabToCsvServerGenFileDownload = """
+{
+	"vqlCmdResponse": {
+		"layoutStatus": {
+			"applicationPresModel": {
+				"presentationLayerNotification": [{
+					"presModelHolder": {
+						"genFileDownloadPresModel": {
+							"tempfileKey": "3224154322"
+						}
+					}
+				}]
+			}
+		}
+	}
+}
 """
+
+tableauCrossTabData = """Header1\tHeader2\n1\tA\n2\tB\n3\tC"""
 
 tableauStoryPointsInfoNav = {
     'sheetName': '[WORKSHEET1]',

@@ -11,14 +11,17 @@ from tests.python.test_common import fakeUri as fakeUri
 from tests.python.test_common import vqlCmdResponse as vqlCmdResponse
 from tests.python.test_common import (
     vqlCmdResponseEmptyValues as vqlCmdResponseEmptyValues,
-    tableauDataResponseWithStoryPointsOnlyStoryFilter as tableauDataResponseWithStoryPointsOnlyStoryFilter
+    tableauDataResponseWithStoryPointsOnlyStoryFilter as tableauDataResponseWithStoryPointsOnlyStoryFilter,
+    tableauDataResponseNoViewIds as tableauDataResponseNoViewIds,
+    tableauDataResponseViewIdsNoSheet as tableauDataResponseViewIdsNoSheet
 )
 from tests.python.test_common import storyPointsCmdResponse as storyPointsCmdResponse
 from tests.python.test_common import tableauDownloadableCsvData as tableauDownloadableCsvData
 from tests.python.test_common import tableauDataResponseWithStoryPointsNav
 from tests.python.test_common import tableauCrossTabData
 from tests.python.test_common import tableauExportCrosstabServerDialog
-from tests.python.test_common import tableauExportCrosstabToCsvServer
+from tests.python.test_common import tableauExportCrosstabToCsvServerGenExportFile
+from tests.python.test_common import tableauExportCrosstabToCsvServerGenFileDownload
 import json
 
 
@@ -233,6 +236,38 @@ def test_getCsvData(mocker: MockerFixture) -> None:
     assert data.shape[1] == 1
 
 
+def test_getCsvDataNoViewIds(mocker: MockerFixture) -> None:
+    mocker.patch(
+        "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
+    )
+    mocker.patch("tableauscraper.api.getTableauData",
+                 return_value=tableauDataResponseNoViewIds)
+    mocker.patch("tableauscraper.api.getCsvData",
+                 return_value=tableauDownloadableCsvData)
+    ts = TS()
+    ts.loads(fakeUri)
+    wb = ts.getWorkbook()
+
+    data = wb.getCsvData("[WORKSHEET1]")
+    assert data is None
+
+
+def test_getCsvDataViewIdsNoSheet(mocker: MockerFixture) -> None:
+    mocker.patch(
+        "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
+    )
+    mocker.patch("tableauscraper.api.getTableauData",
+                 return_value=tableauDataResponseViewIdsNoSheet)
+    mocker.patch("tableauscraper.api.getCsvData",
+                 return_value=tableauDownloadableCsvData)
+    ts = TS()
+    ts.loads(fakeUri)
+    wb = ts.getWorkbook()
+
+    data = wb.getCsvData("[WORKSHEET1]")
+    assert data is None
+
+
 def test_getDownloadableData(mocker: MockerFixture) -> None:
     mocker.patch(
         "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
@@ -300,23 +335,29 @@ def test_goToStoryPoint(mocker: MockerFixture) -> None:
     assert len(storyWb.worksheets) == 1
 
 
-# def test_getCrossTabData(mocker: MockerFixture) -> None:
-#     mocker.patch(
-#         "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
-#     )
-#     mocker.patch("tableauscraper.api.getTableauData",
-#                  return_value=tableauDataResponse)
-#     mocker.patch("tableauscraper.api.exportCrosstabServerDialog",
-#                  return_value=json.loads(tableauExportCrosstabServerDialog))
-#     mocker.patch("tableauscraper.api.exportCrosstabToCsvServer",
-#                  return_value=json.loads(tableauExportCrosstabToCsvServer))
-#     mocker.patch("tableauscraper.api.downloadCrossTabData",
-#                  return_value=tableauCrossTabData)
+def test_getCrossTabData(mocker: MockerFixture) -> None:
+    mocker.patch(
+        "tableauscraper.api.getTableauViz", return_value=tableauVizHtmlResponse
+    )
+    mocker.patch("tableauscraper.api.getTableauData",
+                 return_value=tableauDataResponse)
+    mocker.patch("tableauscraper.api.exportCrosstabServerDialog",
+                 return_value=json.loads(tableauExportCrosstabServerDialog))
+    mocker.patch("tableauscraper.api.exportCrosstabToCsvServer",
+                 return_value=json.loads(tableauExportCrosstabToCsvServerGenExportFile))
+    mocker.patch("tableauscraper.api.downloadCrossTabData",
+                 return_value=tableauCrossTabData)
 
-#     ts = TS()
-#     ts.loads(fakeUri)
-#     wb = ts.getWorkbook()
+    ts = TS()
+    ts.loads(fakeUri)
+    wb = ts.getWorkbook()
 
-#     data = wb.getCrossTabData(sheetName="[WORKSHEET1]")
-#     assert data.shape[0] == 3
-#     assert data.shape[1] == 1
+    data = wb.getCrossTabData(sheetName="[WORKSHEET1]")
+    assert data.shape[0] == 3
+    assert data.shape[1] == 2
+
+    mocker.patch("tableauscraper.api.exportCrosstabToCsvServer",
+                 return_value=json.loads(tableauExportCrosstabToCsvServerGenFileDownload))
+    data = wb.getCrossTabData(sheetName="[WORKSHEET1]")
+    assert data.shape[0] == 3
+    assert data.shape[1] == 2
