@@ -59,7 +59,7 @@ class TableauWorkbook:
         # update filters if present
         if ("applicationPresModel" in cmdResponse["vqlCmdResponse"]["layoutStatus"]):
             newFilters = utils.getFiltersForAllWorksheet(
-                data=cmdResponse, info=None, rootDashboard=self._scraper.dashboard, cmdResponse=True)
+                self.logger, data=cmdResponse, info=None, rootDashboard=self._scraper.dashboard, cmdResponse=True)
             newFilterscsp = copy.deepcopy(newFilters)
             for worksheet in newFilterscsp:
                 if worksheet not in self._scraper.filters:
@@ -227,7 +227,7 @@ class TableauWorkbook:
             return None
 
     def getStoryPoints(self):
-        return utils.getStoryPointsFromInfo(self._originalInfo)
+        return utils.getStoryPointsFromInfo(self._scraper.logger, self._originalInfo)
 
     def goToStoryPoint(self, storyPointId) -> "TableauWorkbook":
         storypointResult = self.getStoryPoints()

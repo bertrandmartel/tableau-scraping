@@ -97,7 +97,7 @@ class TableauScraper:
                     self.info)
             self.dashboard = self.info["sheetName"]
             self.filters = utils.getFiltersForAllWorksheet(
-                self.data, self.info, rootDashboard=self.dashboard)
+                self.logger, self.data, self.info, rootDashboard=self.dashboard)
         except (AttributeError):
             raise TableauException(message=r)
 
