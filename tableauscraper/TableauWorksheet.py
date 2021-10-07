@@ -1,7 +1,9 @@
 import pandas as pd
-import tableauscraper
 from typing import List
+import tableauscraper
 from tableauscraper import utils
+from tableauscraper import dashboard
+from tableauscraper import api
 import copy
 
 
@@ -68,7 +70,7 @@ class TableauWorksheet:
 
         # update filters if present
         if ("applicationPresModel" in cmdResponse["vqlCmdResponse"]["layoutStatus"]):
-            newFilters = tableauscraper.utils.getFiltersForAllWorksheet(
+            newFilters = utils.getFiltersForAllWorksheet(
                 data=cmdResponse, info=None, rootDashboard=self._scraper.dashboard, cmdResponse=True)
             newFilterscsp = copy.deepcopy(newFilters)
             for worksheet in newFilterscsp:
@@ -93,16 +95,16 @@ class TableauWorksheet:
             presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
             return [
                 t["fieldCaption"]
-                for t in tableauscraper.utils.getIndicesInfoVqlResponse(
+                for t in utils.getIndicesInfoVqlResponse(
                     presModel, self.name, noSelectFilter=True
                 )
             ]
         else:
-            presModel = tableauscraper.utils.getPresModelVizData(
+            presModel = utils.getPresModelVizData(
                 self._originalData)
             return [
                 t["fieldCaption"]
-                for t in tableauscraper.utils.getIndicesInfo(
+                for t in utils.getIndicesInfo(
                     presModel, self.name, noSelectFilter=True
                 )
             ]
@@ -154,10 +156,10 @@ class TableauWorksheet:
                         selectedIndex.append(idx)
 
             if dashboardFilter:
-                r = tableauscraper.api.dashboardFilter(
+                r = api.dashboardFilter(
                     self._scraper, columnName, [value] if not isinstance(value, list) else value)
             else:
-                r = tableauscraper.api.filter(
+                r = api.filter(
                     self._scraper,
                     worksheetName=self.name,
                     globalFieldName=filter[0]["globalFieldName"],
@@ -170,13 +172,13 @@ class TableauWorksheet:
                     dashboard=filter[0]["dashboard"]
                 )
             self.updateFullData(r)
-            return tableauscraper.dashboard.getWorksheetsCmdResponse(self._scraper, r)
+            return dashboard.getWorksheetsCmdResponse(self._scraper, r)
         except ValueError as e:
             self._scraper.logger.error(str(e))
             return tableauscraper.TableauWorkbook(
                 scraper=self._scraper, originalData={}, originalInfo={}, data=[]
             )
-        except tableauscraper.api.APIResponseException as e:
+        except api.APIResponseException as e:
             self._scraper.logger.error(str(e))
             return tableauscraper.TableauWorkbook(
                 scraper=self._scraper, originalData={}, originalInfo={}, data=[]
@@ -188,38 +190,38 @@ class TableauWorksheet:
             selectableItems = [
                 {
                     "column": t["fieldCaption"],
-                    "values": next(iter([y for y in tableauscraper.utils.getData(self._data_dictionnary, [t]).values()]), [])
+                    "values": next(iter([y for y in utils.getData(self._data_dictionnary, [t]).values()]), [])
                 }
-                for t in tableauscraper.utils.getIndicesInfoVqlResponse(presModel, self.name, noSelectFilter=True)
+                for t in utils.getIndicesInfoVqlResponse(presModel, self.name, noSelectFilter=True)
             ]
             if len(selectableItems) == 0:
-                indicesInfo = tableauscraper.utils.getIndicesInfoStoryPoint(
+                indicesInfo = utils.getIndicesInfoStoryPoint(
                     presModel, self.name, noSelectFilter=True)
                 return [
                     {
                         "column": t["fieldCaption"],
-                        "values": next(iter([y for y in tableauscraper.utils.getData(self._data_dictionnary, [t]).values()]), [])
+                        "values": next(iter([y for y in utils.getData(self._data_dictionnary, [t]).values()]), [])
                     }
                     for t in indicesInfo
                 ]
             return selectableItems
         else:
-            presModel = tableauscraper.utils.getPresModelVizData(
+            presModel = utils.getPresModelVizData(
                 self._originalData)
             if presModel is None:
-                presModel = tableauscraper.utils.getPresModelVizInfo(
+                presModel = utils.getPresModelVizInfo(
                     self._originalInfo)
-                indicesInfo = tableauscraper.utils.getIndicesInfoStoryPoint(
+                indicesInfo = utils.getIndicesInfoStoryPoint(
                     presModel, self.name, noSelectFilter=True)
             else:
-                indicesInfo = tableauscraper.utils.getIndicesInfo(
+                indicesInfo = utils.getIndicesInfo(
                     presModel, self.name, noSelectFilter=True)
             return [
                 {
                     "column": t["fieldCaption"],
                     "values": next(iter([
                         y
-                        for y in tableauscraper.utils.getData(self._data_dictionnary, [t]).values()
+                        for y in utils.getData(self._data_dictionnary, [t]).values()
                     ]), [])
                 }
                 for t in indicesInfo
@@ -230,13 +232,13 @@ class TableauWorksheet:
             presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
             columnObj = [
                 t
-                for t in tableauscraper.utils.getIndicesInfoVqlResponse(
+                for t in utils.getIndicesInfoVqlResponse(
                     presModel, self.name, noSelectFilter=True
                 )
                 if t["fieldCaption"] == column
             ]
             if len(columnObj) == 0:
-                indicesInfo = tableauscraper.utils.getIndicesInfoStoryPoint(
+                indicesInfo = utils.getIndicesInfoStoryPoint(
                     presModel, self.name, noSelectFilter=True)
                 columnObj = [
                     t
@@ -245,7 +247,7 @@ class TableauWorksheet:
                 ]
                 if len(columnObj) == 0:
                     return []
-            frameData = tableauscraper.utils.getData(
+            frameData = utils.getData(
                 self._data_dictionnary, [columnObj[0]]
             )
             frameDataKeys = list(frameData.keys())
@@ -254,15 +256,15 @@ class TableauWorksheet:
                 return []
             return frameData[frameDataKeys[0]]
         else:
-            presModel = tableauscraper.utils.getPresModelVizData(
+            presModel = utils.getPresModelVizData(
                 self._originalData)
             if presModel is None:
-                presModel = tableauscraper.utils.getPresModelVizInfo(
+                presModel = utils.getPresModelVizInfo(
                     self._originalInfo)
-                indicesInfo = tableauscraper.utils.getIndicesInfoStoryPoint(
+                indicesInfo = utils.getIndicesInfoStoryPoint(
                     presModel, self.name, noSelectFilter=True)
             else:
-                indicesInfo = tableauscraper.utils.getIndicesInfo(
+                indicesInfo = utils.getIndicesInfo(
                     presModel, self.name, noSelectFilter=True)
 
             columnObj = [
@@ -272,7 +274,7 @@ class TableauWorksheet:
             ]
             if len(columnObj) == 0:
                 return []
-            frameData = tableauscraper.utils.getData(
+            frameData = utils.getData(
                 self._data_dictionnary, [columnObj[0]]
             )
             frameDataKeys = list(frameData.keys())
@@ -286,7 +288,7 @@ class TableauWorksheet:
             presModel = self._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
             columnObj = [
                 t
-                for t in tableauscraper.utils.getIndicesInfoVqlResponse(
+                for t in utils.getIndicesInfoVqlResponse(
                     presModel, self.name, noSelectFilter=True, noFieldCaption=True
                 )
                 if t["fn"] == "[system:visual].[tuple_id]"
@@ -296,11 +298,11 @@ class TableauWorksheet:
 
             return [t["tupleIds"] for t in columnObj]
         else:
-            presModel = tableauscraper.utils.getPresModelVizData(
+            presModel = utils.getPresModelVizData(
                 self._originalData)
             columnObj = [
                 t
-                for t in tableauscraper.utils.getIndicesInfo(
+                for t in utils.getIndicesInfo(
                     presModel, self.name, noSelectFilter=True, noFieldCaption=True
                 )
                 if t["fn"] == "[system:visual].[tuple_id]"
@@ -324,9 +326,9 @@ class TableauWorksheet:
             if not indexedByTuple:
                 index = values.index(value)
                 index = index + 1
-            r = tableauscraper.api.select(self._scraper, self.name, [index])
+            r = api.select(self._scraper, self.name, [index])
             self.updateFullData(r)
-            return tableauscraper.dashboard.getWorksheetsCmdResponse(self._scraper, r)
+            return dashboard.getWorksheetsCmdResponse(self._scraper, r)
         except ValueError as e:
             self._scraper.logger.error(str(e))
             return tableauscraper.TableauWorkbook(
@@ -334,24 +336,24 @@ class TableauWorksheet:
             )
 
     def getDownloadableSummaryData(self, numRows=200):
-        r = tableauscraper.api.getDownloadableSummaryData(
+        r = api.getDownloadableSummaryData(
             self._scraper, self.name, self._scraper.dashboard, numRows)
         self.updateFullData(r)
-        return tableauscraper.dashboard.getWorksheetDownloadCmdResponse(self._scraper, r)
+        return dashboard.getWorksheetDownloadCmdResponse(self._scraper, r)
 
     def getDownloadableUnderlyingData(self, numRows=200):
-        r = tableauscraper.api.getDownloadableUnderlyingData(
+        r = api.getDownloadableUnderlyingData(
             self._scraper, self.name, self._scraper.dashboard, numRows)
         self.updateFullData(r)
-        return tableauscraper.dashboard.getWorksheetDownloadCmdResponse(self._scraper, r)
+        return dashboard.getWorksheetDownloadCmdResponse(self._scraper, r)
 
     def levelDrill(self, drillDown, position=0):
-        r = tableauscraper.api.levelDrill(
+        r = api.levelDrill(
             self._scraper, self.name, drillDown, position)
         self.updateFullData(r)
-        return tableauscraper.dashboard.getWorksheetsCmdResponse(self._scraper, r)
+        return dashboard.getWorksheetsCmdResponse(self._scraper, r)
 
     def renderTooltip(self, x, y):
-        r = tableauscraper.api.renderTooltipServer(
+        r = api.renderTooltipServer(
             self._scraper, self.name, x, y)
-        return tableauscraper.utils.getTooltipText(r)
+        return utils.getTooltipText(r)

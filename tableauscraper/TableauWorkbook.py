@@ -1,9 +1,11 @@
 from typing import List
 from tableauscraper.TableauWorksheet import TableauWorksheet
-import tableauscraper
+from tableauscraper import utils
+from tableauscraper import dashboard
+from tableauscraper import api
 import copy
 import pandas as pd
-import io
+from io import StringIO
 from pandas.errors import ParserError, EmptyDataError
 
 
@@ -44,7 +46,7 @@ class TableauWorkbook:
         self._scraper.parameters = self.getParameters()
         if ("applicationPresModel" in cmdResponse["vqlCmdResponse"]["layoutStatus"]):
             presModel = cmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
-            newParameters = tableauscraper.utils.getParameterControlVqlResponse(
+            newParameters = utils.getParameterControlVqlResponse(
                 presModel)
             newParameterscsp = copy.deepcopy(newParameters)
             for newParam in newParameterscsp:
@@ -56,7 +58,7 @@ class TableauWorkbook:
                     self._scraper.parameters.append(newParam)
         # update filters if present
         if ("applicationPresModel" in cmdResponse["vqlCmdResponse"]["layoutStatus"]):
-            newFilters = tableauscraper.utils.getFiltersForAllWorksheet(
+            newFilters = utils.getFiltersForAllWorksheet(
                 data=cmdResponse, info=None, rootDashboard=self._scraper.dashboard, cmdResponse=True)
             newFilterscsp = copy.deepcopy(newFilters)
             for worksheet in newFilterscsp:
@@ -77,25 +79,25 @@ class TableauWorkbook:
                             self._scraper.filters[worksheet].append(newFilter)
 
     def getWorksheetNames(self):
-        return tableauscraper.utils.getWorksheetNames(self)
+        return utils.getWorksheetNames(self)
 
     def getWorksheets(self):
         if self.cmdResponse:
-            return tableauscraper.dashboard.getWorksheetsCmdResponse(
+            return dashboard.getWorksheetsCmdResponse(
                 self._scraper, self._originalData
             )
         else:
-            return tableauscraper.dashboard.getWorksheets(
+            return dashboard.getWorksheets(
                 self._scraper, self._originalData, self._originalInfo
             )
 
     def getWorksheet(self, worksheetName) -> TableauWorksheet:
         if self.cmdResponse:
-            return tableauscraper.dashboard.getWorksheetCmdResponse(
+            return dashboard.getWorksheetCmdResponse(
                 self._scraper, self._originalData, worksheetName
             )
         else:
-            return tableauscraper.dashboard.getWorksheet(
+            return dashboard.getWorksheet(
                 self._scraper, self._originalData, self._originalInfo, worksheetName
             )
 
@@ -118,14 +120,14 @@ class TableauWorkbook:
                 cmdResponse=self.cmdResponse,
             )
 
-        r = tableauscraper.api.setParameterValue(
+        r = api.setParameterValue(
             self._scraper, parameterNames[0], value
         )
         self.updateFullData(r)
-        return tableauscraper.dashboard.getWorksheetsCmdResponse(self._scraper, r)
+        return dashboard.getWorksheetsCmdResponse(self._scraper, r)
 
     def getSheets(self):
-        presModel = tableauscraper.utils.getPresModelVizInfo(
+        presModel = utils.getPresModelVizInfo(
             self._originalInfo)
         return [
             {
@@ -153,43 +155,47 @@ class TableauWorkbook:
                 data=list(),
                 cmdResponse=self.cmdResponse,
             )
-        r = tableauscraper.api.goToSheet(self._scraper, windowId[0])
+        r = api.goToSheet(self._scraper, windowId[0])
         self.updateFullData(r)
         self._scraper.dashboard = sheetName
-        return tableauscraper.dashboard.getWorksheetsCmdResponse(self._scraper, r)
+        return dashboard.getWorksheetsCmdResponse(self._scraper, r)
 
     def getDownloadableData(self, sheetName):
-        presModel = tableauscraper.utils.getPresModelVizInfo(
+        presModel = utils.getPresModelVizInfo(
             self._originalInfo)
         if ("workbookPresModel" in presModel) and ("dashboardPresModel" in presModel["workbookPresModel"]) and ("viewIds" in presModel["workbookPresModel"]["dashboardPresModel"]):
             if sheetName in presModel["workbookPresModel"]["dashboardPresModel"]["viewIds"]:
-                tableauscraper.api.getDownloadableData(
+                api.getDownloadableData(
                     self._scraper, sheetName, self._scraper.dashboard, presModel["workbookPresModel"]["dashboardPresModel"]["viewIds"][sheetName])
             else:
-                print(f"{sheetName} not present in viewIds list")
+                self._scraper.logger.warning(
+                    f"{sheetName} not present in viewIds list")
         else:
-            print("no viewIds found in json info")
+            self._scraper.logger.warning(
+                f"no viewIds found in json info")
 
     def getCsvData(self, sheetName, prefix="vudcsv"):
-        presModel = tableauscraper.utils.getPresModelVizInfo(
+        presModel = utils.getPresModelVizInfo(
             self._originalInfo)
         if ("workbookPresModel" in presModel) and ("dashboardPresModel" in presModel["workbookPresModel"]) and ("viewIds" in presModel["workbookPresModel"]["dashboardPresModel"]):
             if sheetName in presModel["workbookPresModel"]["dashboardPresModel"]["viewIds"]:
-                r = tableauscraper.api.getCsvData(
+                r = api.getCsvData(
                     self._scraper, presModel["workbookPresModel"]["dashboardPresModel"]["viewIds"][sheetName], prefix=prefix)
                 try:
-                    return pd.read_csv(io.StringIO(r))
+                    return pd.read_csv(StringIO(r))
                 except (ParserError, EmptyDataError):
                     return None
 
             else:
-                print(f"{sheetName} not present in viewIds list")
+                self._scraper.logger.warning(
+                    f"{sheetName} not present in viewIds list")
         else:
-            print("no viewIds found in json info")
+            self._scraper.logger.warning(
+                f"no viewIds found in json info")
         return None
 
     def getCrossTabData(self, sheetName):
-        r = tableauscraper.api.exportCrosstabServerDialog(self._scraper)
+        r = api.exportCrosstabServerDialog(self._scraper)
 
         sheets = [
             t for t in r["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]["presentationLayerNotification"][
@@ -202,7 +208,7 @@ class TableauWorkbook:
             return None
 
         sheetId = sheets[0]["sheetdocId"]
-        r = tableauscraper.api.exportCrosstabToCsvServer(
+        r = api.exportCrosstabToCsvServer(
             self._scraper, sheetId)
         presModelHandler = r[
             "vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]["presentationLayerNotification"][0]["presModelHolder"]
@@ -211,21 +217,21 @@ class TableauWorkbook:
         elif "genFileDownloadPresModel" in presModelHandler:
             resultKey = presModelHandler["genFileDownloadPresModel"]["tempfileKey"]
         else:
-            print(
+            self._scraper.logger.warning(
                 f"no genExportFilePresModel or genFileDownloadPresModel found in result")
             return None
-        r = tableauscraper.api.downloadCrossTabData(self._scraper, resultKey)
+        r = api.downloadCrossTabData(self._scraper, resultKey)
         try:
-            return pd.read_csv(io.StringIO(r), sep='\t')
+            return pd.read_csv(StringIO(r), sep='\t')
         except (ParserError, EmptyDataError):
             return None
 
     def getStoryPoints(self):
-        return tableauscraper.utils.getStoryPointsFromInfo(self._originalInfo)
+        return utils.getStoryPointsFromInfo(self._originalInfo)
 
     def goToStoryPoint(self, storyPointId) -> "TableauWorkbook":
         storypointResult = self.getStoryPoints()
-        r = tableauscraper.api.setActiveStoryPoint(
+        r = api.setActiveStoryPoint(
             self._scraper, storyBoard=storypointResult["storyBoard"], storyPointId=storyPointId)
         self.updateFullData(r)
-        return tableauscraper.dashboard.getWorksheetsCmdResponse(self._scraper, r)
+        return dashboard.getWorksheetsCmdResponse(self._scraper, r)

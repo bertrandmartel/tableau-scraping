@@ -1,5 +1,3 @@
-import requests
-import json
 from tableauscraper import utils
 from tableauscraper import api
 from tableauscraper import dashboard

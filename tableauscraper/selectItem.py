@@ -1,7 +1,5 @@
 from tableauscraper import utils
 from tableauscraper import api
-import json
-import requests
 from tableauscraper import dashboard
 from tableauscraper.TableauWorkbook import TableauWorkbook
 

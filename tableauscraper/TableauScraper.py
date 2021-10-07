@@ -9,7 +9,6 @@ from tableauscraper import utils
 from tableauscraper import api
 from tableauscraper.TableauWorksheet import TableauWorksheet
 from tableauscraper.TableauWorkbook import TableauWorkbook
-from typing import List
 import logging
 
 
