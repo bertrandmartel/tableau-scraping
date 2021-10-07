@@ -86,19 +86,6 @@ def getWorksheetNames(wb):
         t.name
         for t in wb.worksheets
     ]
-    # if scraper.cmdResponse:
-    #     presModel = scraper._originalData["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
-    #     return [
-    #         t["worksheet"]
-    #         for t in listWorksheetCmdResponse(presModel)
-    #     ]
-    # else:
-    #     presModel = getPresModelVizData(scraper._originalData)
-    #     if presModel is None:
-    #         presModel = getPresModelVizInfo(scraper._originalInfo)
-    #         worksheets = listWorksheetInfo(presModel)
-    #         return listStoryPointsInfo(presModel) if len(worksheets) == 0 else worksheets
-    #     return listWorksheet(presModel)
 
 
 def listWorksheet(presModelMap):
