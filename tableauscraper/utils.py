@@ -656,10 +656,22 @@ def listFilters(presModel, worksheetName, selectedFilters, rootDashboard):
             keys = list(storypoint.keys())
             filtersList = []
             for key in keys:
-                storyboard = storypoint[key]["dashboardPresModel"]["sheetPath"]["storyboard"]
-                storyboardId = storypoint[key]["dashboardPresModel"]["sheetPath"]["storyPointId"]
-                dashboard = storypoint[key]["dashboardPresModel"]["sheetPath"]["sheetName"] if storypoint[
-                    key]["dashboardPresModel"]["sheetPath"]["isDashboard"] else rootDashboard
+                storyboardId = storypoint[key]["storyPointId"]
+
+                # get storyboard and dashboard values
+                if "sheetPath" in storypoint[key]["dashboardPresModel"]:
+                    storyboard = storypoint[key]["dashboardPresModel"]["sheetPath"]["storyboard"]
+                    dashboard = storypoint[key]["dashboardPresModel"]["sheetPath"]["sheetName"] if storypoint[
+                        key]["dashboardPresModel"]["sheetPath"]["isDashboard"] else rootDashboard
+                elif "visualIds" in storypoint[key]["dashboardPresModel"]:
+                    visualIds = storypoint[key]["dashboardPresModel"]["visualIds"]
+                    if isinstance(visualIds, list):
+                        visualIds = visualIds[0]
+                    storyboard = visualIds["storyboard"]
+                    dashboard = visualIds["dashboard"]
+                else:
+                    print("sheetPath and visualIds not found in dashboardPresModel")
+                    return []
                 zones = storypoint[key]["dashboardPresModel"]["zones"]
                 filters = [
                     json.loads(zones[z]["presModelHolder"]
@@ -717,6 +729,8 @@ def getFiltersForAllWorksheet(data, info, rootDashboard, cmdResponse=False):
     if cmdResponse:
         presModel = data["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
         worksheets = listWorksheetCmdResponse(presModel)
+        if len(worksheets) == 0:
+            worksheets = listStoryPointsCmdResponse(presModel)
         for worksheet in worksheets:
             selectedFilters = getSelectedFilters(
                 presModel,
