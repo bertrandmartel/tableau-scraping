@@ -204,8 +204,16 @@ class TableauWorkbook:
         sheetId = sheets[0]["sheetdocId"]
         r = tableauscraper.api.exportCrosstabToCsvServer(
             self._scraper, sheetId)
-        resultKey = r[
-            "vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]["presentationLayerNotification"][0]["presModelHolder"]["genExportFilePresModel"]["resultKey"]
+        presModelHandler = r[
+            "vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]["presentationLayerNotification"][0]["presModelHolder"]
+        if "genExportFilePresModel" in presModelHandler:
+            resultKey = presModelHandler["genExportFilePresModel"]["resultKey"]
+        elif "genFileDownloadPresModel" in presModelHandler:
+            resultKey = presModelHandler["genFileDownloadPresModel"]["tempfileKey"]
+        else:
+            print(
+                f"no genExportFilePresModel or genFileDownloadPresModel found in result")
+            return None
         r = tableauscraper.api.downloadCrossTabData(self._scraper, resultKey)
         try:
             return pd.read_csv(io.StringIO(r), sep='\t')
