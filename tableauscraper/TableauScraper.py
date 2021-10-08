@@ -28,7 +28,7 @@ class TableauScraper:
     dashboard: str = ""
     tableauData = {}
     dataSegments = {}  # persistent data dictionary
-    parameters = {}  # persist parameter controls
+    parameters = []  # persist parameter controls
     filters = {}  # persist filters per worksheet
     zones = {}  # persist zones
     logger = logging.getLogger("tableauScraper")
