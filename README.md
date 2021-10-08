@@ -336,7 +336,7 @@ git clone git@github.com:bertrandmartel/tableau-scraping.git
 cd tableau-scraping/scripts
 
 #get worksheets data
-python3 prompt.py -get workbook -url "https://public.tableau.com/views/COVID-19inMissouri/COVID-19inMissouri"
+python3 prompt.py -get workbook -url "https://public.tableau.com/views/PlayerStats-Top5Leagues20192020/OnePlayerSummary"
 
 #select a selectable item
 python3 prompt.py -get select -url "https://public.tableau.com/views/MKTScoredeisolamentosocial/VisoGeral"
