@@ -145,12 +145,11 @@ class TableauWorksheet:
 
             # get selection from filterJson
             if (len(filter[0]["selection"]) > 0):
-                for idx, val in enumerate(filter[0]["values"]):
-                    if val in filter[0]["selection"]:
+                for idx, val in enumerate(filter[0]["selection"]):
+                    if val != value:
                         selectedIndex.append(idx)
-
             # get selection from quickFilter
-            if (len(filter[0]["selectionAlt"]) > 0) and ("domainTables" in filter[0]["selectionAlt"][0]):
+            elif (len(filter[0]["selectionAlt"]) > 0) and ("domainTables" in filter[0]["selectionAlt"][0]):
                 for idx, val in enumerate(filter[0]["selectionAlt"][0]["domainTables"]):
                     if ("isSelected" in val) and val["isSelected"] and (idx not in selectedIndex):
                         selectedIndex.append(idx)
