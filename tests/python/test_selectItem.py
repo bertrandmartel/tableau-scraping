@@ -12,6 +12,8 @@ from tableauscraper.TableauWorkbook import TableauWorkbook
 
 def test_selectItem(mocker: MockerFixture) -> None:
     ts = TS()
+    ts.zones = vqlCmdResponse["vqlCmdResponse"]["layoutStatus"][
+        "applicationPresModel"]["workbookPresModel"]["dashboardPresModel"]["zones"]
     # we want : 1st worksheet / 1st column / 1st value and then all worksheets for this value
     mocker.patch("builtins.input", side_effect=["0", "0", "0", ""])
     mocker.patch("tableauscraper.api.select", return_value=vqlCmdResponse)

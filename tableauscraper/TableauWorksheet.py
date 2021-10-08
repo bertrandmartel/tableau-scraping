@@ -89,6 +89,21 @@ class TableauWorksheet:
                         else:
                             del self._scraper.filters[worksheet][foundFilterIndex]
                             self._scraper.filters[worksheet].append(newFilter)
+        # persist zones
+        if ("applicationPresModel" in cmdResponse["vqlCmdResponse"]["layoutStatus"]):
+            presModel = cmdResponse["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
+            newZones = utils.getZones(presModel)
+            newZonesStorage = {}
+            for zone in newZones.keys():
+                zoneHasVizdata = utils.hasVizData(newZones[zone])
+                if (not zoneHasVizdata) and (zone in self._scraper.zones):
+                    newZonesStorage[zone] = copy.deepcopy(
+                        self._scraper.zones[zone])
+                else:
+                    newZonesStorage[zone] = copy.deepcopy(newZones[zone])
+            self._scraper.zones = newZonesStorage
+        else:
+            self._scraper.zones = {}
 
     def getColumns(self) -> List[str]:
         if self.cmdResponse:

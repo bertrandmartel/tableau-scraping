@@ -322,6 +322,14 @@ def getDataFullCmdResponse(presModel, originSegments, dataSegments={}):
     return dataFull
 
 
+def getZones(presModel):
+    if (("workbookPresModel" in presModel) and
+        ("dashboardPresModel" in presModel["workbookPresModel"]) and
+            ("zones" in presModel["workbookPresModel"]["dashboardPresModel"])):
+        return presModel["workbookPresModel"]["dashboardPresModel"]["zones"]
+    return {}
+
+
 def getStoryPointsFromInfo(logger, info):
     result = {
         "storyBoard": "",
@@ -372,8 +380,8 @@ def listWorksheetCmdResponse(presModel):
     ]
 
 
-def listStoryPointsCmdResponse(presModel):
-    zones = presModel["workbookPresModel"]["dashboardPresModel"]["zones"]
+def listStoryPointsCmdResponse(presModel, TS=None):
+    zones = presModel["workbookPresModel"]["dashboardPresModel"]["zones"] if TS is None else TS.zones
     storypoints = [
         zones[z]["presModelHolder"]["flipboard"]["storyPoints"]
         for z in list(zones)
@@ -400,8 +408,8 @@ def listStoryPointsCmdResponse(presModel):
     return stories
 
 
-def listWorksheetStoryPoint(presModel, hasWorksheet=True):
-    zones = presModel["workbookPresModel"]["dashboardPresModel"]["zones"]
+def listWorksheetStoryPoint(presModel, hasWorksheet=True, TS=None):
+    zones = presModel["workbookPresModel"]["dashboardPresModel"]["zones"] if TS is None else TS.zones
     storypoints = [
         zones[z]["presModelHolder"]["flipboard"]["storyPoints"]
         for z in list(zones)
@@ -746,3 +754,11 @@ def getFiltersForAllWorksheet(logger, data, info, rootDashboard, cmdResponse=Fal
                                   worksheet, selectedFilters, rootDashboard)
             filterResult[worksheet] = filters
     return filterResult
+
+
+def hasVizData(zone):
+    if (("presModelHolder" in zone) and
+        ("visual" in zone["presModelHolder"]) and
+            ("vizData" in zone["presModelHolder"]["visual"])):
+        return True
+    return False

@@ -141,6 +141,8 @@ def test_TableauScraper_promptDropdown(mocker: MockerFixture) -> None:
     mocker.patch("tableauscraper.api.setParameterValue",
                  return_value=vqlCmdResponse)
     ts = TS()
+    ts.zones = vqlCmdResponse["vqlCmdResponse"]["layoutStatus"][
+        "applicationPresModel"]["workbookPresModel"]["dashboardPresModel"]["zones"]
     ts.loads(fakeUri)
     mocker.patch("builtins.input", side_effect=["0", "0", "0", ""])
     tableauDataFrameGroup = ts.promptParameters()
@@ -163,6 +165,8 @@ def test_TableauScraper_promptSelect(mocker: MockerFixture) -> None:
                  return_value=tableauDataResponse)
     mocker.patch("tableauscraper.api.select", return_value=vqlCmdResponse)
     ts = TS()
+    ts.zones = vqlCmdResponse["vqlCmdResponse"]["layoutStatus"][
+        "applicationPresModel"]["workbookPresModel"]["dashboardPresModel"]["zones"]
     ts.loads(fakeUri)
     mocker.patch("builtins.input", side_effect=["0", "0", "0", ""])
     tableauDataFrameGroup = ts.promptSelect()

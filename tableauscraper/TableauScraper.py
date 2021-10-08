@@ -30,6 +30,7 @@ class TableauScraper:
     dataSegments = {}  # persistent data dictionary
     parameters = {}  # persist parameter controls
     filters = {}  # persist filters per worksheet
+    zones = {}  # persist zones
     logger = logging.getLogger("tableauScraper")
     delayMs = 500  # delay between actions (select/dropdown)
     lastActionTime = 0

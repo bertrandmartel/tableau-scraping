@@ -1,4 +1,5 @@
 import pandas as pd
+from pandas.core import frame
 from tableauscraper import utils
 from tableauscraper.TableauWorksheet import TableauWorksheet
 from tableauscraper.TableauWorkbook import TableauWorkbook
@@ -70,8 +71,15 @@ def getWorksheets(TS, data, info) -> TableauWorkbook:
 
 def getCmdResponse(TS, data, logger):
     presModel = data["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
-
-    zonesWithWorksheet = utils.selectWorksheetCmdResponse(presModel, logger)
+    zonesWithWorksheet = [
+        TS.zones[z]
+        for z in list(TS.zones)
+        if ("worksheet" in TS.zones[z])
+        and ("presModelHolder" in TS.zones[z])
+        and ("visual" in TS.zones[z]["presModelHolder"])
+        and ("vizData" in TS.zones[z]["presModelHolder"]["visual"])
+    ]
+    #zonesWithWorksheet = utils.selectWorksheetCmdResponse(presModel, logger)
     dataFull = utils.getDataFullCmdResponse(presModel, TS.dataSegments)
     output = []
     for selectedZone in zonesWithWorksheet:
@@ -99,9 +107,16 @@ def getCmdResponse(TS, data, logger):
 
 def getWorksheetsCmdResponse(TS, data):
     presModel = data["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
-    zonesWithWorksheet = utils.listWorksheetCmdResponse(presModel)
+    zonesWithWorksheet = [
+        TS.zones[z]
+        for z in list(TS.zones)
+        if ("worksheet" in TS.zones[z])
+        and ("presModelHolder" in TS.zones[z])
+        and ("visual" in TS.zones[z]["presModelHolder"])
+        and ("vizData" in TS.zones[z]["presModelHolder"]["visual"])
+    ]
     if len(zonesWithWorksheet) == 0:
-        zonesWithWorksheet = utils.listStoryPointsCmdResponse(presModel)
+        zonesWithWorksheet = utils.listStoryPointsCmdResponse(presModel, TS)
     dataFull = utils.getDataFullCmdResponse(presModel, TS.dataSegments)
     output = []
     for selectedZone in zonesWithWorksheet:
@@ -139,14 +154,18 @@ def getWorksheetDownloadCmdResponse(TS, data):
 def getWorksheetCmdResponse(TS, data, worksheetName):
     presModel = data["vqlCmdResponse"]["layoutStatus"]["applicationPresModel"]
     zonesWithWorksheet = [
-        t
-        for t in utils.listWorksheetCmdResponse(presModel)
-        if t["worksheet"] == worksheetName
+        TS.zones[z]
+        for z in list(TS.zones)
+        if ("worksheet" in TS.zones[z])
+        and (TS.zones[z]["worksheet"] == worksheetName)
+        and ("presModelHolder" in TS.zones[z])
+        and ("visual" in TS.zones[z]["presModelHolder"])
+        and ("vizData" in TS.zones[z]["presModelHolder"]["visual"])
     ]
     if len(zonesWithWorksheet) == 0:
         zonesWithWorksheet = [
             t
-            for t in utils.listWorksheetStoryPoint(presModel)
+            for t in utils.listWorksheetStoryPoint(presModel, TS)
             if t["worksheet"] == worksheetName
         ]
     if len(zonesWithWorksheet) == 0:
@@ -165,7 +184,6 @@ def getWorksheetCmdResponse(TS, data, worksheetName):
 
     dataFull = utils.getDataFullCmdResponse(presModel, TS.dataSegments)
     frameData = utils.getWorksheetCmdResponse(selectedZone, dataFull)
-
     if frameData is None:
         return TableauWorksheet(
             scraper=TS,
@@ -179,7 +197,6 @@ def getWorksheetCmdResponse(TS, data, worksheetName):
         )
 
     df = pd.DataFrame.from_dict(frameData, orient="index").fillna(0).T
-
     return TableauWorksheet(
         scraper=TS,
         originalData=data,

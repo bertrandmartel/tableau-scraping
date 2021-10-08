@@ -89,6 +89,8 @@ def test_getWorksheets():
 
 def test_getWorksheetsCmdResponse():
     ts = TS()
+    ts.zones = storyPointsCmdResponse["vqlCmdResponse"]["layoutStatus"][
+        "applicationPresModel"]["workbookPresModel"]["dashboardPresModel"]["zones"]
     # story point
     wb = dashboard.getWorksheetsCmdResponse(
         ts, storyPointsCmdResponse)
