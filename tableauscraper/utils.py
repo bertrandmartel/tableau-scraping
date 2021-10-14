@@ -368,63 +368,41 @@ def getStoryPointsFromInfo(logger, info):
 
 
 def listWorksheetCmdResponse(presModel):
-    zones = presModel["workbookPresModel"]["dashboardPresModel"]["zones"]
-    return [
-        zones[z]
-        for z in list(zones)
-        if zones[z] is not None
-        and ("worksheet" in zones[z])
-        and ("presModelHolder" in zones[z])
-        and ("visual" in zones[z]["presModelHolder"])
-        and ("vizData" in zones[z]["presModelHolder"]["visual"])
-    ]
+    if (("workbookPresModel" in presModel) and
+        ("dashboardPresModel" in presModel["workbookPresModel"]) and
+            ("zones" in presModel["workbookPresModel"]["dashboardPresModel"])):
+        zones = presModel["workbookPresModel"]["dashboardPresModel"]["zones"]
+        return [
+            zones[z]
+            for z in list(zones)
+            if zones[z] is not None
+            and ("worksheet" in zones[z])
+            and ("presModelHolder" in zones[z])
+            and ("visual" in zones[z]["presModelHolder"])
+            and ("vizData" in zones[z]["presModelHolder"]["visual"])
+        ]
+    return []
 
 
 def listStoryPointsCmdResponse(presModel, TS=None):
-    zones = presModel["workbookPresModel"]["dashboardPresModel"]["zones"] if TS is None else TS.zones
-    storypoints = [
-        zones[z]["presModelHolder"]["flipboard"]["storyPoints"]
-        for z in list(zones)
-        if zones[z] is not None
-        and ("presModelHolder" in zones[z])
-        and ("flipboard" in zones[z]["presModelHolder"])
-        and ("storyPoints" in zones[z]["presModelHolder"]["flipboard"])
-    ]
-    stories = []
-    if len(storypoints) > 0:
-        storypoint = storypoints[0]
-        keys = list(storypoint.keys())
-        if len(keys) > 0:
-            zones = storypoint[keys[0]]["dashboardPresModel"]["zones"]
-            stories = [
-                zones[z]
-                for z in list(zones)
-                if zones[z] is not None
-                and ("worksheet" in zones[z])
-                and ("presModelHolder" in zones[z])
-                and ("visual" in zones[z]["presModelHolder"])
-                and ("vizData" in zones[z]["presModelHolder"]["visual"])
-            ]
-    return stories
-
-
-def listWorksheetStoryPoint(presModel, hasWorksheet=True, TS=None):
-    zones = presModel["workbookPresModel"]["dashboardPresModel"]["zones"] if TS is None else TS.zones
-    storypoints = [
-        zones[z]["presModelHolder"]["flipboard"]["storyPoints"]
-        for z in list(zones)
-        if zones[z] is not None
-        and ("presModelHolder" in zones[z])
-        and ("flipboard" in zones[z]["presModelHolder"])
-        and ("storyPoints" in zones[z]["presModelHolder"]["flipboard"])
-    ]
-    stories = []
-    if len(storypoints) > 0:
-        storypoint = storypoints[0]
-        keys = list(storypoint.keys())
-        if len(keys) > 0:
-            zones = storypoint[keys[0]]["dashboardPresModel"]["zones"]
-            if hasWorksheet:
+    if (("workbookPresModel" in presModel) and
+        ("dashboardPresModel" in presModel["workbookPresModel"]) and
+            ("zones" in presModel["workbookPresModel"]["dashboardPresModel"])):
+        zones = presModel["workbookPresModel"]["dashboardPresModel"]["zones"] if TS is None else TS.zones
+        storypoints = [
+            zones[z]["presModelHolder"]["flipboard"]["storyPoints"]
+            for z in list(zones)
+            if zones[z] is not None
+            and ("presModelHolder" in zones[z])
+            and ("flipboard" in zones[z]["presModelHolder"])
+            and ("storyPoints" in zones[z]["presModelHolder"]["flipboard"])
+        ]
+        stories = []
+        if len(storypoints) > 0:
+            storypoint = storypoints[0]
+            keys = list(storypoint.keys())
+            if len(keys) > 0:
+                zones = storypoint[keys[0]]["dashboardPresModel"]["zones"]
                 stories = [
                     zones[z]
                     for z in list(zones)
@@ -434,13 +412,47 @@ def listWorksheetStoryPoint(presModel, hasWorksheet=True, TS=None):
                     and ("visual" in zones[z]["presModelHolder"])
                     and ("vizData" in zones[z]["presModelHolder"]["visual"])
                 ]
-            else:
-                stories = [
-                    zones[z]
-                    for z in list(zones)
-                    if ("presModelHolder" in zones[z])
-                ]
-    return stories
+        return stories
+    return []
+
+
+def listWorksheetStoryPoint(presModel, hasWorksheet=True, TS=None):
+    if (("workbookPresModel" in presModel) and
+        ("dashboardPresModel" in presModel["workbookPresModel"]) and
+            ("zones" in presModel["workbookPresModel"]["dashboardPresModel"])):
+        zones = presModel["workbookPresModel"]["dashboardPresModel"]["zones"] if TS is None else TS.zones
+        storypoints = [
+            zones[z]["presModelHolder"]["flipboard"]["storyPoints"]
+            for z in list(zones)
+            if zones[z] is not None
+            and ("presModelHolder" in zones[z])
+            and ("flipboard" in zones[z]["presModelHolder"])
+            and ("storyPoints" in zones[z]["presModelHolder"]["flipboard"])
+        ]
+        stories = []
+        if len(storypoints) > 0:
+            storypoint = storypoints[0]
+            keys = list(storypoint.keys())
+            if len(keys) > 0:
+                zones = storypoint[keys[0]]["dashboardPresModel"]["zones"]
+                if hasWorksheet:
+                    stories = [
+                        zones[z]
+                        for z in list(zones)
+                        if zones[z] is not None
+                        and ("worksheet" in zones[z])
+                        and ("presModelHolder" in zones[z])
+                        and ("visual" in zones[z]["presModelHolder"])
+                        and ("vizData" in zones[z]["presModelHolder"]["visual"])
+                    ]
+                else:
+                    stories = [
+                        zones[z]
+                        for z in list(zones)
+                        if ("presModelHolder" in zones[z])
+                    ]
+        return stories
+    return []
 
 
 def getWorksheetCmdResponse(selectedZone, dataFull):
