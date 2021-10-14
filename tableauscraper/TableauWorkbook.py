@@ -98,25 +98,22 @@ class TableauWorkbook:
     def getWorksheetNames(self):
         return utils.getWorksheetNames(self)
 
-    def getWorksheets(self):
-        if self.cmdResponse:
-            return dashboard.getWorksheetsCmdResponse(
-                self._scraper, self._originalData
-            )
-        else:
-            return dashboard.getWorksheets(
-                self._scraper, self._originalData, self._originalInfo
-            )
+    def getWorksheets(self) -> List[TableauWorksheet]:
+        return self.worksheets
 
     def getWorksheet(self, worksheetName) -> TableauWorksheet:
-        if self.cmdResponse:
-            return dashboard.getWorksheetCmdResponse(
-                self._scraper, self._originalData, worksheetName
+        worksheets = [t for t in self.worksheets if t.name == worksheetName]
+        if (len(worksheets) == 0):
+            return TableauWorksheet(
+                scraper=self._scraper,
+                originalData={},
+                originalInfo={},
+                worksheetName=worksheetName,
+                dataFrame=pd.DataFrame(),
+                dataFull={},
+                cmdResponse=self.cmdResponse,
             )
-        else:
-            return dashboard.getWorksheet(
-                self._scraper, self._originalData, self._originalInfo, worksheetName
-            )
+        return worksheets[0]
 
     def getParameters(self):
         return self._scraper.parameters

@@ -47,6 +47,12 @@ def test_TableauWorkbook(mocker: MockerFixture) -> None:
     assert not dataFrameGroup.cmdResponse
     assert worksheetNames == ["[WORKSHEET1]", "[WORKSHEET2]"]
 
+    # get worksheets (initial response)
+    wsList = ts.getWorkbook()
+    wsList = dataFrameGroup.getWorksheets()
+    assert type(wsList) is list
+    assert len(wsList) == 2
+
     # get worksheet names (vql response)
     dataFrameGroup = dataFrameGroup.worksheets[0].select("[FIELD1]", "2")
     assert dataFrameGroup.cmdResponse
@@ -55,19 +61,12 @@ def test_TableauWorkbook(mocker: MockerFixture) -> None:
     assert type(worksheetNames) is list
     assert worksheetNames == ["[WORKSHEET1]"]
 
-    # get worksheets (initial response)
-    dataFrameGroup = ts.getWorkbook()
-    dataFrameGroup = dataFrameGroup.getWorksheets()
-    assert type(dataFrameGroup) is TableauWorkbook
-    assert not dataFrameGroup.cmdResponse
-    assert len(dataFrameGroup.worksheets) == 2
-
     # get worksheets (vql response)
     dataFrameGroup = dataFrameGroup.worksheets[0].select("[FIELD1]", "2")
-    dataFrameGroup = dataFrameGroup.getWorksheets()
-    assert type(dataFrameGroup) is TableauWorkbook
+    wsList = dataFrameGroup.getWorksheets()
+    assert type(wsList) is list
     assert dataFrameGroup.cmdResponse
-    assert len(dataFrameGroup.worksheets) == 1
+    assert len(wsList) == 1
 
     # get single worksheet (initial response)
     dataFrameGroup = ts.getWorkbook()
