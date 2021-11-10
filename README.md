@@ -143,6 +143,8 @@ print(countyWs.data)
 
 - You can specify a "filter-delta" filter type adding the parameter `filterDelta=True` like the following `setFilter('COLUMN','VALUE', filterDelta=True)`. This will discard all filters and add the one corresponding to `['VALUE']` in this case. This is helpful when all or some filters are selected by default, and you want to unselect them. The default behaviour (`filterDelta=False`) is `filter-replace` which sometimes doesn't work when filter multi-selection is possible in the dashboard. [example](https://replit.com/@bertrandmartel/TableauUSCustoms)
 
+- In last recourse, you can use `indexValues` property to directly specify the indices (if there is a bug in the library or anything comes up): `setFilter('COLUMN', [], indexValues=[0,1,2])`
+
 #### Story points
 
 Some Tableau dashboard have storypoints where you can navigate. To list the storypoints and go to a specific storypoints:

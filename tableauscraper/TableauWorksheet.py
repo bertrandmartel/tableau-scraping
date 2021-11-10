@@ -127,18 +127,25 @@ class TableauWorksheet:
     def getFilters(self) -> List[str]:
         return self._scraper.filters[self.name] if self.name in self._scraper.filters else []
 
-    def setFilter(self, columnName, value, dashboardFilter=False, membershipTarget=True, filterDelta=False):
+    def setFilter(self, columnName, value, dashboardFilter=False, membershipTarget=True, filterDelta=False, indexValues=[]):
         try:
             filter = [
                 {
                     "globalFieldName": t["globalFieldName"],
                     "indices": (
-                        ([t["values"].index(value)])
+                        (
+                            [t["values"].index(value)]
+                            if len(indexValues) == 0
+                            else indexValues
+                        )
                         if not isinstance(value, list)
-                        else [
-                            t["values"].index(it)
-                            for it in value
-                        ]
+                        else (
+                            [
+                                t["values"].index(it)
+                                for it in value
+                            ] if len(indexValues) == 0
+                            else indexValues
+                        )
                     ),
                     "selection": t["selection"],
                     "selectionAlt": t["selectionAlt"],
