@@ -118,22 +118,25 @@ class TableauWorkbook:
     def getParameters(self):
         return self._scraper.parameters
 
-    def setParameter(self, inputName, value):
-        parameterNames = [
-            t["parameterName"]
-            for t in self._scraper.parameters
-            if t["column"] == inputName
-        ]
-        if len(parameterNames) == 0:
-            self._scraper.logger.error(f"column {inputName} not found")
-            return TableauWorkbook(
-                scraper=self._scraper,
-                originalData=self._originalData,
-                originalInfo=self._originalInfo,
-                data=list(),
-                cmdResponse=self.cmdResponse,
-            )
-
+    def setParameter(self, inputName, value, inputParameter=False):
+        if not inputParameter:
+            parameterNames = [
+                t["parameterName"]
+                for t in self._scraper.parameters
+                if t["column"] == inputName
+            ]
+            if len(parameterNames) == 0:
+                self._scraper.logger.error(f"column {inputName} not found")
+                return TableauWorkbook(
+                    scraper=self._scraper,
+                    originalData=self._originalData,
+                    originalInfo=self._originalInfo,
+                    data=list(),
+                    cmdResponse=self.cmdResponse,
+                )
+        else:
+            parameterNames = [inputParameter]
+        print(parameterNames[0])
         r = api.setParameterValue(
             self._scraper, parameterNames[0], value
         )

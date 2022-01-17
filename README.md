@@ -104,6 +104,13 @@ for t in workbook.worksheets:
 
 [Try this on repl.it](https://repl.it/@bertrandmartel/TableauParameter)
 
+It's possible to override the parameter name used in the API requests using `inputParameter`, which is different from the input name:
+
+```
+wb = wb.setParameter(inputName=None, value="Ligue 1",
+                     inputParameter="[Parameters].[P.League (copy)_1642969456470679625]")
+```
+
 #### set filter
 
 Get list of filters with `worksheet.getFilters` and set filter value using `worksheet.setFilter("column_name", "value")`:
