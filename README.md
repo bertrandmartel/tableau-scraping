@@ -136,6 +136,7 @@ print(countyWs.data)
 #### More advanced filtering options
 
 - You can specify `dashboardFilter=True` in order to use `dashboard-categorical-filter` API instead of `categorical-filter-by-index` API ([related](https://github.com/bertrandmartel/tableau-scraping/issues/26))
+- When using `dashboardFilter=True` you can skip the filter value check usin `noCheck=True` ([related](https://github.com/bertrandmartel/tableau-scraping/issues/50))
 
 - You can discard `membershipTarget` property from being sent in `setFilter` using `setFilter('COLUMN','VALUE', membershipTarget=False)` ([related](https://github.com/bertrandmartel/tableau-scraping/issues/29))
 

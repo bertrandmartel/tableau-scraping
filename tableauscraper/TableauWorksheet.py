@@ -127,55 +127,56 @@ class TableauWorksheet:
     def getFilters(self) -> List[str]:
         return self._scraper.filters[self.name] if self.name in self._scraper.filters else []
 
-    def setFilter(self, columnName, value, dashboardFilter=False, membershipTarget=True, filterDelta=False, indexValues=[]):
+    def setFilter(self, columnName, value, dashboardFilter=False, membershipTarget=True, filterDelta=False, indexValues=[], noCheck=False):
         try:
-            filter = [
-                {
-                    "globalFieldName": t["globalFieldName"],
-                    "indices": (
-                        (
-                            [t["values"].index(value)]
-                            if len(indexValues) == 0
-                            else indexValues
-                        )
-                        if not isinstance(value, list)
-                        else (
-                            [
-                                t["values"].index(it)
-                                for it in value
-                            ] if len(indexValues) == 0
-                            else indexValues
-                        )
-                    ),
-                    "selection": t["selection"],
-                    "selectionAlt": t["selectionAlt"],
-                    "values": t["values"],
-                    "ordinal": t["ordinal"],
-                    "storyboard": t["storyboard"] if "storyboard" in t else None,
-                    "storyboardId": t["storyboardId"] if "storyboardId" in t else None,
-                    "dashboard": t["dashboard"] if "dashboard" in t else self._scraper.dashboard
-                }
-                for t in self.getFilters()
-                if t["column"] == columnName
-            ]
-            if len(filter) == 0:
-                self._scraper.logger.error(f"column {columnName} not found")
-                return tableauscraper.TableauWorkbook(
-                    scraper=self._scraper, originalData={}, originalInfo={}, data=[]
-                )
-            selectedIndex = []
+            if ((not noCheck) and (dashboardFilter)) or (not dashboardFilter):
+                filter = [
+                    {
+                        "globalFieldName": t["globalFieldName"],
+                        "indices": (
+                            (
+                                [t["values"].index(value)]
+                                if len(indexValues) == 0
+                                else indexValues
+                            )
+                            if not isinstance(value, list)
+                            else (
+                                [
+                                    t["values"].index(it)
+                                    for it in value
+                                ] if len(indexValues) == 0
+                                else indexValues
+                            )
+                        ),
+                        "selection": t["selection"],
+                        "selectionAlt": t["selectionAlt"],
+                        "values": t["values"],
+                        "ordinal": t["ordinal"],
+                        "storyboard": t["storyboard"] if "storyboard" in t else None,
+                        "storyboardId": t["storyboardId"] if "storyboardId" in t else None,
+                        "dashboard": t["dashboard"] if "dashboard" in t else self._scraper.dashboard
+                    }
+                    for t in self.getFilters()
+                    if t["column"] == columnName
+                ]
+                if len(filter) == 0:
+                    self._scraper.logger.error(
+                        f"column {columnName} not found")
+                    return tableauscraper.TableauWorkbook(
+                        scraper=self._scraper, originalData={}, originalInfo={}, data=[]
+                    )
+                selectedIndex = []
 
-            # get selection from filterJson
-            if (len(filter[0]["selection"]) > 0):
-                for idx, val in enumerate(filter[0]["selection"]):
-                    if val != value:
-                        selectedIndex.append(idx)
-            # get selection from quickFilter
-            elif (len(filter[0]["selectionAlt"]) > 0) and ("domainTables" in filter[0]["selectionAlt"][0]):
-                for idx, val in enumerate(filter[0]["selectionAlt"][0]["domainTables"]):
-                    if ("isSelected" in val) and val["isSelected"] and (idx not in selectedIndex):
-                        selectedIndex.append(idx)
-
+                # get selection from filterJson
+                if (len(filter[0]["selection"]) > 0):
+                    for idx, val in enumerate(filter[0]["selection"]):
+                        if val != value:
+                            selectedIndex.append(idx)
+                # get selection from quickFilter
+                elif (len(filter[0]["selectionAlt"]) > 0) and ("domainTables" in filter[0]["selectionAlt"][0]):
+                    for idx, val in enumerate(filter[0]["selectionAlt"][0]["domainTables"]):
+                        if ("isSelected" in val) and val["isSelected"] and (idx not in selectedIndex):
+                            selectedIndex.append(idx)
             if dashboardFilter:
                 r = api.dashboardFilter(
                     self._scraper, columnName, [value] if not isinstance(value, list) else value)
