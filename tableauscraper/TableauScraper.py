@@ -1,4 +1,4 @@
-from urllib.parse import urlparse, unquote
+from urllib.parse import urlparse, unquote, urlunparse, urlunsplit
 from bs4 import BeautifulSoup
 import json
 import re
@@ -76,10 +76,18 @@ class TableauScraper:
             r = api.getTableauVizForSession(self, self.session, url)
             soup = BeautifulSoup(r, "html.parser")
 
-        self.tableauData = json.loads(
-            soup.find("textarea", {"id": "tsConfigContainer"}).text
-        )
-
+        container = soup.find("textarea", {"id": "tsConfigContainer"})
+        if container and container.text:
+            self.tableauData = json.loads(container.text)
+        else:
+            scheme, domain, path, param, query, frag = urlparse(url)
+            parts = path.split("/")
+            path = f'/vizql/w/{parts[2]}/v/{parts[3]}/startSession/viewing'
+            surl = urlunparse( (scheme, domain, path, param, query, frag) )
+            self.tableauData = self.session.post(surl, params=params,
+                                                 verify=self.verify
+                                                 ).json()
+            # ?:showVizHome=n
         uri = urlparse(url)
         self.host = "{uri.scheme}://{uri.netloc}".format(uri=uri)
 
